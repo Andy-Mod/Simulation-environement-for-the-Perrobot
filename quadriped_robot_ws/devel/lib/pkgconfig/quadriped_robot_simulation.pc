@@ -1,0 +1,8 @@
+prefix=/home/perrobot/perrobot-tests/quadriped_robot_ws/devel
+
+Name: quadriped_robot_simulation
+Description: Description of quadriped_robot_simulation
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

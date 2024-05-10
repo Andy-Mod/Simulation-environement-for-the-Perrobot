@@ -1,0 +1,8 @@
+prefix=/home/perrobot/perrobot-tests/quadriped_robot_ws/install
+
+Name: turtlebot3_description
+Description: Description of turtlebot3_description
+Version: 1.2.6
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: urdf xacro
