@@ -1,8 +1,0 @@
-prefix=/home/perrobot/perrobot-tests/quadriped_robot_ws/install
-
-Name: service_pkg
-Description: Description of service_pkg
-Version: 0.0.0
-Cflags: -I${prefix}/include
-Libs: -L${prefix}/lib 
-Requires: 

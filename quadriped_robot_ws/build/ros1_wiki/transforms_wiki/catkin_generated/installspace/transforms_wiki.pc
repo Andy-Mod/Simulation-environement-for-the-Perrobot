@@ -1,8 +1,0 @@
-prefix=/home/perrobot/perrobot-tests/quadriped_robot_ws/install
-
-Name: transforms_wiki
-Description: Description of transforms_wiki
-Version: 0.0.0
-Cflags: 
-Libs: -L${prefix}/lib 
-Requires: 

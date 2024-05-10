@@ -1,8 +1,0 @@
-prefix=/home/perrobot/perrobot-tests/quadriped_robot_ws/install
-
-Name: learning_pkg
-Description: Description of learning_pkg
-Version: 0.0.0
-Cflags: 
-Libs: -L${prefix}/lib 
-Requires: 
