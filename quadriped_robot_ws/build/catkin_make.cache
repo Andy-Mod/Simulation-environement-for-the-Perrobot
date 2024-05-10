@@ -1,2 +1,0 @@
-quadriped_robot:quadriped_robot_simulation:ros1_wiki/learning_pkg:ros1_wiki/mobile_robot:ros1_wiki/service_pkg:ros1_wiki/transforms_wiki:ros1_wiki/turtlebot3_description
--DPYTHON_EXECUTABLE=/usr/bin/python3 -DCATKIN_DEVEL_PREFIX=/home/perrobot/perrobot-tests/quadriped_robot_ws/devel -DCMAKE_INSTALL_PREFIX=/home/perrobot/perrobot-tests/quadriped_robot_ws/install -G Unix Makefiles

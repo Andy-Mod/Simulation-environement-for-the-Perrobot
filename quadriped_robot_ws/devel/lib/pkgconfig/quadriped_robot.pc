@@ -1,8 +1,0 @@
-prefix=/home/perrobot/perrobot-tests/quadriped_robot_ws/devel
-
-Name: quadriped_robot
-Description: Description of quadriped_robot
-Version: 0.0.1
-Cflags: 
-Libs: -L${prefix}/lib 
-Requires: 
