@@ -1,0 +1,35 @@
+<launch>
+
+    <!-- Start Gazebo : empty world -->
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+      <arg name="world_name" value="$(find perrobot_gazebo)/launch/world/normal.world"/>
+      <arg name="use_sim_time" value="true"/>
+    </include>
+
+    <!-- RViz -->
+    <arg name="rviz_config_file" default="$(find perrobot_description)/config/robot.rviz"/>
+    <node pkg="rviz" type="rviz" name="rviz" args="-d $(arg rviz_config_file)"/>
+
+    <!-- Robot -->
+    <param name="robot_description" command="$(find xacro)/xacro $(find perrobot_description)/urdf/solo8.urdf.xacro"/>
+    <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -z 0.5 -model perrobot"/>
+
+
+    <!-- Controllers -->
+    <rosparam file="$(find perrobot_gazebo)/config/controllers.yaml" command="load"/>
+    <node name="controller_spawner" pkg="controller_manager" type="spawner" output="screen" ns="perrobot_controller"
+                args="FL_HFE_joint FR_HFE_joint 
+                HL_HFE_joint HR_HFE_joint 
+                FL_KFE_joint FR_KFE_joint 
+                HL_KFE_joint HR_KFE_joint"/>
+
+    <!-- Robot State Publisher -->
+     <node pkg="robot_state_publisher" type="robot_state_publisher"  name="robot_state_publisher" respawn="false" output="screen">
+      <remap from="/joint_states" to="/perrobot_controller/joint_states" />
+      <param name="publish_frequency" type="double" value="10" />
+    </node>
+
+    <!-- Joint State Publisher with GUI -->
+    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher"/>
+
+</launch>

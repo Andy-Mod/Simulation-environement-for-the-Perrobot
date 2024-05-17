@@ -1,0 +1,142 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface" name="perrobot">
+  <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <robotNamespace>perrobot_controller</robotNamespace>
+    </plugin>
+  </gazebo>
+
+  <gazebo>
+    <plugin name="joint_state_publisher" filename="libgazebo_ros_joint_state_publisher.so">
+        <robotNamespace>perrobot_controller</robotNamespace>
+        <jointName>FL_HFE, FR_HFE, HL_HFE, HR_HFE, 
+                   FL_KFE, FR_KFE, HL_KFE, HR_KFE
+                  </jointName>
+        <updateRate>100</updateRate>
+    </plugin>
+  </gazebo>
+
+   <transmission name="FL_HFE_transmission">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="FL_HFE">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="FL_HFE_actuator">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>5</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <transmission name="FR_HFE_transmission">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="FR_HFE">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="FR_HFE_actuator">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>5</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <transmission name="HL_HFE_transmission">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="HL_HFE">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="HL_HFE_actuator">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>5</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <transmission name="HR_HFE_transmission">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="HR_HFE">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="HR_HFE_actuator">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>5</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <transmission name="FL_KFE_transmission">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="FL_KFE">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="FL_KFE_actuator">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>5</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <transmission name="FR_KFE_transmission">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="FR_KFE">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="FR_KFE_actuator">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>5</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <transmission name="HL_KFE_transmission">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="HL_KFE">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="HL_KFE_actuator">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>5</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <transmission name="HR_KFE_transmission">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="HR_KFE">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="HR_KFE_actuator">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>5</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+  <gazebo reference="FL_KFE">
+    <mu1>1.0</mu1>
+    <mu2>1.0</mu2>
+    <minDepth>0.0002</minDepth>
+    <kp  value="1000000.0"/>
+    <kd  value="100.0"/>
+  </gazebo>
+
+  <gazebo reference="HL_KFE">
+    <mu1>1.0</mu1>
+    <mu2>1.0</mu2>
+    <minDepth>0.0002</minDepth>
+    <kp  value="1000000.0"/>
+    <kd  value="100.0"/>
+  </gazebo>
+
+  <gazebo reference="FR_KFE">
+    <mu1>1.0</mu1>
+    <mu2>1.0</mu2>
+    <minDepth>0.0002</minDepth>
+    <kp  value="1000000.0"/>
+    <kd  value="100.0"/>
+  </gazebo>
+
+  <gazebo reference="HR_KFE">
+    <mu1>1.0</mu1>
+    <mu2>1.0</mu2>
+    <minDepth>0.0002</minDepth>
+    <kp  value="1000000.0"/>
+    <kd  value="100.0"/>
+  </gazebo>
+
+</robot>
+
+

@@ -1,0 +1,213 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="quadriped">
+
+<xacro:property name="robot_height" value="0.320" />
+<xacro:property name="leg_length" value="0.160" />
+<xacro:property name="upper_joint_position" value="0.10460"/>
+<xacro:property name="lower_joint_position" value="0.14205"/>
+<xacro:property name="front_position" value="0.190 * 0.5"/>
+<xacro:property name="back_position" value="-0.190 * 0.5"/>
+
+<!-- BASE LINK -->
+<link name="base_footprint"/>
+
+<link name="body_link">
+    <inertial>
+        <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+       <mass value="1.43315091"/>
+        <inertia ixx="0.00578574" ixy="0.0" ixz="0.0"
+                                  iyy="0.01938108" iyz="0.0"
+                                                   izz="0.02476124"/>
+    </inertial>                                                   
+    <visual>
+        <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+        <geometry>
+            <mesh filename="package://perrobot_description/meshes/solo8_v2_body.STL" scale="1 1 1"/>
+        </geometry>
+        <material name="white">
+            <color rgba="1.0 1.0 1.0 1.0"/>
+        </material>
+    </visual>
+    <collision>
+        <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+        <geometry>
+            <mesh filename="package://perrobot_description/meshes/solo8_v2_body.STL" scale="1 1 1"/>
+        </geometry>
+    </collision>
+</link>
+
+<joint name="base_joint" type="fixed">
+    <origin xyz="0.0 0.0 ${robot_height}" rpy="0.0 0.0 0.0"/>
+    <parent link="base_footprint"/>
+    <child link="body_link"/>
+</joint>
+
+
+<!-- RIGHT LEGS -->
+<xacro:macro name="right_legs" params="number x1 y1 y2 z1 x2 z2">
+
+<!-- right upper leg link -->
+<link name="${number}_right_upper_leg">
+    <inertial>
+        <mass value="0.14737324"/>
+        <origin xyz="-0.00001530 -0.01767640 -0.07838230" rpy="0 0 0" />
+        <inertia ixx="0.00041540"  ixy="0.00000000" ixz="-0.00000010"
+                                   iyy="0.00041637" iyz="0.00004589"
+                                                    izz="0.00002982"/>
+    </inertial>
+    <visual name="">
+        <origin xyz="0 0 0" rpy="0.0 0.0 0.0"/>
+        <geometry>
+            <mesh filename="package://perrobot_description/meshes/upper_leg_right_side.stl" scale="1 1 1"/>
+        </geometry>
+        <material name="black">
+            <color rgba="0.0 0.0 0.0 1.0"/>
+        </material>
+    </visual>
+    <collision>
+        <origin xyz="${x1} ${y1} ${z1}" rpy="0.0 0.0 0.0"/>
+        <geometry>
+            <mesh filename="package://perrobot_description/meshes/upper_leg_right_side.stl" scale="1 1 1"/>
+        </geometry>
+    </collision>
+</link>
+
+<!-- right lower leg link -->
+<link name="${number}_right_lower_leg">
+    <inertial>
+        <mass value="0.02318294"/>
+        <origin xyz="0.00000000 -0.00776716 -0.07003876" rpy="0 0 0" />
+        <inertia ixx="0.00008508" ixy="0.00000000"  ixz="0.00000000"
+                                  iyy="0.00008580"  iyz="0.00000200"
+                                                    izz="0.00000139"/>
+        </inertial>
+    <visual name="">
+        <origin xyz="0 0 0" rpy="0.0 0.0 0.0"/>
+        <geometry>
+            <mesh filename="package://perrobot_description/meshes/lower_leg_v2_right_side.STL" scale="1 1 1"/>
+        </geometry>
+        <material name="white">
+            <color rgba=".0 .0 .0 1.0"/>
+        </material>
+    </visual>
+    <collision>
+        <origin xyz="${x2} ${y2} ${z2}" rpy="0.0 0.0 0.0"/>
+        <geometry>
+            <mesh filename="package://perrobot_description/meshes/lower_leg_v2_right_side.STL" scale="1 1 1"/>
+        </geometry>
+    </collision>
+</link>
+
+<!-- joint from body_link to right upper leg -->
+<joint name="${number}_right_upper_joint" type="continuous">
+    <origin xyz="${x1} ${y1} ${z1}" rpy="0.0 0.0 0.0"/>
+    <parent link="body_link"/>
+    <child link="${number}_right_upper_leg"/>
+    <axis xyz="0.0 1.0 0.0"/>
+</joint>
+
+<!-- joint from right upper leg to right lower leg -->
+<joint name="${number}_right_lower_joint" type="continuous">
+    <origin xyz="${x2} ${y2} ${z2}" rpy="0.0 0.0 0.0"/>
+    <parent link="${number}_right_upper_leg"/>
+    <child link="${number}_right_lower_leg"/>
+    <axis xyz="0.0 1.0 0.0"/>
+</joint>
+
+
+</xacro:macro>
+
+<!-- LEFT LEGS -->
+<xacro:macro name="left_legs" params="number x1 y1 y2 z1 x2 z2">
+<link name="${number}_left_upper_leg">
+    <inertial>
+        <mass value="0.14737324"/>
+        <origin xyz="0.00001530 0.01767640 -0.07838230" rpy="0 0 0" />
+        <inertia ixx="0.00041540"  ixy="0.00000000" ixz="0.00000010"
+                                   iyy="0.00041637" iyz="-0.00004589"
+                                                    izz="0.00002982"/>
+    </inertial>
+    <visual name="">
+        <origin xyz="0 0 0" rpy="0.0 0.0 0.0"/>
+        <geometry>
+            <mesh filename="package://perrobot_description/meshes/upper_leg_left_side.stl" scale="1 1 1"/>
+        </geometry>
+        <material name="white">
+            <color rgba=".0 .0 .0 1.0"/>
+        </material>
+    </visual>
+    <collision>
+        <origin xyz="${x1} ${y1} ${z1}" rpy="0.0 0.0 0.0"/>
+        <geometry>
+            <mesh filename="package://perrobot_description/meshes/upper_leg_left_side.stl" scale="1 1 1"/>
+        </geometry>
+    </collision>
+</link>
+
+<link name="${number}_left_lower_leg">
+    <inertial>
+        <mass value="0.02318294"/>
+        <origin xyz="0.00000000 0.00776716 -0.07003876" rpy="0 0 0" />
+        <inertia ixx="0.00008508" ixy="0.00000000"  ixz="0.00000000"
+                                  iyy="0.00008580"  iyz="-0.00000200"
+                                                    izz="0.00000139"/>
+        </inertial>
+    <visual name="">
+        <origin xyz="0 0 0" rpy="0.0 0.0 0.0"/>
+        <geometry>
+            <mesh filename="package://perrobot_description/meshes/lower_leg_v2_left_side.STL" scale="1 1 1"/>
+        </geometry>
+        <material name="white">
+            <color rgba=".0 .0 .0 1.0"/>
+        </material>
+    </visual>
+    <collision>
+        <origin xyz="${x2} ${y2} ${z2}" rpy="0.0 0.0 0.0"/>
+        <geometry>
+            <mesh filename="package://perrobot_description/meshes/lower_leg_v2_left_side.STL" scale="1 1 1"/>
+        </geometry>
+    </collision>
+</link>
+
+<joint name="${number}_left_upper_joint" type="continuous">
+    <origin xyz="${x1} ${y1} ${z1}" rpy="0.0 0.0 0.0"/>
+    <parent link="body_link"/>
+    <child link="${number}_left_upper_leg"/>
+    <axis xyz="0.0 1.0 0.0"/>
+</joint>
+
+<joint name="${number}_left_lower_joint" type="continuous">
+    <origin xyz="${x2} ${y2} ${z2}" rpy="0.0 0.0 0.0"/>
+    <parent link="${number}_left_upper_leg"/>
+    <child link="${number}_left_lower_leg"/>
+    <axis xyz="0.0 1.0 0.0"/>
+</joint>
+
+</xacro:macro>
+
+<!-- LEFT LEGS MODELS -->
+
+<xacro:left_legs number="lfront" x1="${front_position}" y1="${upper_joint_position}" 
+                            z1="0.0" x2="${front_position}" 
+                            y2="${lower_joint_position}" 
+                            z2="${-leg_length}"/>
+
+
+<xacro:left_legs number="lback" x1="${back_position}" y1="${upper_joint_position}" 
+                            z1="0.0" x2="${back_position}" 
+                            y2="${lower_joint_position}" 
+                            z2="${-leg_length}"/>
+
+<!-- RIGHT LEGS MODELS -->
+
+<xacro:right_legs number="rfront" x1="${front_position}" y1="${-upper_joint_position}" 
+                            z1="0.0" x2="${front_position}" 
+                            y2="${-lower_joint_position}" 
+                            z2="${-leg_length}"/>
+
+<xacro:right_legs number="rback" x1="${back_position}" y1="${-upper_joint_position}" 
+                            z1="0.0" x2="${back_position}" 
+                            y2="${-lower_joint_position}" 
+                            z2="${-leg_length}"/>
+                            
+</robot>
