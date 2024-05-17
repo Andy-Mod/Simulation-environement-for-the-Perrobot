@@ -12,24 +12,24 @@
 
     <!-- Robot -->
     <param name="robot_description" command="$(find xacro)/xacro $(find perrobot_description)/urdf/solo8.urdf.xacro"/>
-    <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -z 0.5 -model perrobot"/>
+    <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -model perrobot"/>
 
 
     <!-- Controllers -->
     <rosparam file="$(find perrobot_gazebo)/config/controllers.yaml" command="load"/>
     <node name="controller_spawner" pkg="controller_manager" type="spawner" output="screen" ns="perrobot_controller"
-                args="FL_HFE_joint FR_HFE_joint 
+                args="joint_states_controller FL_HFE_joint FR_HFE_joint 
                 HL_HFE_joint HR_HFE_joint 
                 FL_KFE_joint FR_KFE_joint 
                 HL_KFE_joint HR_KFE_joint"/>
+    
+     <!-- Joint State Publisher with GUI -->
+    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher"/>
 
     <!-- Robot State Publisher -->
      <node pkg="robot_state_publisher" type="robot_state_publisher"  name="robot_state_publisher" respawn="false" output="screen">
       <remap from="/joint_states" to="/perrobot_controller/joint_states" />
       <param name="publish_frequency" type="double" value="10" />
     </node>
-
-    <!-- Joint State Publisher with GUI -->
-    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher"/>
 
 </launch>

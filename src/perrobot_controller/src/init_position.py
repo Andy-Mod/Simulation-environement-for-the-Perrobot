@@ -1,43 +1,62 @@
 import rospy
 from std_msgs.msg import Float64
 
-# Define the joint names
-joint_names = [
-    "FL_HFE_joint",
-    "FR_HFE_joint",
-    "HL_HFE_joint",
-    "HR_HFE_joint",
-    "FL_KFE_joint",
-    "FR_KFE_joint",
-    "HL_KFE_joint",
-    "HR_KFE_joint"
+RATE = 0.5  # Messages per second
+
+topics = [
+    "/perrobot_controller/FL_HFE_joint/command",
+    "/perrobot_controller/FL_KFE_joint/command",
+    "/perrobot_controller/FR_HFE_joint/command",
+    "/perrobot_controller/FR_KFE_joint/command",
+    "/perrobot_controller/HR_HFE_joint/command",
+    "/perrobot_controller/HR_KFE_joint/command",
+    "/perrobot_controller/HL_HFE_joint/command",
+    "/perrobot_controller/HL_KFE_joint/command"
 ]
 
-# Define the ROS topics for commanding each joint
-joint_topics = ["/perrobot_controller/" + name + "/command" for name in joint_names]
+joints = [
+    "FL_HFE",
+    "FL_KFE",
+    "FR_HFE",
+    "FR_KFE",
+    "HR_HFE",
+    "HR_KFE",
+    "HL_HFE",
+    "HL_KFE"
+]
 
-def command_joint(joint_topic, angle):
-    """
-    Publishes a command to a joint.
-    """
-    pub = rospy.Publisher(joint_topic, Float64, queue_size=10)
-    rospy.loginfo("Publishing command to {}: {}".format(joint_topic, angle))
-    pub.publish(angle)
+values = [
+    0.68,
+    -1.35,
+    0.68,
+    -1.35,
+    -0.68,
+    1.35,
+    -0.68,
+    1.35
+]
 
-def command_all_joints(angles):
-    """
-    Publishes commands to all joints.
-    """
-    for i, angle in enumerate(angles):
-        command_joint(joint_topics[i], angle)
+# Initialize ROS Node (single node)
+rospy.init_node('joint_command_publisher')
 
-if __name__ == '__main__':
-    rospy.init_node('joint_commander', anonymous=True)
-    
-    # Example angles for each joint (in radians)
-    # Adjust these values according to your robot's requirements
-    angles = [0.78, 0.78, 0.78, 0.78, -0.78, -0.78, -0.78, -0.78]
-    
-    command_all_joints(angles)
-    
-    rospy.spin()
+# Create publishers for each topic
+publisers = []
+for topic in topics:
+  publisers.append(rospy.Publisher(topic, Float64, queue_size=10))
+
+# Publish messages (once per topic)
+rate = rospy.Rate(RATE)
+for i in range(len(topics)):
+  # Create message
+  message = Float64()
+  message.data = values[i]
+
+  # Publish message
+  publisers[i].publish(message)
+  print("Publishing on "+topics[i])
+
+  # Sleep to maintain publishing rate
+  rate.sleep()
+
+# Shutdown the node (optional)
+rospy.signal_shutdown("Done publishing")
