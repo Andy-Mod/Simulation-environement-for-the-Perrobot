@@ -3,7 +3,7 @@
 import numpy as np
 from numpy import arccos, arcsin, pi, cos, sin
 
-def angles_for_height(h, L, cut=10, Rpose='x'):
+def angles_for_height(h, L, cut=100, Rpose='x'):
     path = np.linspace(0, h, cut)
     Values = [[pi/2, pi, pi/2, pi, -pi/2, -pi, -pi/2, -pi]]
     
@@ -42,7 +42,7 @@ def generate_sequences(a1, a2, n):
     
     return [(1 - t) * a1 + t * a2 for t in np.linspace(0, 1, n + 1)]
 
-def from_x_to_nx(h, L, cut=10):
+def from_x_to_nx(h, L, cut=100):
     x = np.array(hight_to_angles(h, L, 'x'))
     nx = np.array(hight_to_angles(h, L, 'nx'))
     

@@ -2,13 +2,13 @@
 
 import rospy
 from std_msgs.msg import Float64
-from robot_utils import angles_for_hight
+from robot_utils import from_x_to_nx
 
 RATE = 10
 INIT_HEIGHT = 0.27
 HALF_LEG_LENGTH = 0.16
 
-Values = angles_for_hight(INIT_HEIGHT, HALF_LEG_LENGTH, Rpose='x')
+Values = from_x_to_nx(INIT_HEIGHT, HALF_LEG_LENGTH, 100)
 print(Values)
 
 topics = [
