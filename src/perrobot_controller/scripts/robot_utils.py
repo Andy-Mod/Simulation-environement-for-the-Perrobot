@@ -6,7 +6,7 @@ from numpy import arccos, arcsin, pi, cos, sin
 class RobotUtils:
 
     @staticmethod
-    def angles_for_height(h, L, cut=100, Rpose='x'):
+    def angles_for_height(h, L, cut=20, Rpose='x'):
         path = np.linspace(0, h, cut)
         Values = [[pi/2, pi, pi/2, pi, -pi/2, -pi, -pi/2, -pi]]
         
@@ -36,6 +36,12 @@ class RobotUtils:
             values = None
             
         return (a, b) if s else values
+    
+    @staticmethod
+    def init_pose():
+        alpha, beta = pi/2, pi
+        
+        return [alpha, beta, alpha, beta, -alpha, -beta, -alpha, -beta]
 
     @staticmethod
     def angles_to_height(alpha, L):
@@ -49,7 +55,7 @@ class RobotUtils:
         return [(1 - t) * a1 + t * a2 for t in np.linspace(0, 1, n + 1)]
 
     @staticmethod
-    def from_x_to_nx(h, L, cut=100):
+    def from_x_to_nx(h, L, cut=20):
         x = np.array(RobotUtils.hight_to_angles(h, L, 'x'))
         nx = np.array(RobotUtils.hight_to_angles(h, L, 'nx'))
         
