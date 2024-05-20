@@ -4,6 +4,7 @@ import numpy as np
 from numpy import arccos, arcsin, pi, cos, sin
 
 class RobotUtils:
+    HALF_LEG_LENGTH = 0.16
 
     @staticmethod
     def init_pose():

@@ -2,16 +2,11 @@
 
 import rospy
 from std_msgs.msg import Float64
-from robot_utils import RobotUtils
 
 class RobotController:
     RATE = 10
 
-    def __init__(self, init_height, half_leg_length, rpose='x', cut=20):
-        self.init_height = init_height
-        self.half_leg_length = half_leg_length
-        self.rpose = rpose
-        self.cut = cut
+    def __init__(self, values):
 
         self.topics = [
             "/perrobot_controller/FL_HFE_joint/command",
@@ -24,11 +19,8 @@ class RobotController:
             "/perrobot_controller/HL_KFE_joint/command"
         ]
         
-        if self.rpose == 'init':
-            self.values = [RobotUtils.init_pose()]
-        else:
-            self.values = RobotUtils.angles_for_height(self.init_height, self.half_leg_length, self.cut, self.rpose)
-
+        self.values = values
+        
     def publishing_init_joint_poses(self):
         rospy.init_node('init_joint_command_publisher')
 
