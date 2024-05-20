@@ -9,5 +9,6 @@
         "/opt/ros/noetic/lib/python3/dist-packages",
         "/usr/bin/python3/dist-packages",
         "/usr/bin/python3/dist-packages"
-    ]
+    ],
+    "python.REPL.enableREPLSmartSend": false
 }

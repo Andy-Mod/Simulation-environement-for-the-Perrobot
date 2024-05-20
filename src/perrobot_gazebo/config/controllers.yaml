@@ -8,47 +8,39 @@ perrobot_controller:
     type: effort_controllers/JointPositionController
     joint: FL_HFE
     pid: {p: 9, i: 0.03, d: 0.3055, i_clamp_min:  -1000, i_clamp_max: 1000}
-    initial_position: 0.68
 
   FR_HFE_joint:
     type: effort_controllers/JointPositionController
     joint: FR_HFE
     pid: {p: 9, i: 0.03, d: 0.3055, i_clamp_min:  -1000, i_clamp_max: 1000}
-    initial_position: 0.68
 
   HL_HFE_joint:
     type: effort_controllers/JointPositionController
     joint: HL_HFE
     pid: {p: 9, i: 0.03, d: 0.3055, i_clamp_min:  -1000, i_clamp_max: 1000}
-    initial_position: -0.68
 
   HR_HFE_joint:
     type: effort_controllers/JointPositionController
     joint: HR_HFE
     pid: {p: 9, i: 0.03, d: 0.3055, i_clamp_min:  -1000, i_clamp_max: 1000}
-    initial_position: -0.68
 
   FL_KFE_joint:
     type: effort_controllers/JointPositionController
     joint: FL_KFE
     pid: {p: 9, i: 0.03, d: 0.3055, i_clamp_min:  -1000, i_clamp_max: 1000}
-    initial_position: -1.35
 
   FR_KFE_joint:
     type: effort_controllers/JointPositionController
     joint: FR_KFE
     pid: {p: 9, i: 0.03, d: 0.3055, i_clamp_min:  -1000, i_clamp_max: 1000}
-    initial_position: -1.35
 
   HL_KFE_joint:
     type: effort_controllers/JointPositionController
     joint: HL_KFE
     pid: {p: 9, i: 0.03, d: 0.3055, i_clamp_min:  -1000, i_clamp_max: 1000}
-    initial_position: 1.35
 
   HR_KFE_joint:
     type: effort_controllers/JointPositionController
     joint: HR_KFE
     pid: {p: 9, i: 0.03, d: 0.3055, i_clamp_min:  -1000, i_clamp_max: 1000}
-    initial_position: 1.35
 

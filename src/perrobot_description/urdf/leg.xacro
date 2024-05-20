@@ -18,6 +18,7 @@
 
   <xacro:property name="KFE_2_FOOT_y" value="${9.0 * 0.001}" />
   <xacro:property name="KFE_2_FOOT_z" value="${160.00 * 0.001}" />
+  <xacro:property name="effort_limit" value="1.4" />
 
   <!-- Macro defining solo leg. -->
   <xacro:macro name="leg" params="prefix is_front is_right has_side_motion
@@ -27,7 +28,7 @@
       <joint name="${prefix}_HAA" type="revolute">
         <parent link="base_link"/>
         <child link="${prefix}_SHOULDER"/>
-        <limit effort="1000" lower="-10" upper="10" velocity="1000"/>
+        <limit effort="${effort_limit}" lower="-10" upper="10" velocity="1000"/>
         <!-- joints rotates around the x-axis -->
         <axis xyz="1 0 0"/>
         <!-- placement of the joint -->
@@ -158,7 +159,7 @@
       <joint name="${prefix}_HFE" type="revolute">
         <parent link="${prefix}_SHOULDER"/>
         <child link="${prefix}_UPPER_LEG"/>
-        <limit effort="1000" lower="-10" upper="10" velocity="1000"/>
+        <limit effort="${effort_limit}" lower="-10" upper="10" velocity="1000"/>
         <!-- joints rotates around the y-axis -->
         <axis xyz="0 1 0"/>
         <!-- placement of the joint -->
@@ -187,7 +188,7 @@
       <joint name="${prefix}_HFE" type="revolute">
         <parent link="base_link"/>
         <child link="${prefix}_UPPER_LEG"/>
-        <limit effort="1000" lower="-10" upper="10" velocity="1000"/>
+        <limit effort="${effort_limit}" lower="-10" upper="10" velocity="1000"/>
         <!-- joints rotates around the y-axis -->
         <axis xyz="0 1 0"/>
         <!-- placement of the joint -->
@@ -275,7 +276,7 @@
     <joint name="${prefix}_KFE" type="revolute">
       <parent link="${prefix}_UPPER_LEG"/>
       <child link="${prefix}_LOWER_LEG"/>
-      <limit effort="1000" lower="-10" upper="10" velocity="1000"/>
+      <limit effort="${effort_limit}" lower="-10" upper="10" velocity="1000"/>
       <!-- joints rotates around the y-axis -->
       <axis xyz="0 1 0"/>
       <!-- placement of the joint -->
@@ -372,7 +373,7 @@
         <origin xyz="0 ${-KFE_2_FOOT_y} ${-KFE_2_FOOT_z}" rpy="0 0 0" />
       </xacro:if>
       <!-- Limits -->
-      <limit effort="1000" lower="-10" upper="10" velocity="1000"/>
+      <limit effort="${effort_limit}" lower="-10" upper="10" velocity="1000"/>
       <!-- pybullet simulation parameters -->
       <dynamics damping="0.0" friction="0.0"/>
     </joint>

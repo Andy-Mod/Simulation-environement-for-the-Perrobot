@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="10.0"?>
 
 <robot xmlns:xacro="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface" name="perrobot">
   <gazebo>
@@ -104,39 +104,224 @@
             <mechanicalReduction>5</mechanicalReduction>
         </actuator>
     </transmission>
+    
 
-  <gazebo reference="FL_KFE">
-    <mu1>1.0</mu1>
-    <mu2>1.0</mu2>
-    <minDepth>0.0002</minDepth>
-    <kp  value="1000000.0"/>
-    <kd  value="100.0"/>
-  </gazebo>
+   <gazebo reference="base_link">
+        <collision>
+            <surface>
+                <friction>
+                    <ode>
+                        <mu>1.0</mu> 
+                        <mu2>1.0</mu2> 
+                    </ode>
+                </friction>
+                <bounce>
+                    <restitution_coefficient>0.0</restitution_coefficient>
+                    <threshold>0.01</threshold> 
+                </bounce>
+                <contact>
+                    <ode>
+                        <kp>1e5</kp> 
+                        <max_vel>0.01</max_vel> 
+                        <min_depth>0.001</min_depth>
+                    </ode>
+                </contact>
+            </surface>
+        </collision>
+    </gazebo>
 
-  <gazebo reference="HL_KFE">
-    <mu1>1.0</mu1>
-    <mu2>1.0</mu2>
-    <minDepth>0.0002</minDepth>
-    <kp  value="1000000.0"/>
-    <kd  value="100.0"/>
-  </gazebo>
 
-  <gazebo reference="FR_KFE">
-    <mu1>1.0</mu1>
-    <mu2>1.0</mu2>
-    <minDepth>0.0002</minDepth>
-    <kp  value="1000000.0"/>
-    <kd  value="100.0"/>
-  </gazebo>
+    <gazebo reference="FL_UPPER_LEG">
+        <collision>
+            <surface>
+                <friction>
+                    <ode>
+                        <mu>1.0</mu> 
+                        <mu2>1.0</mu2> 
+                    </ode>
+                </friction>
+                <bounce>
+                    <restitution_coefficient>0.0</restitution_coefficient>
+                    <threshold>0.01</threshold> 
+                </bounce>
+                <contact>
+                    <ode>
+                        <kp>1e5</kp> 
+                        <max_vel>0.01</max_vel> 
+                        <min_depth>0.001</min_depth>
+                    </ode>
+                </contact>
+            </surface>
+        </collision>
+    </gazebo>
 
-  <gazebo reference="HR_KFE">
-    <mu1>1.0</mu1>
-    <mu2>1.0</mu2>
-    <minDepth>0.0002</minDepth>
-    <kp  value="1000000.0"/>
-    <kd  value="100.0"/>
-  </gazebo>
+    <gazebo reference="FL_LOWER_LEG">
+        <collision>
+            <surface>
+                <friction>
+                    <ode>
+                        <mu>1.0</mu> 
+                        <mu2>1.0</mu2> 
+                    </ode>
+                </friction>
+                <bounce>
+                    <restitution_coefficient>0.0</restitution_coefficient>
+                    <threshold>0.01</threshold> 
+                </bounce>
+                <contact>
+                    <ode>
+                        <kp>1e5</kp> 
+                        <max_vel>0.01</max_vel> 
+                        <min_depth>0.001</min_depth>
+                    </ode>
+                </contact>
+            </surface>
+        </collision>
+    </gazebo>
 
+    <gazebo reference="FR_UPPER_LEG">
+        <collision>
+            <surface>
+                <friction>
+                    <ode>
+                        <mu>1.0</mu> 
+                        <mu2>1.0</mu2> 
+                    </ode>
+                </friction>
+                <bounce>
+                    <restitution_coefficient>0.0</restitution_coefficient>
+                    <threshold>0.01</threshold> 
+                </bounce>
+                <contact>
+                    <ode>
+                        <kp>1e5</kp> 
+                        <max_vel>0.01</max_vel> 
+                        <min_depth>0.001</min_depth>
+                    </ode>
+                </contact>
+            </surface>
+        </collision>
+    </gazebo>
+
+    <gazebo reference="FR_LOWER_LEG">
+        <collision>
+            <surface>
+                <friction>
+                    <ode>
+                        <mu>1.0</mu> 
+                        <mu2>1.0</mu2> 
+                    </ode>
+                </friction>
+                <bounce>
+                    <restitution_coefficient>0.0</restitution_coefficient>
+                    <threshold>0.01</threshold> 
+                </bounce>
+                <contact>
+                    <ode>
+                        <kp>1e5</kp> 
+                        <max_vel>0.01</max_vel> 
+                        <min_depth>0.001</min_depth>
+                    </ode>
+                </contact>
+            </surface>
+        </collision>
+    </gazebo>
+
+    <gazebo reference="HL_UPPER_LEG">
+        <collision>
+            <surface>
+                <friction>
+                    <ode>
+                        <mu>1.0</mu> 
+                        <mu2>1.0</mu2> 
+                    </ode>
+                </friction>
+                <bounce>
+                    <restitution_coefficient>0.0</restitution_coefficient>
+                    <threshold>0.01</threshold> 
+                </bounce>
+                <contact>
+                    <ode>
+                        <kp>1e5</kp> 
+                        <max_vel>0.01</max_vel> 
+                        <min_depth>0.001</min_depth>
+                    </ode>
+                </contact>
+            </surface>
+        </collision>
+    </gazebo>
+
+    <gazebo reference="HL_LOWER_LEG">
+        <collision>
+            <surface>
+                <friction>
+                    <ode>
+                        <mu>1.0</mu> 
+                        <mu2>1.0</mu2> 
+                    </ode>
+                </friction>
+                <bounce>
+                    <restitution_coefficient>0.0</restitution_coefficient>
+                    <threshold>0.01</threshold> 
+                </bounce>
+                <contact>
+                    <ode>
+                        <kp>1e5</kp> 
+                        <max_vel>0.01</max_vel> 
+                        <min_depth>0.001</min_depth>
+                    </ode>
+                </contact>
+            </surface>
+        </collision>
+    </gazebo>
+
+<gazebo reference="HR_UPPER_LEG">
+        <collision>
+            <surface>
+                <friction>
+                    <ode>
+                        <mu>1.0</mu> 
+                        <mu2>1.0</mu2> 
+                    </ode>
+                </friction>
+                <bounce>
+                    <restitution_coefficient>0.0</restitution_coefficient>
+                    <threshold>0.01</threshold> 
+                </bounce>
+                <contact>
+                    <ode>
+                        <kp>1e5</kp> 
+                        <max_vel>0.01</max_vel> 
+                        <min_depth>0.001</min_depth>
+                    </ode>
+                </contact>
+            </surface>
+        </collision>
+    </gazebo>
+
+    <gazebo reference="HR_LOWER_LEG">
+        <collision>
+            <surface>
+                <friction>
+                    <ode>
+                        <mu>1.0</mu> 
+                        <mu2>1.0</mu2> 
+                    </ode>
+                </friction>
+                <bounce>
+                    <restitution_coefficient>0.0</restitution_coefficient>
+                    <threshold>0.01</threshold> 
+                </bounce>
+                <contact>
+                    <ode>
+                        <kp>1e5</kp> 
+                        <max_vel>0.01</max_vel> 
+                        <min_depth>0.001</min_depth>
+                    </ode>
+                </contact>
+            </surface>
+        </collision>
+    </gazebo>
 </robot>
 
 

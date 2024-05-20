@@ -7,12 +7,12 @@
     </include>
 
     <!-- RViz -->
-    <arg name="rviz_config_file" default="$(find perrobot_description)/config/robot.rviz"/>
-    <node pkg="rviz" type="rviz" name="rviz" args="-d $(arg rviz_config_file)"/>
+    <!-- <arg name="rviz_config_file" default="$(find perrobot_description)/config/robot.rviz"/>
+    <node pkg="rviz" type="rviz" name="rviz" args="-d $(arg rviz_config_file)"/> -->
 
     <!-- Robot -->
     <param name="robot_description" command="$(find xacro)/xacro $(find perrobot_description)/urdf/solo8.urdf.xacro"/>
-    <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -model perrobot"/>
+    <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -z 0.5 -model perrobot"/>
 
 
     <!-- Controllers -->
@@ -23,6 +23,7 @@
                 FL_KFE_joint FR_KFE_joint 
                 HL_KFE_joint HR_KFE_joint"/>
     
+    
      <!-- Joint State Publisher with GUI -->
     <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher"/>
 
@@ -31,5 +32,10 @@
       <remap from="/joint_states" to="/perrobot_controller/joint_states" />
       <param name="publish_frequency" type="double" value="10" />
     </node>
+
+    <!-- Init joint positions node starting with a 3.0s delay -->
+    <arg name="node_start_delay" default="3.0" />  
+    <node pkg="perrobot_controller" type="init_position.py"
+        name="init_joint_command_publisher" output="screen" launch-prefix="bash -c 'sleep $(arg node_start_delay); $0 $@' " /> 
 
 </launch>
