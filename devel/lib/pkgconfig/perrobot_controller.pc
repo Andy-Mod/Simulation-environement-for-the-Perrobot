@@ -1,8 +1,0 @@
-prefix=/home/perrobot/intership/perrobot/devel
-
-Name: perrobot_controller
-Description: Description of perrobot_controller
-Version: 0.0.0
-Cflags: 
-Libs: -L${prefix}/lib 
-Requires: 

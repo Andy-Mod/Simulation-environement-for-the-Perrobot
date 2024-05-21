@@ -5,6 +5,8 @@ from numpy import arccos, arcsin, pi, cos, sin
 
 class RobotUtils:
     HALF_LEG_LENGTH = 0.16
+    TARGET_HEIGHT = 0.23
+    UNIT_VALUE_FOR_A_STEP = pi/12
 
     @staticmethod
     def init_pose():
@@ -12,7 +14,7 @@ class RobotUtils:
         return [alpha, beta, alpha, beta, -alpha, -beta, -alpha, -beta]
 
     @staticmethod
-    def angles_for_height(h, L, cut=100, Rpose='x'):
+    def angles_for_height(h, L, cut=30, Rpose='x'):
         path = np.linspace(0, h, cut)
         Values = [RobotUtils.init_pose()]
 
@@ -55,26 +57,81 @@ class RobotUtils:
         return [(1 - t) * a1 + t * a2 for t in np.linspace(0, 1, n + 1)]
     
     @staticmethod
-    def from_init_to_pose(h, L, target_pose, cut=100):
+    def from_init_to_pose(h, L, target_pose, cut=30):
         init = np.array(RobotUtils.init_pose())
         target = np.array(RobotUtils.hight_to_angles(h, L, target_pose))
 
         return RobotUtils.generate_sequences(init, target, cut)
 
     @staticmethod
-    def from_pose_to_init(h, L, source_pose, cut=100):
+    def from_pose_to_init(h, L, source_pose, cut=30):
         source = np.array(RobotUtils.hight_to_angles(h, L, source_pose))
         init = np.array(RobotUtils.init_pose())
 
         return RobotUtils.generate_sequences(source, init, cut)
-
+    
     @staticmethod
-    def transition_between_poses(h, L, source_pose, target_pose, cut=100):
+    def from_X_to_NX(h, L, cut=30):
+        source_pose = 'x'
+        target_pose = 'nx'
         source = np.array(RobotUtils.hight_to_angles(h, L, source_pose))
         target = np.array(RobotUtils.hight_to_angles(h, L, target_pose))
 
         return RobotUtils.generate_sequences(source, target, cut)
-
+    
+    @staticmethod
+    def from_NX_to_X(h, L, cut=30):
+        source_pose = 'nx'
+        target_pose = 'x'
+        source = np.array(RobotUtils.hight_to_angles(h, L, source_pose))
+        target = np.array(RobotUtils.hight_to_angles(h, L, target_pose))
+        
+        return RobotUtils.generate_sequences(source, target, cut)
+    
+    @staticmethod
+    def from_floor_to_X(h, L, cut=30):
+        X = np.array(RobotUtils.hight_to_angles(h, L, 'x'))
+        target_pose = X.copy() 
+        target_pose[0] = target_pose[0] - 3*pi/4
+        target_pose[2] = target_pose[2] - 3*pi/4
+        target_pose[4] = target_pose[4] + 3*pi/4
+        target_pose[6] = target_pose[6] + 3*pi/4
+        
+        return RobotUtils.generate_sequences(X, target_pose, cut)
+    
+    @staticmethod
+    def FL_HR_up_step(current_pose, cut=30):
+        current_pose_array = np.array(current_pose)
+        set_1_mid_step_target = current_pose_array.copy()
+        
+        set_1_mid_step_target[0] = set_1_mid_step_target[0] - RobotUtils.UNIT_VALUE_FOR_A_STEP
+        set_1_mid_step_target[1] = set_1_mid_step_target[1] - RobotUtils.UNIT_VALUE_FOR_A_STEP
+        set_1_mid_step_target[4] = set_1_mid_step_target[4] - RobotUtils.UNIT_VALUE_FOR_A_STEP   
+        set_1_mid_step_target[5] = set_1_mid_step_target[5] + RobotUtils.UNIT_VALUE_FOR_A_STEP   
+            
+        return list(RobotUtils.generate_sequences(current_pose_array, set_1_mid_step_target, cut))
+        
+    @staticmethod
+    def FL_HR_down_step_1(current_pose, cut=30):
+        current_pose_array = np.array(current_pose)
+        set_1_mid_step_target = current_pose_array.copy()
+        
+        set_1_mid_step_target[4] = set_1_mid_step_target[4] + RobotUtils.UNIT_VALUE_FOR_A_STEP   
+        set_1_mid_step_target[5] = set_1_mid_step_target[5] - RobotUtils.UNIT_VALUE_FOR_A_STEP   
+            
+        return list(RobotUtils.generate_sequences(current_pose_array, set_1_mid_step_target, cut))
+    
+    @staticmethod
+    def FL_HR_down_step_2(current_pose, cut=30):
+        current_pose_array = np.array(current_pose)
+        set_1_mid_step_target = current_pose_array.copy()
+        
+        set_1_mid_step_target[0] = set_1_mid_step_target[0] + RobotUtils.UNIT_VALUE_FOR_A_STEP
+        set_1_mid_step_target[1] = set_1_mid_step_target[1] + RobotUtils.UNIT_VALUE_FOR_A_STEP
+            
+        return list(RobotUtils.generate_sequences(current_pose_array, set_1_mid_step_target, cut))
+        
+    
     @staticmethod
     def rotx(alpha):
         c, s = cos(alpha), sin(alpha)

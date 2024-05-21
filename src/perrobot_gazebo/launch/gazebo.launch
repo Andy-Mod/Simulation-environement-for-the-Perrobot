@@ -12,7 +12,7 @@
 
     <!-- Robot -->
     <param name="robot_description" command="$(find xacro)/xacro $(find perrobot_description)/urdf/solo8.urdf.xacro"/>
-    <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -z 0.5 -model perrobot"/>
+    <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -model perrobot"/>
 
 
     <!-- Controllers -->
@@ -33,8 +33,8 @@
       <param name="publish_frequency" type="double" value="10" />
     </node>
 
-    <!-- Init joint positions node starting with a 3.0s delay -->
-    <arg name="node_start_delay" default="3.0" />  
+    <!-- Init joint positions node starting with a 5.0s delay -->
+    <arg name="node_start_delay" default="5.0" />  
     <node pkg="perrobot_controller" type="init_position.py"
         name="init_joint_command_publisher" output="screen" launch-prefix="bash -c 'sleep $(arg node_start_delay); $0 $@' " /> 
 

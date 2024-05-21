@@ -6,7 +6,7 @@ import rospy
 
 
 if __name__ == '__main__':
-    values = RobotUtils.angles_for_height(RobotUtils.TARGET_HEIGHT, RobotUtils.HALF_LEG_LENGTH, Rpose='nx')
+    values = RobotUtils.from_X_to_NX(RobotUtils.TARGET_HEIGHT, RobotUtils.HALF_LEG_LENGTH)
     controller = RobotController(values)
     
     controller.publishing_init_joint_poses()

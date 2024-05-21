@@ -1,2 +1,0 @@
-perrobot:perrobot_controller:perrobot_description:perrobot_gazebo:perrobot_joystick
--DCATKIN_DEVEL_PREFIX=/home/perrobot/intership/perrobot/devel -DCMAKE_INSTALL_PREFIX=/home/perrobot/intership/perrobot/install -G Unix Makefiles
