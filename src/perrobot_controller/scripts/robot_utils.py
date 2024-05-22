@@ -6,15 +6,22 @@ from numpy import arccos, arcsin, pi, cos, sin
 class RobotUtils:
     HALF_LEG_LENGTH = 0.16
     TARGET_HEIGHT = 0.23
-    UNIT_VALUE_FOR_A_STEP = pi/12
+    UNIT_VALUE_FOR_A_STEP_F = pi/24
+    UNIT_VALUE_FOR_A_STEP_B = pi/10
+    SET_1 = [0, 1, 4, 5]
+    SET_2 = [2, 3, 6, 7]
+    FAST = 1
+    SLOW = 2
 
     @staticmethod
-    def init_pose():
+    def init_pose(cut=10):
+        current_pose = RobotUtils.hight_to_angles(RobotUtils.TARGET_HEIGHT, RobotUtils.HALF_LEG_LENGTH, Rpose='x')
         alpha, beta = pi/2, pi
-        return [alpha, beta, alpha, beta, -alpha, -beta, -alpha, -beta]
+        goal = [alpha, beta, alpha, beta, -alpha, -beta, -alpha, -beta]
+        return RobotUtils.generate_sequences(current_pose, goal, cut)
 
     @staticmethod
-    def angles_for_height(h, L, cut=30, Rpose='x'):
+    def angles_for_height(h, L, cut=10, Rpose='x'):
         path = np.linspace(0, h, cut)
         Values = [RobotUtils.init_pose()]
 
@@ -57,21 +64,21 @@ class RobotUtils:
         return [(1 - t) * a1 + t * a2 for t in np.linspace(0, 1, n + 1)]
     
     @staticmethod
-    def from_init_to_pose(h, L, target_pose, cut=30):
+    def from_init_to_pose(h, L, target_pose, cut=10):
         init = np.array(RobotUtils.init_pose())
         target = np.array(RobotUtils.hight_to_angles(h, L, target_pose))
 
         return RobotUtils.generate_sequences(init, target, cut)
 
     @staticmethod
-    def from_pose_to_init(h, L, source_pose, cut=30):
+    def from_pose_to_init(h, L, source_pose, cut=10):
         source = np.array(RobotUtils.hight_to_angles(h, L, source_pose))
         init = np.array(RobotUtils.init_pose())
 
         return RobotUtils.generate_sequences(source, init, cut)
     
     @staticmethod
-    def from_X_to_NX(h, L, cut=30):
+    def from_X_to_NX(h, L, cut=10):
         source_pose = 'x'
         target_pose = 'nx'
         source = np.array(RobotUtils.hight_to_angles(h, L, source_pose))
@@ -80,7 +87,7 @@ class RobotUtils:
         return RobotUtils.generate_sequences(source, target, cut)
     
     @staticmethod
-    def from_NX_to_X(h, L, cut=30):
+    def from_NX_to_X(h, L, cut=10):
         source_pose = 'nx'
         target_pose = 'x'
         source = np.array(RobotUtils.hight_to_angles(h, L, source_pose))
@@ -89,48 +96,81 @@ class RobotUtils:
         return RobotUtils.generate_sequences(source, target, cut)
     
     @staticmethod
-    def from_floor_to_X(h, L, cut=30):
-        X = np.array(RobotUtils.hight_to_angles(h, L, 'x'))
-        target_pose = X.copy() 
-        target_pose[0] = target_pose[0] - 3*pi/4
-        target_pose[2] = target_pose[2] - 3*pi/4
-        target_pose[4] = target_pose[4] + 3*pi/4
-        target_pose[6] = target_pose[6] + 3*pi/4
+    def one_step(current_pose, cut=10, foward=True):
+        current_pose_array = np.array(current_pose).copy()
+        set_1 = np.array(current_pose).copy()
+        set_2 = np.array(current_pose).copy()
         
-        return RobotUtils.generate_sequences(X, target_pose, cut)
+        
+        offsets = np.array([- RobotUtils.UNIT_VALUE_FOR_A_STEP_F,
+                   - RobotUtils.UNIT_VALUE_FOR_A_STEP_F, 
+                   - RobotUtils.UNIT_VALUE_FOR_A_STEP_F, 
+                     RobotUtils.UNIT_VALUE_FOR_A_STEP_F
+                ]) if foward else np.array([RobotUtils.UNIT_VALUE_FOR_A_STEP_B,
+                     RobotUtils.UNIT_VALUE_FOR_A_STEP_B, 
+                     RobotUtils.UNIT_VALUE_FOR_A_STEP_B, 
+                     RobotUtils.UNIT_VALUE_FOR_A_STEP_B
+                ])
+        
+        set_1[RobotUtils.SET_1] += offsets
+        set_2[RobotUtils.SET_2] += offsets
+          
+        first = RobotUtils.generate_sequences(current_pose, set_1, cut)
+        second = RobotUtils.generate_sequences(first[-1], current_pose, cut)
+        third = RobotUtils.generate_sequences(second[-1], set_2, cut)
+        last = RobotUtils.generate_sequences(third[-1], current_pose, cut)
+        
+        return first + second + third + last
     
     @staticmethod
-    def FL_HR_up_step(current_pose, cut=30):
-        current_pose_array = np.array(current_pose)
-        set_1_mid_step_target = current_pose_array.copy()
+    def walk_from_x(current_pose, number_of_steps=5, fast=False, foward=True):
+        steps = []
+        cut = RobotUtils.FAST if fast else RobotUtils.SLOW
+        cut = cut + 1 if foward and not fast else cut
         
-        set_1_mid_step_target[0] = set_1_mid_step_target[0] - RobotUtils.UNIT_VALUE_FOR_A_STEP
-        set_1_mid_step_target[1] = set_1_mid_step_target[1] - RobotUtils.UNIT_VALUE_FOR_A_STEP
-        set_1_mid_step_target[4] = set_1_mid_step_target[4] - RobotUtils.UNIT_VALUE_FOR_A_STEP   
-        set_1_mid_step_target[5] = set_1_mid_step_target[5] + RobotUtils.UNIT_VALUE_FOR_A_STEP   
-            
-        return list(RobotUtils.generate_sequences(current_pose_array, set_1_mid_step_target, cut))
+        RobotUtils.UNIT_VALUE_FOR_A_STEP_B = pi/12 if not fast and not foward else RobotUtils.UNIT_VALUE_FOR_A_STEP_B
         
-    @staticmethod
-    def FL_HR_down_step_1(current_pose, cut=30):
-        current_pose_array = np.array(current_pose)
-        set_1_mid_step_target = current_pose_array.copy()
+        for _ in range(number_of_steps):
+            steps += RobotUtils.one_step(current_pose, cut, foward)
         
-        set_1_mid_step_target[4] = set_1_mid_step_target[4] + RobotUtils.UNIT_VALUE_FOR_A_STEP   
-        set_1_mid_step_target[5] = set_1_mid_step_target[5] - RobotUtils.UNIT_VALUE_FOR_A_STEP   
-            
-        return list(RobotUtils.generate_sequences(current_pose_array, set_1_mid_step_target, cut))
+        return steps
     
     @staticmethod
-    def FL_HR_down_step_2(current_pose, cut=30):
-        current_pose_array = np.array(current_pose)
-        set_1_mid_step_target = current_pose_array.copy()
+    def from_x_to_cc(current_pose, cut=10):
+        goal = np.array(current_pose).copy()
+        goal[4::] += -np.array(RobotUtils.init_pose())[4::]
+
+        return RobotUtils.generate_sequences(current_pose, goal, cut)
+    
+    @staticmethod
+    def sit_from_x(current_pose, cut=10):
+        goal = np.array(current_pose).copy()
+        goal[4::] += (-np.array(RobotUtils.init_pose())[4::]/4)
+
+        return RobotUtils.generate_sequences(current_pose, goal, cut)
+    
+    @staticmethod
+    def stand_from_sit(current_pose, cut=10):
+        goal = np.array(current_pose).copy()
+        goal[4::] += (np.array(RobotUtils.init_pose())[4::]/4)
+
+        return RobotUtils.generate_sequences(current_pose, goal, cut)
+    
+    @staticmethod
+    def four_pose_sequence(cut=10):
+        steps = []
+        x = RobotUtils.hight_to_angles(RobotUtils.TARGET_HEIGHT, RobotUtils.HALF_LEG_LENGTH, Rpose='x')
+        nx = RobotUtils.hight_to_angles(RobotUtils.TARGET_HEIGHT, RobotUtils.HALF_LEG_LENGTH, Rpose='nx')
+        cc = RobotUtils.hight_to_angles(RobotUtils.TARGET_HEIGHT, RobotUtils.HALF_LEG_LENGTH, Rpose='cc')
+        ncc = RobotUtils.hight_to_angles(RobotUtils.TARGET_HEIGHT, RobotUtils.HALF_LEG_LENGTH, Rpose='ncc')
         
-        set_1_mid_step_target[0] = set_1_mid_step_target[0] + RobotUtils.UNIT_VALUE_FOR_A_STEP
-        set_1_mid_step_target[1] = set_1_mid_step_target[1] + RobotUtils.UNIT_VALUE_FOR_A_STEP
-            
-        return list(RobotUtils.generate_sequences(current_pose_array, set_1_mid_step_target, cut))
+        first = RobotUtils.generate_sequences(x, ncc, cut)
+        second = RobotUtils.generate_sequences(first[-1], nx, cut)
+        third = RobotUtils.generate_sequences(second[-1], cc, cut)
+        quad = RobotUtils.generate_sequences(third[-1], x, cut)
         
+        
+        return first + second + third + quad 
     
     @staticmethod
     def rotx(alpha):

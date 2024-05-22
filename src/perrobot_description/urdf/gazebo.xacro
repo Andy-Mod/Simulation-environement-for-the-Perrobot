@@ -107,6 +107,12 @@
     
 
    <gazebo reference="base_link">
+
+        <visual>
+            <material name="Black">
+                <color rgba="1.0 1.0 1.0 1.0"/>
+            </material>
+        </visual>
         <collision>
             <surface>
                 <friction>
@@ -122,8 +128,8 @@
                 <contact>
                     <ode>
                         <kp>1e5</kp> 
-                        <max_vel>0.01</max_vel> 
-                        <min_depth>0.001</min_depth>
+                        <max_vel>0.1</max_vel> 
+                        <min_depth>0.002</min_depth>
                     </ode>
                 </contact>
             </surface>
@@ -132,6 +138,11 @@
 
 
     <gazebo reference="FL_UPPER_LEG">
+            <visual>
+            <material name="Black">
+                <color rgba="1.0 1.0 1.0 1.0"/>
+            </material>
+        </visual>
         <collision>
             <surface>
                 <friction>
@@ -147,8 +158,8 @@
                 <contact>
                     <ode>
                         <kp>1e5</kp> 
-                        <max_vel>0.01</max_vel> 
-                        <min_depth>0.001</min_depth>
+                        <max_vel>0.1</max_vel> 
+                        <min_depth>0.002</min_depth>
                     </ode>
                 </contact>
             </surface>
@@ -156,6 +167,11 @@
     </gazebo>
 
     <gazebo reference="FL_LOWER_LEG">
+            <visual>
+            <material name="Black">
+                <color rgba="1.0 1.0 1.0 1.0"/>
+            </material>
+        </visual>
         <collision>
             <surface>
                 <friction>
@@ -171,8 +187,8 @@
                 <contact>
                     <ode>
                         <kp>1e5</kp> 
-                        <max_vel>0.01</max_vel> 
-                        <min_depth>0.001</min_depth>
+                        <max_vel>0.1</max_vel> 
+                        <min_depth>0.002</min_depth>
                     </ode>
                 </contact>
             </surface>
@@ -180,6 +196,11 @@
     </gazebo>
 
     <gazebo reference="FR_UPPER_LEG">
+            <visual>
+            <material name="Black">
+                <color rgba="1.0 1.0 1.0 1.0"/>
+            </material>
+        </visual>
         <collision>
             <surface>
                 <friction>
@@ -195,8 +216,8 @@
                 <contact>
                     <ode>
                         <kp>1e5</kp> 
-                        <max_vel>0.01</max_vel> 
-                        <min_depth>0.001</min_depth>
+                        <max_vel>0.1</max_vel> 
+                        <min_depth>0.002</min_depth>
                     </ode>
                 </contact>
             </surface>
@@ -204,6 +225,11 @@
     </gazebo>
 
     <gazebo reference="FR_LOWER_LEG">
+            <visual>
+            <material name="Black">
+                <color rgba="1.0 1.0 1.0 1.0"/>
+            </material>
+        </visual>
         <collision>
             <surface>
                 <friction>
@@ -219,8 +245,8 @@
                 <contact>
                     <ode>
                         <kp>1e5</kp> 
-                        <max_vel>0.01</max_vel> 
-                        <min_depth>0.001</min_depth>
+                        <max_vel>0.1</max_vel> 
+                        <min_depth>0.002</min_depth>
                     </ode>
                 </contact>
             </surface>
@@ -228,6 +254,11 @@
     </gazebo>
 
     <gazebo reference="HL_UPPER_LEG">
+            <visual>
+            <material name="Black">
+                <color rgba="1.0 1.0 1.0 1.0"/>
+            </material>
+        </visual>
         <collision>
             <surface>
                 <friction>
@@ -243,8 +274,8 @@
                 <contact>
                     <ode>
                         <kp>1e5</kp> 
-                        <max_vel>0.01</max_vel> 
-                        <min_depth>0.001</min_depth>
+                        <max_vel>0.1</max_vel> 
+                        <min_depth>0.002</min_depth>
                     </ode>
                 </contact>
             </surface>
@@ -252,6 +283,11 @@
     </gazebo>
 
     <gazebo reference="HL_LOWER_LEG">
+            <visual>
+            <material name="Black">
+                <color rgba="1.0 1.0 1.0 1.0"/>
+            </material>
+        </visual>
         <collision>
             <surface>
                 <friction>
@@ -267,8 +303,8 @@
                 <contact>
                     <ode>
                         <kp>1e5</kp> 
-                        <max_vel>0.01</max_vel> 
-                        <min_depth>0.001</min_depth>
+                        <max_vel>0.1</max_vel> 
+                        <min_depth>0.002</min_depth>
                     </ode>
                 </contact>
             </surface>
@@ -276,6 +312,11 @@
     </gazebo>
 
 <gazebo reference="HR_UPPER_LEG">
+        <visual>
+            <material name="Black">
+                <color rgba="1.0 1.0 1.0 1.0"/>
+            </material>
+        </visual>
         <collision>
             <surface>
                 <friction>
@@ -291,8 +332,8 @@
                 <contact>
                     <ode>
                         <kp>1e5</kp> 
-                        <max_vel>0.01</max_vel> 
-                        <min_depth>0.001</min_depth>
+                        <max_vel>0.1</max_vel> 
+                        <min_depth>0.002</min_depth>
                     </ode>
                 </contact>
             </surface>
@@ -300,6 +341,11 @@
     </gazebo>
 
     <gazebo reference="HR_LOWER_LEG">
+            <visual>
+            <material name="Black">
+                <color rgba="1.0 1.0 1.0 1.0"/>
+            </material>
+        </visual>
         <collision>
             <surface>
                 <friction>
@@ -315,13 +361,36 @@
                 <contact>
                     <ode>
                         <kp>1e5</kp> 
-                        <max_vel>0.01</max_vel> 
-                        <min_depth>0.001</min_depth>
+                        <max_vel>0.1</max_vel> 
+                        <min_depth>0.002</min_depth>
                     </ode>
                 </contact>
             </surface>
         </collision>
     </gazebo>
+
+    <!-- IMU sensor to get body location -->
+    <gazebo reference="base_link">
+    <gravity>true</gravity>
+    <sensor name="imu_sensor" type="imu">
+      <always_on>true</always_on>
+      <update_rate>100</update_rate>
+      <visualize>true</visualize>
+      <topic>__default_topic__</topic>
+      <plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
+        <topicName>notspot_imu/base_link_orientation</topicName>
+        <bodyName>imu_link</bodyName>
+        <updateRateHZ>15.0</updateRateHZ>
+        <gaussianNoise>0.0</gaussianNoise>
+        <xyzOffset>0 0 0</xyzOffset>
+        <rpyOffset>0 0 0</rpyOffset>
+        <frameName>base_link</frameName>
+        <initialOrientationAsReference>false</initialOrientationAsReference>
+      </plugin>
+      <pose>0 0 0 0 0 0</pose>
+    </sensor>
+  </gazebo>
+
 </robot>
 
 

@@ -5,8 +5,9 @@ from robot_utils import RobotUtils
 import rospy
 
 
+
 if __name__ == '__main__':
-    values = RobotUtils.from_NX_to_X(RobotUtils.TARGET_HEIGHT, RobotUtils.HALF_LEG_LENGTH)
+    values = RobotUtils.four_pose_sequence(cut=20)
     controller = RobotController(values)
     
     controller.publishing_init_joint_poses()
