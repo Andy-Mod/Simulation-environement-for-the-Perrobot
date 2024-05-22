@@ -1,11 +1,11 @@
 #!/bin/python3
 
 import numpy as np
-from numpy import arccos, arcsin, pi, cos, sin
+from numpy import arccos, arcsin, pi, cos, shape, sin
 
 class RobotUtils:
     HALF_LEG_LENGTH = 0.16
-    TARGET_HEIGHT = 0.23
+    TARGET_HEIGHT = 0.25
     UNIT_VALUE_FOR_A_STEP_F = pi/24
     UNIT_VALUE_FOR_A_STEP_B = pi/10
     SET_1 = [0, 1, 4, 5]
@@ -37,7 +37,7 @@ class RobotUtils:
         gamma = arcsin(arg)
         beta = gamma - alpha - pi / 2
 
-        a, b = round(alpha, 2), round(beta, 2)
+        a, b = alpha, beta
 
         if Rpose == 'x':
             values = [a, b, a, b, -a, -b, -a, -b]
@@ -145,14 +145,15 @@ class RobotUtils:
     @staticmethod
     def sit_from_x(current_pose, cut=10):
         goal = np.array(current_pose).copy()
-        goal[4::] += (-np.array(RobotUtils.init_pose())[4::]/4)
+        print(shape(goal))
+        goal[4::] += (-np.array(RobotUtils.init_pose()[-1])[4::]/4)
 
         return RobotUtils.generate_sequences(current_pose, goal, cut)
     
     @staticmethod
     def stand_from_sit(current_pose, cut=10):
         goal = np.array(current_pose).copy()
-        goal[4::] += (np.array(RobotUtils.init_pose())[4::]/4)
+        goal[4::] += (np.array(RobotUtils.init_pose()[-1])[4::]/4)
 
         return RobotUtils.generate_sequences(current_pose, goal, cut)
     
