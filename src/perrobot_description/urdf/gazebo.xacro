@@ -107,12 +107,6 @@
     
 
    <gazebo reference="base_link">
-
-        <visual>
-            <material name="Black">
-                <color rgba="1.0 1.0 1.0 1.0"/>
-            </material>
-        </visual>
         <collision>
             <surface>
                 <friction>
@@ -138,11 +132,7 @@
 
 
     <gazebo reference="FL_UPPER_LEG">
-            <visual>
-            <material name="Black">
-                <color rgba="1.0 1.0 1.0 1.0"/>
-            </material>
-        </visual>
+            
         <collision>
             <surface>
                 <friction>
@@ -167,11 +157,7 @@
     </gazebo>
 
     <gazebo reference="FL_LOWER_LEG">
-            <visual>
-            <material name="Black">
-                <color rgba="1.0 1.0 1.0 1.0"/>
-            </material>
-        </visual>
+            
         <collision>
             <surface>
                 <friction>
@@ -196,11 +182,7 @@
     </gazebo>
 
     <gazebo reference="FR_UPPER_LEG">
-            <visual>
-            <material name="Black">
-                <color rgba="1.0 1.0 1.0 1.0"/>
-            </material>
-        </visual>
+            
         <collision>
             <surface>
                 <friction>
@@ -225,11 +207,7 @@
     </gazebo>
 
     <gazebo reference="FR_LOWER_LEG">
-            <visual>
-            <material name="Black">
-                <color rgba="1.0 1.0 1.0 1.0"/>
-            </material>
-        </visual>
+            
         <collision>
             <surface>
                 <friction>
@@ -254,11 +232,7 @@
     </gazebo>
 
     <gazebo reference="HL_UPPER_LEG">
-            <visual>
-            <material name="Black">
-                <color rgba="1.0 1.0 1.0 1.0"/>
-            </material>
-        </visual>
+            
         <collision>
             <surface>
                 <friction>
@@ -283,11 +257,7 @@
     </gazebo>
 
     <gazebo reference="HL_LOWER_LEG">
-            <visual>
-            <material name="Black">
-                <color rgba="1.0 1.0 1.0 1.0"/>
-            </material>
-        </visual>
+            
         <collision>
             <surface>
                 <friction>
@@ -312,11 +282,7 @@
     </gazebo>
 
 <gazebo reference="HR_UPPER_LEG">
-        <visual>
-            <material name="Black">
-                <color rgba="1.0 1.0 1.0 1.0"/>
-            </material>
-        </visual>
+        
         <collision>
             <surface>
                 <friction>
@@ -341,11 +307,7 @@
     </gazebo>
 
     <gazebo reference="HR_LOWER_LEG">
-            <visual>
-            <material name="Black">
-                <color rgba="1.0 1.0 1.0 1.0"/>
-            </material>
-        </visual>
+            
         <collision>
             <surface>
                 <friction>
@@ -378,7 +340,7 @@
       <visualize>true</visualize>
       <topic>__default_topic__</topic>
       <plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
-        <topicName>notspot_imu/base_link_orientation</topicName>
+        <topicName>perrobot/base_link_orientation</topicName>
         <bodyName>imu_link</bodyName>
         <updateRateHZ>15.0</updateRateHZ>
         <gaussianNoise>0.0</gaussianNoise>

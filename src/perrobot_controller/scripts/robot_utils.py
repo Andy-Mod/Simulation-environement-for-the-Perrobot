@@ -6,12 +6,12 @@ from numpy import arccos, arcsin, pi, cos, shape, sin
 class RobotUtils:
     HALF_LEG_LENGTH = 0.16
     TARGET_HEIGHT = 0.25
-    UNIT_VALUE_FOR_A_STEP_F = pi/24
+    UNIT_VALUE_FOR_A_STEP_F = pi/28
     UNIT_VALUE_FOR_A_STEP_B = pi/10
     SET_1 = [0, 1, 4, 5]
     SET_2 = [2, 3, 6, 7]
     FAST = 1
-    SLOW = 2
+    SLOW = 3
 
     @staticmethod
     def init_pose(cut=10):
@@ -43,10 +43,14 @@ class RobotUtils:
             values = [a, b, a, b, -a, -b, -a, -b]
         elif Rpose == 'nx':
             values = [-a, -b, -a, -b, a, b, a, b]
-        elif Rpose == 'cc':
-            values = [-a, -b, -a, -b, -a, -b, -a, -b]
         elif Rpose == 'ncc':
+            values = [-a, -b, -a, -b, -a, -b, -a, -b]
+        elif Rpose == 'cc':
             values = [a, b, a, b, a, b, a, b]
+        elif Rpose == 'rf':
+            values = [a, b, a, b, -a, -b, -a, -b]
+            goal = np.array([pi/2, -pi, pi/2, -pi, -pi/2, pi, -pi/2, pi])
+            values = np.array(values) + goal
         else:
             values = None
 
@@ -96,6 +100,18 @@ class RobotUtils:
         return RobotUtils.generate_sequences(source, target, cut)
     
     @staticmethod
+    def from_X_to_NX_and_back(h, L, cut=20):
+        source_pose = 'x'
+        target_pose = 'nx'
+        source = np.array(RobotUtils.hight_to_angles(h, L, source_pose))
+        target = np.array(RobotUtils.hight_to_angles(h, L, target_pose))
+
+        first = RobotUtils.generate_sequences(source, target, cut)
+        last = RobotUtils.generate_sequences(first[-1], source, cut)
+        
+        return first + last
+    
+    @staticmethod
     def one_step(current_pose, cut=10, foward=True):
         current_pose_array = np.array(current_pose).copy()
         set_1 = np.array(current_pose).copy()
@@ -136,6 +152,33 @@ class RobotUtils:
         return steps
     
     @staticmethod
+    def one_step_from_cc(current_pose, cut=10, foward=True):
+        current_pose_array = np.array(current_pose).copy()
+        set_1 = np.array(current_pose).copy()
+        set_2 = np.array(current_pose).copy()
+        
+        
+        offsets = np.array([-RobotUtils.UNIT_VALUE_FOR_A_STEP_F,
+                     -RobotUtils.UNIT_VALUE_FOR_A_STEP_F, 
+                     -RobotUtils.UNIT_VALUE_FOR_A_STEP_F, 
+                     -RobotUtils.UNIT_VALUE_FOR_A_STEP_F
+                ]) if foward else np.array([RobotUtils.UNIT_VALUE_FOR_A_STEP_B,
+                     RobotUtils.UNIT_VALUE_FOR_A_STEP_B, 
+                     RobotUtils.UNIT_VALUE_FOR_A_STEP_B, 
+                     RobotUtils.UNIT_VALUE_FOR_A_STEP_B
+                ])
+        
+        set_1[RobotUtils.SET_1] += offsets
+        set_2[RobotUtils.SET_2] += offsets
+          
+        first = RobotUtils.generate_sequences(current_pose, set_1, cut)
+        second = RobotUtils.generate_sequences(first[-1], current_pose, cut)
+        third = RobotUtils.generate_sequences(second[-1], set_2, cut)
+        last = RobotUtils.generate_sequences(third[-1], current_pose, cut)
+        
+        return first + second + third + last
+    
+    @staticmethod
     def from_x_to_cc(current_pose, cut=10):
         goal = np.array(current_pose).copy()
         goal[4::] += -np.array(RobotUtils.init_pose())[4::]
@@ -172,6 +215,24 @@ class RobotUtils:
         
         
         return first + second + third + quad 
+    
+    @staticmethod
+    def fall_recovery(cut=10):
+        current_pose =  RobotUtils.hight_to_angles(RobotUtils.TARGET_HEIGHT, RobotUtils.HALF_LEG_LENGTH, Rpose='x')
+        goal = np.array(current_pose).copy()
+        goal += np.array([pi/2, -pi, pi/2, -pi, -pi/2, pi, -pi/2, pi])
+
+        return RobotUtils.generate_sequences(current_pose, goal, cut)
+    
+    @staticmethod
+    def a_step_from_fall_recovery(number_of_steps=10, cut=10):
+        steps = []
+        current_pose =  RobotUtils.hight_to_angles(RobotUtils.TARGET_HEIGHT, RobotUtils.HALF_LEG_LENGTH, Rpose='rf')
+        
+        for _ in range(number_of_steps):
+            steps += RobotUtils.one_step(current_pose, cut)
+            
+        return steps
     
     @staticmethod
     def rotx(alpha):

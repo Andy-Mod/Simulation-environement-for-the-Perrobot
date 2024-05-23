@@ -18,7 +18,7 @@
 
   <xacro:property name="KFE_2_FOOT_y" value="${9.0 * 0.001}" />
   <xacro:property name="KFE_2_FOOT_z" value="${160.00 * 0.001}" />
-  <xacro:property name="effort_limit" value="1.7" />
+  <xacro:property name="effort_limit" value="2.7" />
 
   <!-- Macro defining solo leg. -->
   <xacro:macro name="leg" params="prefix is_front is_right has_side_motion

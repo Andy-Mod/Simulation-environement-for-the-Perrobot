@@ -11,6 +11,8 @@
   <xacro:property name="mesh_ext" value="stl" />
 
  
+  
+  
 
   <!-- This file is based on: https://atlas.is.localnet/confluence/display/AMDW/Quadruped+URDF+Files -->
   <link name="base_link">
@@ -50,6 +52,7 @@
       <restitution value="0.5"/>
     </contact>
   </link> <!-- END BASE LINK -->
+  
 
   <!-- Include the legs -->
   <xacro:include filename="leg.xacro"/>
