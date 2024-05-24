@@ -1,0 +1,8 @@
+prefix=/home/perrobot/perrobot_12dof/devel
+
+Name: perrobot_12dof_teleopkey
+Description: Description of perrobot_12dof_teleopkey
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

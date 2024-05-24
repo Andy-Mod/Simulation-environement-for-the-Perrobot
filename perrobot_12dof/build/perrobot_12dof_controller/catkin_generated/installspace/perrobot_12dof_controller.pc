@@ -1,0 +1,8 @@
+prefix=/home/perrobot/perrobot_12dof/install
+
+Name: perrobot_12dof_controller
+Description: Description of perrobot_12dof_controller
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

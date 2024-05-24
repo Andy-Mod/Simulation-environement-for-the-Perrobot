@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<launch>
+    
+    <!-- Generate the robot_description parameter from xacro -->
+    <param name="robot_description" command="$(find xacro)/xacro $(find perrobot_12dof_description)/urdf/solo12.urdf.xacro"/>
+
+    <!-- Robot State Publisher -->
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
+
+    <!-- Joint State Publisher with GUI -->
+    <node name="joint_state_publisher_gui" pkg="joint_state_publisher_gui" type="joint_state_publisher_gui"/>
+   
+    <!-- RViz -->
+    <arg name="rviz_config_file" default="$(find perrobot_12dof_description)/config/robot.rviz"/>
+    <node pkg="rviz" type="rviz" name="rviz" args="-d $(arg rviz_config_file)"/>
+    
+</launch>
