@@ -1,6 +1,5 @@
 #!/bin/python3
 
-from numpy import shape
 from robot_controller import RobotController
 from robot_utils import RobotUtils
 import rospy

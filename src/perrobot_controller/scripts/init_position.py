@@ -5,6 +5,7 @@ from robot_utils import RobotUtils
 import rospy
 
 if __name__ == '__main__':
+    rospy.init_node('stand_x', anonymous=True)
     values = RobotUtils.init_pose()
     controller = RobotController(values)
     

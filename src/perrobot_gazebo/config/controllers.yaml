@@ -43,4 +43,3 @@ perrobot_controller:
     type: effort_controllers/JointPositionController
     joint: HR_KFE
     pid: {p: 9, i: 0.03, d: 0.3055, i_clamp_min:  -1000, i_clamp_max: 1000}
-

@@ -12,7 +12,7 @@
 
     <!-- Robot -->
     <param name="robot_description" command="$(find xacro)/xacro $(find perrobot_description)/urdf/solo8.urdf.xacro"/>
-    <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -model perrobot"/>
+    <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -z 0.5 -model perrobot"/>
 
 
     <!-- Controllers -->

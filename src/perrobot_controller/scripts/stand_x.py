@@ -7,7 +7,8 @@ import rospy
 
 
 if __name__ == '__main__':
-    values = RobotUtils.angles_for_height(RobotUtils.TARGET_HEIGHT, RobotUtils.HALF_LEG_LENGTH, Rpose='x')
+    rospy.init_node('stand_x', anonymous=True)
+    values = RobotUtils.angles_for_height(RobotUtils.TARGET_HEIGHT, RobotUtils.HALF_LEG_LENGTH, Rpose='x', cut=20)
     controller = RobotController(values)
     
     controller.publishing_init_joint_poses()

@@ -22,7 +22,6 @@ class RobotController:
         self.values = values
         
     def publishing_init_joint_poses(self):
-        rospy.init_node('init_joint_command_publisher')
 
         publishers = [rospy.Publisher(topic, Float64, queue_size=10) for topic in self.topics]
 

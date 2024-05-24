@@ -5,7 +5,7 @@ from numpy import arccos, arcsin, pi, cos, shape, sin
 
 class RobotUtils:
     HALF_LEG_LENGTH = 0.16
-    TARGET_HEIGHT = 0.25
+    TARGET_HEIGHT = 0.27
     UNIT_VALUE_FOR_A_STEP_F = pi/28
     UNIT_VALUE_FOR_A_STEP_B = pi/10
     SET_1 = [0, 1, 4, 5]
@@ -23,38 +23,46 @@ class RobotUtils:
     @staticmethod
     def angles_for_height(h, L, cut=10, Rpose='x'):
         path = np.linspace(0, h, cut)
-        Values = [RobotUtils.init_pose()]
+        Values = []
 
-        Values.extend(RobotUtils.hight_to_angles(height, L, Rpose) for height in path)
+        for height in path:
+            s = RobotUtils.hight_to_angles(height, L, Rpose=Rpose)
+            Values.append(s)
         
+        print(shape(Values), Values)
         return Values
 
     @staticmethod
-    def hight_to_angles(h, L, Rpose='x', s=False):
+    def hight_to_angles(h, L, Rpose='x'):
         arg = 0.5 * (h / L)
 
         alpha = arccos(arg)
         gamma = arcsin(arg)
-        beta = gamma - alpha - pi / 2
+        beta = gamma - alpha - pi/2
 
         a, b = alpha, beta
 
         if Rpose == 'x':
             values = [a, b, a, b, -a, -b, -a, -b]
+            
         elif Rpose == 'nx':
             values = [-a, -b, -a, -b, a, b, a, b]
+            
         elif Rpose == 'ncc':
             values = [-a, -b, -a, -b, -a, -b, -a, -b]
+            
         elif Rpose == 'cc':
             values = [a, b, a, b, a, b, a, b]
+            
         elif Rpose == 'rf':
-            values = [a, b, a, b, -a, -b, -a, -b]
+            values = np.array([a, b, a, b, -a, -b, -a, -b])
             goal = np.array([pi/2, -pi, pi/2, -pi, -pi/2, pi, -pi/2, pi])
-            values = np.array(values) + goal
+            values = list(np.array(values) + goal)
+            
         else:
             values = None
 
-        return (a, b) if s else values
+        return values
 
     @staticmethod
     def angles_to_height(alpha, L):
