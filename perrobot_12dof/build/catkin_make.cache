@@ -1,2 +1,0 @@
-perrobot_12dof:perrobot_12dof_controller:perrobot_12dof_description:perrobot_12dof_gazebo:perrobot_12dof_teleopkey
--DCATKIN_DEVEL_PREFIX=/home/perrobot/perrobot_12dof/devel -DCMAKE_INSTALL_PREFIX=/home/perrobot/perrobot_12dof/install -G Unix Makefiles

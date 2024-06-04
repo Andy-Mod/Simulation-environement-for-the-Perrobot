@@ -1,0 +1,503 @@
+<?xml version="10.0"?>
+
+<robot xmlns:xacro="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface" name="perrobot_12dof">
+
+  <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <robotNamespace>perrobot_12dof_controller</robotNamespace>
+    </plugin>
+  </gazebo>
+
+  <gazebo>
+    <plugin name="joint_state_publisher" filename="libgazebo_ros_joint_state_publisher.so">
+        <robotNamespace>perrobot_12dof_controller</robotNamespace>
+        <jointName>FL_HFE, FR_HFE, HL_HFE, HR_HFE, 
+                   FL_KFE, FR_KFE, HL_KFE, HR_KFE,
+                   FL_HAA, FR_HAA, HL_HAA, HR_HAA
+                  </jointName>
+        <updateRate>100</updateRate>
+    </plugin>
+  </gazebo>
+
+   <transmission name="FL_HFE_transmission">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="FL_HFE">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="FL_HFE_actuator">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>5</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <transmission name="FR_HFE_transmission">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="FR_HFE">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="FR_HFE_actuator">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>5</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <transmission name="HL_HFE_transmission">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="HL_HFE">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="HL_HFE_actuator">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>5</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <transmission name="HR_HFE_transmission">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="HR_HFE">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="HR_HFE_actuator">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>5</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <transmission name="FL_KFE_transmission">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="FL_KFE">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="FL_KFE_actuator">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>5</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <transmission name="FR_KFE_transmission">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="FR_KFE">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="FR_KFE_actuator">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>5</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <transmission name="HL_KFE_transmission">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="HL_KFE">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="HL_KFE_actuator">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>5</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <transmission name="HR_KFE_transmission">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="HR_KFE">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="HR_KFE_actuator">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>5</mechanicalReduction>
+        </actuator>
+    </transmission>
+    
+    <transmission name="HR_HAA_transmission">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="HR_HAA">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="HR_HAA_actuator">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>5</mechanicalReduction>
+        </actuator>
+    </transmission>
+    
+      <transmission name="HL_HAA_transmission">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="HL_HAA">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="HL_HAA_actuator">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>5</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <transmission name="FR_HAA_transmission">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="FR_HAA">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="FR_HAA_actuator">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>5</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <transmission name="FL_HAA_transmission">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="FL_HAA">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="FL_HAA_actuator">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>5</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+   <gazebo reference="base_link">
+        <collision>
+            <surface>
+                <friction>
+                    <ode>
+                        <mu>1.0</mu> 
+                        <mu2>1.0</mu2> 
+                    </ode>
+                </friction>
+                <bounce>
+                    <restitution_coefficient>0.0</restitution_coefficient>
+                    <threshold>0.01</threshold> 
+                </bounce>
+                <contact>
+                    <ode>
+                        <kp>1e5</kp> 
+                        <max_vel>0.1</max_vel> 
+                        <min_depth>0.002</min_depth>
+                    </ode>
+                </contact>
+            </surface>
+        </collision>
+    </gazebo>
+
+
+    <gazebo reference="FL_UPPER_LEG">
+            
+        <collision>
+            <surface>
+                <friction>
+                    <ode>
+                        <mu>1.0</mu> 
+                        <mu2>1.0</mu2> 
+                    </ode>
+                </friction>
+                <bounce>
+                    <restitution_coefficient>0.0</restitution_coefficient>
+                    <threshold>0.01</threshold> 
+                </bounce>
+                <contact>
+                    <ode>
+                        <kp>1e5</kp> 
+                        <max_vel>0.1</max_vel> 
+                        <min_depth>0.002</min_depth>
+                    </ode>
+                </contact>
+            </surface>
+        </collision>
+    </gazebo>
+
+    <gazebo reference="FL_LOWER_LEG">
+            
+        <collision>
+            <surface>
+                <friction>
+                    <ode>
+                        <mu>1.0</mu> 
+                        <mu2>1.0</mu2> 
+                    </ode>
+                </friction>
+                <bounce>
+                    <restitution_coefficient>0.0</restitution_coefficient>
+                    <threshold>0.01</threshold> 
+                </bounce>
+                <contact>
+                    <ode>
+                        <kp>1e5</kp> 
+                        <max_vel>0.1</max_vel> 
+                        <min_depth>0.002</min_depth>
+                    </ode>
+                </contact>
+            </surface>
+        </collision>
+    </gazebo>
+
+    <gazebo reference="FR_UPPER_LEG">
+            
+        <collision>
+            <surface>
+                <friction>
+                    <ode>
+                        <mu>1.0</mu> 
+                        <mu2>1.0</mu2> 
+                    </ode>
+                </friction>
+                <bounce>
+                    <restitution_coefficient>0.0</restitution_coefficient>
+                    <threshold>0.01</threshold> 
+                </bounce>
+                <contact>
+                    <ode>
+                        <kp>1e5</kp> 
+                        <max_vel>0.1</max_vel> 
+                        <min_depth>0.002</min_depth>
+                    </ode>
+                </contact>
+            </surface>
+        </collision>
+    </gazebo>
+
+    <gazebo reference="FR_LOWER_LEG">
+            
+        <collision>
+            <surface>
+                <friction>
+                    <ode>
+                        <mu>1.0</mu> 
+                        <mu2>1.0</mu2> 
+                    </ode>
+                </friction>
+                <bounce>
+                    <restitution_coefficient>0.0</restitution_coefficient>
+                    <threshold>0.01</threshold> 
+                </bounce>
+                <contact>
+                    <ode>
+                        <kp>1e5</kp> 
+                        <max_vel>0.1</max_vel> 
+                        <min_depth>0.002</min_depth>
+                    </ode>
+                </contact>
+            </surface>
+        </collision>
+    </gazebo>
+
+    <gazebo reference="HL_UPPER_LEG">
+            
+        <collision>
+            <surface>
+                <friction>
+                    <ode>
+                        <mu>1.0</mu> 
+                        <mu2>1.0</mu2> 
+                    </ode>
+                </friction>
+                <bounce>
+                    <restitution_coefficient>0.0</restitution_coefficient>
+                    <threshold>0.01</threshold> 
+                </bounce>
+                <contact>
+                    <ode>
+                        <kp>1e5</kp> 
+                        <max_vel>0.1</max_vel> 
+                        <min_depth>0.002</min_depth>
+                    </ode>
+                </contact>
+            </surface>
+        </collision>
+    </gazebo>
+
+    <gazebo reference="HL_LOWER_LEG">
+            
+        <collision>
+            <surface>
+                <friction>
+                    <ode>
+                        <mu>1.0</mu> 
+                        <mu2>1.0</mu2> 
+                    </ode>
+                </friction>
+                <bounce>
+                    <restitution_coefficient>0.0</restitution_coefficient>
+                    <threshold>0.01</threshold> 
+                </bounce>
+                <contact>
+                    <ode>
+                        <kp>1e5</kp> 
+                        <max_vel>0.1</max_vel> 
+                        <min_depth>0.002</min_depth>
+                    </ode>
+                </contact>
+            </surface>
+        </collision>
+    </gazebo>
+
+<gazebo reference="HR_UPPER_LEG">
+        
+        <collision>
+            <surface>
+                <friction>
+                    <ode>
+                        <mu>1.0</mu> 
+                        <mu2>1.0</mu2> 
+                    </ode>
+                </friction>
+                <bounce>
+                    <restitution_coefficient>0.0</restitution_coefficient>
+                    <threshold>0.01</threshold> 
+                </bounce>
+                <contact>
+                    <ode>
+                        <kp>1e5</kp> 
+                        <max_vel>0.1</max_vel> 
+                        <min_depth>0.002</min_depth>
+                    </ode>
+                </contact>
+            </surface>
+        </collision>
+    </gazebo>
+
+    <gazebo reference="HR_LOWER_LEG">
+            
+        <collision>
+            <surface>
+                <friction>
+                    <ode>
+                        <mu>1.0</mu> 
+                        <mu2>1.0</mu2> 
+                    </ode>
+                </friction>
+                <bounce>
+                    <restitution_coefficient>0.0</restitution_coefficient>
+                    <threshold>0.01</threshold> 
+                </bounce>
+                <contact>
+                    <ode>
+                        <kp>1e5</kp> 
+                        <max_vel>0.1</max_vel> 
+                        <min_depth>0.002</min_depth>
+                    </ode>
+                </contact>
+            </surface>
+        </collision>
+    </gazebo>
+
+    <gazebo reference="HR_SHOULDER">
+            
+        <collision>
+            <surface>
+                <friction>
+                    <ode>
+                        <mu>1.0</mu> 
+                        <mu2>1.0</mu2> 
+                    </ode>
+                </friction>
+                <bounce>
+                    <restitution_coefficient>0.0</restitution_coefficient>
+                    <threshold>0.01</threshold> 
+                </bounce>
+                <contact>
+                    <ode>
+                        <kp>1e5</kp> 
+                        <max_vel>0.1</max_vel> 
+                        <min_depth>0.002</min_depth>
+                    </ode>
+                </contact>
+            </surface>
+        </collision>
+    </gazebo>
+
+    <gazebo reference="HL_SHOULDER">
+            
+        <collision>
+            <surface>
+                <friction>
+                    <ode>
+                        <mu>1.0</mu> 
+                        <mu2>1.0</mu2> 
+                    </ode>
+                </friction>
+                <bounce>
+                    <restitution_coefficient>0.0</restitution_coefficient>
+                    <threshold>0.01</threshold> 
+                </bounce>
+                <contact>
+                    <ode>
+                        <kp>1e5</kp> 
+                        <max_vel>0.1</max_vel> 
+                        <min_depth>0.002</min_depth>
+                    </ode>
+                </contact>
+            </surface>
+        </collision>
+    </gazebo>
+
+    <gazebo reference="FR_SHOULDER">
+            
+        <collision>
+            <surface>
+                <friction>
+                    <ode>
+                        <mu>1.0</mu> 
+                        <mu2>1.0</mu2> 
+                    </ode>
+                </friction>
+                <bounce>
+                    <restitution_coefficient>0.0</restitution_coefficient>
+                    <threshold>0.01</threshold> 
+                </bounce>
+                <contact>
+                    <ode>
+                        <kp>1e5</kp> 
+                        <max_vel>0.1</max_vel> 
+                        <min_depth>0.002</min_depth>
+                    </ode>
+                </contact>
+            </surface>
+        </collision>
+    </gazebo>
+
+    <gazebo reference="FL_SHOULDER">
+            
+        <collision>
+            <surface>
+                <friction>
+                    <ode>
+                        <mu>1.0</mu> 
+                        <mu2>1.0</mu2> 
+                    </ode>
+                </friction>
+                <bounce>
+                    <restitution_coefficient>0.0</restitution_coefficient>
+                    <threshold>0.01</threshold> 
+                </bounce>
+                <contact>
+                    <ode>
+                        <kp>1e5</kp> 
+                        <max_vel>0.1</max_vel> 
+                        <min_depth>0.002</min_depth>
+                    </ode>
+                </contact>
+            </surface>
+        </collision>
+    </gazebo>
+
+    <!-- IMU sensor to get body location -->
+    <gazebo reference="base_link">
+    <gravity>true</gravity>
+    <sensor name="imu_sensor" type="imu">
+      <always_on>true</always_on>
+      <update_rate>100</update_rate>
+      <visualize>true</visualize>
+      <topic>__default_topic__</topic>
+      <plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
+        <topicName>perrobot_12dof/base_link_orientation</topicName>
+        <bodyName>imu_link</bodyName>
+        <updateRateHZ>15.0</updateRateHZ>
+        <gaussianNoise>0.0</gaussianNoise>
+        <xyzOffset>0 0 0</xyzOffset>
+        <rpyOffset>0 0 0</rpyOffset>
+        <frameName>base_link</frameName>
+        <initialOrientationAsReference>false</initialOrientationAsReference>
+      </plugin>
+      <pose>0 0 0 0 0 0</pose>
+    </sensor>
+  </gazebo>
+
+</robot>
+
+

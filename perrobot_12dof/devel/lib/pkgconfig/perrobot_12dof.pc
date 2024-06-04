@@ -1,8 +1,0 @@
-prefix=/home/perrobot/perrobot_12dof/devel
-
-Name: perrobot_12dof
-Description: Description of perrobot_12dof
-Version: 0.0.0
-Cflags: 
-Libs: -L${prefix}/lib 
-Requires: 

@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<robot name="solo"
+<robot name="perrobot_12dof"
   xmlns:controller="http://playerstage.sourceforge.net/gazebo/xmlschema/#controller"
   xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
   xmlns:sensor="http://playerstage.sourceforge.net/gazebo/xmlschema/#sensor"
@@ -10,7 +10,7 @@
   <xacro:property name="opacity" value="1.0" />
   <xacro:property name="mesh_ext" value="stl" />
 
-  <!-- This file is based on: https://github.com/open-dynamic-robot-initiative/open_robot_actuator_hardware/blob/master/mechanics/perrobot_description_12dof_v1/README.md#quadruped-robot-12dof-v1 -->
+  <!-- This file is based on: https://github.com/open-dynamic-robot-initiative/open_robot_actuator_hardware/blob/master/mechanics/perrobot_12dofion_12dof_v1/README.md#quadruped-robot-12dof-v1 -->
   <link name="base_link">
     <!-- BASE LINK INERTIAL -->
     <inertial>
@@ -26,7 +26,7 @@
     <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://perrobot_description/meshes/solo12/solo_12_base.${mesh_ext}"/>
+          <mesh filename="package://perrobot_12dof_description/meshes/solo12/solo_12_base.${mesh_ext}"/>
         </geometry>
         <material name="${color_name}">
             <color rgba="${color} ${opacity}"/>
@@ -36,7 +36,7 @@
     <collision>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://perrobot_description/meshes/solo12/solo_12_base.${mesh_ext}"/>
+          <mesh filename="package://perrobot_12dof_description/meshes/solo12/solo_12_base.${mesh_ext}"/>
         </geometry>
         <material name="${color_name}">
             <color rgba="${color} ${opacity}"/>
@@ -51,6 +51,9 @@
 
   <!-- Include the legs -->
   <xacro:include filename="leg.xacro"/>
+
+  <!-- Include gazebo plugins and physics -->
+  <xacro:include filename="gazebo_12dof.xacro"/>
 
   <!-- Include the front left leg -->
   <xacro:leg
