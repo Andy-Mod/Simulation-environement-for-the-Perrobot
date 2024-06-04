@@ -3,7 +3,6 @@
 from numpy import shape
 from robot_controller import RobotController
 from robot_utils import RobotUtils
-import rospy
 
 class Moves:
     @staticmethod
@@ -80,5 +79,3 @@ class Moves:
         controller = RobotController(values)
         
         controller.publishing_init_joint_poses()
-
-# Moves.stand_x()

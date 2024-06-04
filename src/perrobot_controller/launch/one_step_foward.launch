@@ -1,5 +1,0 @@
-<launch>
-    <!-- one foward step node -->
-    <node pkg="perrobot_controller" type="one_step.py"
-        name="one_step" output="screen"/> 
-</launch>

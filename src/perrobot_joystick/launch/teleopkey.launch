@@ -1,0 +1,7 @@
+<launch>
+
+    <!-- Teleopkey node -->
+    <node pkg="perrobot_joystick" type="keybord_reader.py"
+        name="T_key" output="screen"/>
+
+</launch>

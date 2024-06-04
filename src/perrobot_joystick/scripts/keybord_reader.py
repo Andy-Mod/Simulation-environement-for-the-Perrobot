@@ -61,7 +61,7 @@ class TKey:
     def run(self):
         try:
             pub = rospy.Publisher('key_pressed', String, queue_size=1)
-            rospy.init_node('T_key')
+            rospy.init_node('Teleop_key')
             rate = rospy.Rate(10)
             message = String()
 
