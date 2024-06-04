@@ -2,7 +2,7 @@
 
 <robot xmlns:xacro="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface" name="perrobot_12dof">
 
-  <!-- See https://github.com/open-dynamic-robot-initiative/open_robot_actuator_hardware/blob/master/mechanics/perrobot_12dof_description_12dof_v1/README.md#quadruped-robot-12dof-v1 -->
+  <!-- See https://github.com/open-dynamic-robot-initiative/open_robot_actuator_hardware/blob/master/mechanics/perrobot_description_12dof_v1/README.md#quadruped-robot-12dof-v1 -->
   <!-- These are absoulte distance value, the sign are decided below -->
   <xacro:property name="base_2_HAA_x" value="${214.10 * 0.001}" />
   <xacro:property name="base_2_HAA_y" value="${87.50 * 0.001}" />
@@ -18,7 +18,7 @@
 
   <xacro:property name="KFE_2_FOOT_y" value="${9.0 * 0.001}" />
   <xacro:property name="KFE_2_FOOT_z" value="${160.00 * 0.001}" />
-  <xacro:property name="effort_limit" value="2.7" />
+  <xacro:property name="effort_limit" value="2.4" />
   <xacro:property name="quater_pi" value="0.78539816339" />
 
   <!-- Macro defining solo leg. -->
@@ -59,13 +59,13 @@
                 <xacro:if value="${is_front}">
                     <origin xyz="0.01950 0 0" rpy="0 0 0" />
                     <geometry>
-                        <mesh filename="package://perrobot_12dof_description/meshes/solo12/solo12_hip_fe_fl.${mesh_ext}"/>
+                        <mesh filename="package://perrobot_description/meshes/solo12/solo12_hip_fe_fl.${mesh_ext}"/>
                     </geometry>
                 </xacro:if>
                 <xacro:unless value="${is_front}">
                     <origin xyz="-0.01950 0 0" rpy="0 0 0" />
                     <geometry>
-                        <mesh filename="package://perrobot_12dof_description/meshes/solo12/solo12_hip_fe_hl.${mesh_ext}"/>
+                        <mesh filename="package://perrobot_description/meshes/solo12/solo12_hip_fe_hl.${mesh_ext}"/>
                     </geometry>
                 </xacro:unless>
             </xacro:unless>
@@ -73,13 +73,13 @@
                 <xacro:if value="${is_front}">
                     <origin xyz="0.01950 0 0" rpy="0 0 0" />
                     <geometry>
-                        <mesh filename="package://perrobot_12dof_description/meshes/solo12/solo12_hip_fe_fr.${mesh_ext}"/>
+                        <mesh filename="package://perrobot_description/meshes/solo12/solo12_hip_fe_fr.${mesh_ext}"/>
                     </geometry>
                 </xacro:if>
                 <xacro:unless value="${is_front}">
                     <origin xyz="-0.01950 0 0" rpy="0 0 0" />
                     <geometry>
-                        <mesh filename="package://perrobot_12dof_description/meshes/solo12/solo12_hip_fe_hr.${mesh_ext}"/>
+                        <mesh filename="package://perrobot_description/meshes/solo12/solo12_hip_fe_hr.${mesh_ext}"/>
                     </geometry>
                 </xacro:unless>
             </xacro:if>
@@ -93,13 +93,13 @@
                 <xacro:if value="${is_front}">
                     <origin xyz="0.01950 0 0" rpy="0 0 0" />
                     <geometry>
-                        <mesh filename="package://perrobot_12dof_description/meshes/solo12/solo12_hip_fe_fl.${mesh_ext}"/>
+                        <mesh filename="package://perrobot_description/meshes/solo12/solo12_hip_fe_fl.${mesh_ext}"/>
                     </geometry>
                 </xacro:if>
                 <xacro:unless value="${is_front}">
                     <origin xyz="-0.01950 0 0" rpy="0 0 0" />
                     <geometry>
-                        <mesh filename="package://perrobot_12dof_description/meshes/solo12/solo12_hip_fe_hl.${mesh_ext}"/>
+                        <mesh filename="package://perrobot_description/meshes/solo12/solo12_hip_fe_hl.${mesh_ext}"/>
                     </geometry>
                 </xacro:unless>
             </xacro:unless>
@@ -107,13 +107,13 @@
                 <xacro:if value="${is_front}">
                     <origin xyz="0.01950 0 0" rpy="0 0 0" />
                     <geometry>
-                        <mesh filename="package://perrobot_12dof_description/meshes/solo12/solo12_hip_fe_fr.${mesh_ext}"/>
+                        <mesh filename="package://perrobot_description/meshes/solo12/solo12_hip_fe_fr.${mesh_ext}"/>
                     </geometry>
                 </xacro:if>
                 <xacro:unless value="${is_front}">
                     <origin xyz="-0.01950 0 0" rpy="0 0 0" />
                     <geometry>
-                        <mesh filename="package://perrobot_12dof_description/meshes/solo12/solo12_hip_fe_hr.${mesh_ext}"/>
+                        <mesh filename="package://perrobot_description/meshes/solo12/solo12_hip_fe_hr.${mesh_ext}"/>
                     </geometry>
                 </xacro:unless>
             </xacro:if>
@@ -241,10 +241,10 @@
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
           <xacro:unless value="${is_right}">
-            <mesh filename="package://perrobot_12dof_description/meshes/without_foot/solo_upper_leg_left_side.${mesh_ext}"/>
+            <mesh filename="package://perrobot_description/meshes/without_foot/solo_upper_leg_left_side.${mesh_ext}"/>
           </xacro:unless>
           <xacro:if value="${is_right}">
-            <mesh filename="package://perrobot_12dof_description/meshes/without_foot/solo_upper_leg_right_side.${mesh_ext}"/>
+            <mesh filename="package://perrobot_description/meshes/without_foot/solo_upper_leg_right_side.${mesh_ext}"/>
           </xacro:if>
         </geometry>
         <material name="${color_name}">
@@ -256,10 +256,10 @@
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
           <xacro:unless value="${is_right}">
-            <mesh filename="package://perrobot_12dof_description/meshes/without_foot/solo_upper_leg_left_side.${mesh_ext}"/>
+            <mesh filename="package://perrobot_description/meshes/without_foot/solo_upper_leg_left_side.${mesh_ext}"/>
           </xacro:unless>
           <xacro:if value="${is_right}">
-            <mesh filename="package://perrobot_12dof_description/meshes/without_foot/solo_upper_leg_right_side.${mesh_ext}"/>
+            <mesh filename="package://perrobot_description/meshes/without_foot/solo_upper_leg_right_side.${mesh_ext}"/>
           </xacro:if>
         </geometry>
         <material name="${color_name}">
@@ -328,10 +328,10 @@
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
           <xacro:unless value="${is_right}">
-            <mesh filename="package://perrobot_12dof_description/meshes/without_foot/solo_lower_leg_v2_left_side.${mesh_ext}"/>
+            <mesh filename="package://perrobot_description/meshes/without_foot/solo_lower_leg_v2_left_side.${mesh_ext}"/>
           </xacro:unless>
           <xacro:if value="${is_right}">
-            <mesh filename="package://perrobot_12dof_description/meshes/without_foot/solo_lower_leg_v2_right_side.${mesh_ext}"/>
+            <mesh filename="package://perrobot_description/meshes/without_foot/solo_lower_leg_v2_right_side.${mesh_ext}"/>
           </xacro:if>
         </geometry>
         <material name="${color_name}">
@@ -343,10 +343,10 @@
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
           <xacro:unless value="${is_right}">
-            <mesh filename="package://perrobot_12dof_description/meshes/without_foot/solo_lower_leg_v2_left_side.${mesh_ext}"/>
+            <mesh filename="package://perrobot_description/meshes/without_foot/solo_lower_leg_v2_left_side.${mesh_ext}"/>
           </xacro:unless>
           <xacro:if value="${is_right}">
-            <mesh filename="package://perrobot_12dof_description/meshes/without_foot/solo_lower_leg_v2_right_side.${mesh_ext}"/>
+            <mesh filename="package://perrobot_description/meshes/without_foot/solo_lower_leg_v2_right_side.${mesh_ext}"/>
           </xacro:if>
         </geometry>
         <material name="${color_name}">
