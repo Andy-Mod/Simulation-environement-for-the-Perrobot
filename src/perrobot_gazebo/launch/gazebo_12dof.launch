@@ -37,7 +37,7 @@
 
     <!-- Init joint positions node starting with a 5.0s delay -->
     <arg name="node_start_delay" default="5.0" />  
-    <node pkg="perrobot_controller" type="stand_x.py"
+    <node pkg="perrobot_controller" type="init_position_12dof.py"
         name="init_joint_command_publisher" output="screen" launch-prefix="bash -c 'sleep $(arg node_start_delay); $0 $@' " /> 
 
 </launch>

@@ -138,6 +138,7 @@ def mgi(Xbut, qinit):
     Xd = Xbut
     erreur_ok = 0.000001
     i = 0
+    
     while i < Nmax and list_erreur[-1] > erreur_ok:
         qtemp = qtemp + np.dot(pas(), direction(Xd, qtemp))
         list_q.append(qtemp)
@@ -145,6 +146,4 @@ def mgi(Xbut, qinit):
         i+=1
         
     
-    qc = list_q[-1]
-    
-    return qc[0], qc[1], qc[2]
+    return list_q
