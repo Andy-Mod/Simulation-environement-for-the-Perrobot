@@ -18,12 +18,17 @@ def reader(data, set='all'):
     elif set in other:
         positions = {name: pos for name, pos in zip(joint_names, joint_positions) if set in name }
         
-        return positions
+    print(positions)
+    return positions
     
     
 
 # Listener function that subscribes to the joint states topic
 def listener(topic, set='all'):
-    rospy.init_node("joint_state_position_reader")
+    # rospy.init_node("joint_state_position_reader")
     rospy.Subscriber(topic, JointState, reader, callback_args=set)
     rospy.spin()
+
+if __name__ == "__main__":
+    # Start the listener with the desired set
+    listener('/perrobot_12dof_controller/joint_states', 'FR')  # or 'FL', 'HR', 'HL', or 'all'

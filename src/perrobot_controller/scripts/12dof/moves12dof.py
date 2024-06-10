@@ -4,6 +4,7 @@ import numpy as np
 from numpy import arccos, arcsin, pi, cos, shape, sin
 from mgi_legs import *
 from robot_state_reader import *
+from matosc import *
 
 class Moves_12dof:
     # Robot configurations 
@@ -14,11 +15,19 @@ class Moves_12dof:
     
     
     @staticmethod
-    def move_foot(foot, xyz=[-HAA_2_UPPER_LEG, 0.0, -TARGET_HEIGHT]):
-        position = listener(Moves_12dof.topic, foot)
-        qinit = [position[foot+'_HAA'], position[foot+'_HFE'], position[foot+'_KFE']]
+    def move_foot(qinit, xyz=[-HAA_2_UPPER_LEG, 0.0, -TARGET_HEIGHT], amplitude=0.5, freq=1, num_points=10):
+        qtraj = []
+        Xinit = Analogical_MGD(qinit)
+        print(xyz, qinit)
+        traj = generate_parabolic_trajectory(Xinit, xyz, amplitude, freq, num_points)
         
-        return mgi(xyz, qinit)
+        qtemp = qinit
+        for point in traj:
+            print(point)
+            qtemp = mgi(point, qtemp)
+            qtraj.append(qtemp)
+
+        return qtraj
     
     @staticmethod
     def generate_sequences(a1, a2, n):
@@ -67,8 +76,10 @@ class Moves_12dof:
         Values = []
 
         for height in path:
-            s = Moves_12dof.hight_to_angles(height, L)
-            Values.append(s)
+            q2, q3 = Moves_12dof.hight_to_angles(height, L)
+            target_pose = Moves_12dof.pose(q2, q3, Rpose)
+            Values.append(target_pose)
+        
         
         return Values
         

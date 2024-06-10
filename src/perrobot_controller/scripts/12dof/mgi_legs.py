@@ -74,7 +74,7 @@ def Analogical_MGD(q):
     y = -s1 * d8
     z = c1 * d8
     
-    return x, y, z
+    return np.array([x, y, z])
 
 
 def jacobian(q):
@@ -121,13 +121,12 @@ def jacobian(q):
 def mgi(Xbut, qinit):
     
     def direction(Xd, qdeg):
-        Ja = np.linalg.inv(jacobian(qdeg))
-        Xdeg = Analogical_MGD(qdeg)
-        dir = np.dot(Ja, Xd-Xdeg)
+        Ja = jacobian(qdeg)
+        dir = np.dot(Ja.transpose(), Xd-Analogical_MGD(qdeg))
         return dir
         
     def pas():
-        p = 0.7
+        p = 0.5
         return p
 
     Nmax = 200
@@ -146,4 +145,4 @@ def mgi(Xbut, qinit):
         i+=1
         
     
-    return list_q
+    return list_q[-1]
