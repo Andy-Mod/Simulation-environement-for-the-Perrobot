@@ -1,39 +1,60 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-def custom_parabola(width=1, amplitude=1, t_span=1, num_points=200):
-    """
-    Generates a parabolic function with user-controlled width and amplitude.
+def dirac_comb(x, period):
+    s_comb = np.zeros_like(x)
+    for k in range(-int(np.max(x) // period), int(np.max(x) // period) + 1):
+        idx = np.argmin(np.abs(x - k * period))
+        s_comb[idx] = 1
+    return x, s_comb
 
-    Parameters:
-    - width (float): Factor to adjust the width of the parabola.
-    - amplitude (float): Factor to adjust the amplitude of the parabola.
-    - t_span (float): Span of the parameter t for generating x values.
-    - num_points (int): Number of points to generate along the t span.
+def sinusoide_ich(t, width=0.3, amplitude=0.001):
+    f = width * (t**2)
+    x = amplitude * (-f/np.max(f) + 1)
+    return t, x
 
-    Returns:
-    - x (array): Array of x values.
-    - y (array): Array of y values.
-    """
-    t = np.linspace(-t_span, t_span, num_points)
-    x = t**2
-    y = amplitude * ((width * (x - 1)) ** 2 + np.max(x))
-    return x, y
+def convolution_with_dirac_comb(f, t, period):
+    len_f = len(f)
+    conv_result = np.zeros(len_f)
+    
+    for k in range(-int(np.max(t) // period), int(np.max(t) // period) + 1):
+        shifted_f = np.roll(f, int(k * period * len_f / (2 * np.max(t))))
+        conv_result += shifted_f
+    
+    return conv_result
 
-# Example usage
-width = 0.3
-amplitude = 0.001
-t_span = 1
-num_points = 200
+# Parameters
+t_span = 3
+period = 0.3
+num_values = 1000
 
-x, y = custom_parabola(width=width, amplitude=amplitude, t_span=t_span, num_points=num_points)
+# Define the time points where convolution will be evaluated
+t = np.linspace(-t_span, t_span, num_values)
+_, f = sinusoide_ich(t, 1, 1)
+_, g = dirac_comb(t, period)
 
-# Plot the custom parabola
-plt.figure(figsize=(8, 6))
-plt.plot(x, y, label="Custom Parabola", color='b')
-plt.xlabel("x")
-plt.ylabel("y")
-plt.title("Custom Parabola with Width={}, Amplitude={}".format(width, amplitude))
+# Compute the convolution (f * g)(t)
+conv_result = convolution_with_dirac_comb(f, t, period)
+
+# Plotting the results
+plt.figure(figsize=(10, 6))
+
+plt.subplot(2, 1, 1)
+plt.plot(t, f, label='f(t)')
+plt.plot(t, g, label='g(t)')
+plt.title('Functions f(t) and g(t)')
+plt.xlabel('t')
+plt.ylabel('Amplitude')
 plt.legend()
 plt.grid(True)
+
+plt.subplot(2, 1, 2)
+plt.plot(t, conv_result, label='(f * g)(t)')
+plt.title('Convolution of f(t) and g(t)')
+plt.xlabel('t')
+plt.ylabel('Amplitude')
+plt.legend()
+plt.grid(True)
+
+plt.tight_layout()
 plt.show()
