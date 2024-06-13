@@ -1,6 +1,6 @@
 import numpy as np
 from numpy import pi, arccos, arcsin
-from mgi_legs import Analogical_MGD, mgi
+from mgi_legs import Numerical_MGD, mgi
 from matosc import *
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
@@ -14,17 +14,15 @@ class Moves_12dof:
     topic = '/perrobot_12dof_controller/joint_states'
     
     @staticmethod
-    def move_foot(qinit, xyz=None, amplitude=0.005, freq=1, num_points=10, phase_shift=0):
-        if xyz is None:
-            xyz = [-Moves_12dof.HAA_2_UPPER_LEG, 0.0, -Moves_12dof.TARGET_HEIGHT]
+    def move_foot(qinit, freq=0.1, amplitude=0.005, num_points=10, phase_shift=0, on_x=True):
         
-        Xinit = Analogical_MGD(qinit)
-        traj = generate_parabolic_trajectory(Xinit, xyz, amplitude, freq, num_points, phase_shift)
+        Xinit = Numerical_MGD(qinit)
+        traj = generate_parabolic_trajectory(Xinit, freq, amplitude, num_points, on_x)
         
         qtraj = [qinit]
         qtemp = qinit
         for point in traj:
-            print(qtemp, point)
+            print(qtemp, point, Numerical_MGD(qtemp))
             qtemp = mgi(point, qtemp)
             qtraj.append(qtemp)
 
@@ -91,18 +89,17 @@ class Moves_12dof:
         return Values
 
     @staticmethod
-    def robot_gait(gait_name, qinits, xyz=None, amplitude=0.05, freq=1, num_points=10):
-        # gaitname : [FL, FR, HL, HR]
+    def robot_gait(gait_name, qinits, amplitude=0.05, freq=1, num_points=10):
+        # gaitname : [FL, FR, HL, HR, s]
         phase_shifts = get_gait_phase_shifts(gait_name)
         foots_trajectories = []
         for i in range(len(phase_shifts)):
-            print(i)
-            foots_trajectories.append(Moves_12dof.move_foot(qinits[i], xyz[i], amplitude, freq, num_points, phase_shifts[i]))
+            foots_trajectories.append(Moves_12dof.move_foot(qinits[i], freq, amplitude, num_points, phase_shifts[i], True))
         
         return foots_trajectories
     
     @staticmethod
-    def visualize_gait_trajectories(gait_name, qinits, xyz, amplitude=0.05, freq=1, num_points=10):
+    def visualize_gait_trajectories(gait_name, qinits,amplitude=0.05, freq=1, num_points=10):
         """
         Visualizes the gait trajectories in 3D.
         
@@ -114,36 +111,15 @@ class Moves_12dof:
             - freq: Frequency of the sinusoidal height variation
             - num_points: Number of points in the trajectory
         """
-        foot_trajectories = Moves_12dof.robot_gait(gait_name, qinits, xyz, amplitude, freq, num_points)
-        
-        fig = plt.figure()
-        ax = fig.add_subplot(111, projection='3d')
-        
-        foot_names = ['Front Left', 'Front Right', 'Hind Left', 'Hind Right']
-        colors = ['r', 'g', 'b', 'y']
-        
-        for i, traj in enumerate(foot_trajectories):
-            traj = np.array(traj)
-            ax.plot(traj[:, 0], traj[:, 1], traj[:, 2], color=colors[i], label=foot_names[i])
-        
-        ax.set_xlabel('X')
-        ax.set_ylabel('Y')
-        ax.set_zlabel('Z')
-        ax.set_title(f'{gait_name.capitalize()} Gait Trajectories')
-        ax.legend()
-        plt.show()
+        foot_trajectories = Moves_12dof.robot_gait(gait_name, qinits, amplitude, freq, num_points)
+
 
     @staticmethod
     def test():
-        gait_name = 'walk'
-   
-        xyz = np.array([-Moves_12dof.HAA_2_UPPER_LEG, 0.0, -Moves_12dof.TARGET_HEIGHT])
-        shift = np.array([0.1, 0, 0])
         q2, q3 = Moves_12dof.hight_to_angles(h=Moves_12dof.TARGET_HEIGHT, L=Moves_12dof.HALF_LEG_LENGTH)
         qinit = np.array([0.0, q2, q3])
 
-        qinits = [qinit, qinit, qinit, qinit]
-        xyzs = [xyz - shift, xyz - shift, xyz - shift, xyz - shift]  
-        print(xyzs)
-        gait_name = 'trot'
-        Moves_12dof.visualize_gait_trajectories(gait_name, qinits, xyzs, amplitude=0.05, freq=1, num_points=50)
+        qinits = [qinit, qinit, -qinit, -qinit] 
+
+        gait_name = 's'
+        Moves_12dof.visualize_gait_trajectories(gait_name, qinits, amplitude=0.05, freq=0.1, num_points=50)

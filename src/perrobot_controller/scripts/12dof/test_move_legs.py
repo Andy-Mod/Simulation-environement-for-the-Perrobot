@@ -9,11 +9,10 @@ import rospy
 if __name__ == '__main__':
     rospy.init_node('move_FR', anonymous=True)
     
-    xyz = [-Moves_12dof.HAA_2_UPPER_LEG+0.1, 0.0, -Moves_12dof.TARGET_HEIGHT]
     q2, q3 = Moves_12dof.hight_to_angles(h=Moves_12dof.TARGET_HEIGHT, L=Moves_12dof.HALF_LEG_LENGTH)
     qinit = [0.0, q2, q3]
     
-    values = Moves_12dof.move_foot(qinit, xyz)
+    values = Moves_12dof.move_foot(qinit, -0.1, 0.15, 20)
     rate = 10
     controller = RobotPublisher(rate)
     

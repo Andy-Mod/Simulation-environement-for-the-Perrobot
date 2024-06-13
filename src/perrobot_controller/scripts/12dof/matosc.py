@@ -2,6 +2,7 @@ import numpy as np
 from numpy import pi
 from scipy.integrate import solve_ivp
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 
 # Limits
 x_limit = 0.1
@@ -43,6 +44,12 @@ def get_gait_phase_shifts(gait_name):
              np.pi / 2,
              np.pi,
              3 * np.pi / 2
+        ], 
+        's': [
+            0,
+            0,
+            0,
+            0
         ]
     }
 
@@ -51,31 +58,46 @@ def get_gait_phase_shifts(gait_name):
 
     return gaits[gait_name]
 
-def cpg(t_eval, mu=1, amplitude=2e-2):
-    def vdp(t, y, mu):
-        x, v = y
-        dxdt = v
-        dvdt = mu * (1 - x**2) * v - x
-        return [dxdt, dvdt]
-
-    # Define initial conditions
-    y0 = [1.0, 0.0]
-
-    # Define time span
-
-    # Solve the differential equation
-    sol = solve_ivp(vdp, (t_eval[0], t_eval[-1]), y0, args=(mu,), t_eval=t_eval)
-    t, x, x_point = np.array(sol.t), np.array(sol.y[0]), np.array(sol.y[1])
+def plot_3d_points(points, colors):
+    """
+    Plots a set of 3D points.
     
-    # x_point[x_point>1] = 1.0
-    # x_point[x_point<-1] = -1.0
-    # x_point[x_point<0] = -x_point[x_point<0]
-    
-    plt.plot(t_eval, x_point, label='X', color='green')
-    
-    return x_point
+    Parameters:
+    points (list of tuple): List of (x, y, z) coordinates of points.
+    """
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
 
-def generate_parabolic_trajectory(start, width,amplitude, frequency, num_points=100, phase_shift=0, on_x=True):
+    # Unpack the points
+    x_vals = [point[0] for point in points]
+    y_vals = [point[1] for point in points]
+    z_vals = [point[2] for point in points]
+
+    # Scatter plot
+    ax.scatter(x_vals, y_vals, z_vals, c=colors, marker='o',)
+
+    # Set labels
+    ax.set_xlabel('X Label')
+    ax.set_ylabel('Y Label')
+    ax.set_zlabel('Z Label')
+
+    plt.show()
+
+def transform_and_shift_parabola(width=0.3, amplitude=0.001, t_span=1, num_points=200):
+    t = np.linspace(-t_span, t_span, num_points)
+    x = (t)**2
+    z = amplitude*((width * (x-1))**2)  
+    return t, z
+
+def sinusoide_ich(t_span, amplitude=1, num_points=500):
+    t = np.linspace(-t_span, t_span, num_points+1)
+    f =  (t**2)
+    x = (-f + np.max(f))
+    x = (amplitude/x[t==0]) * x 
+    
+    return t, x
+
+def generate_parabolic_trajectory(start, freq=0.1, amplitude=0.05, num_points=100, on_x=True):
     """
     Generates a parabolic trajectory from start to end with a sinusoidal height variation.
     
@@ -90,13 +112,23 @@ def generate_parabolic_trajectory(start, width,amplitude, frequency, num_points=
     Returns:
         - trajectory: Array of points (x, y, z) in the trajectory
     """
-    
     x, y, z = start
-    t = np.linspace(0, width, num_points)
+    xf, yf, zf = start
+    xout, yout, zout = 0.0, 0.0, 0.0
     
+    # _, s = sinusoide_ich(freq, amplitude, num_points)
+    _, s = transform_and_shift_parabola(width=0.3, amplitude=0.001, t_span=1, num_points=num_points+1)
     
+    if on_x:
+        xf += freq 
+    else:
+        yf += freq
+         
+    xout, yout, zout = np.linspace(x, xf, num_points+1), np.linspace(y, yf, num_points+1), np.linspace(z, zf, num_points+1)
+    out = np.column_stack((xout, yout, zout+s))
+    # plot_3d_points(out, 'g')
     
-    return np.column_stack((x, y, z))
+    return out 
 
 def concatenate_trajectories(points, amplitude, frequency, num_points=30):
     """

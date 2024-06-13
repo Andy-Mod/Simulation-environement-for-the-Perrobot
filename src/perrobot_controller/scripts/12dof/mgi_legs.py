@@ -1,6 +1,6 @@
 import numpy as np
 import sympy as sp
-from numpy import arcsin, cos, pi, sin, arccos, sqrt
+from numpy import arcsin, arctan2, cos, pi, sin, arccos, sqrt
 
 # Robot configurations
 L1 = 19.5 * 0.001 
@@ -23,7 +23,8 @@ def calcul_angles(h, l):
 x_limit = 0.1
 z_limit = 0.3
 
-def Numerical_MGD(theta1, theta2, theta3):
+def Numerical_MGD(q):
+    theta1, theta2, theta3 = q
     T01 = np.array([
         [1, 0, 0, 0],
         [0, np.cos(theta1), -np.sin(theta1), 0],
@@ -77,26 +78,14 @@ def jacobian(q):
     return np.array(jacobian_func(*q), dtype=float)
 
 def mgi(Xbut, qinit):
-    def direction(Xd, qdeg):
-        Ja = jacobian(qdeg)
-        return Ja.T @ (Xd - Analogical_MGD(qdeg))
+    x, y, z = Xbut
     
-    def pas():
-        return 0.5
-
-    Nmax = 200
-    list_q = [qinit]
-    qtemp = qinit
-    Xd = Xbut
-    erreur_ok = 1e-6
-    i = 0
+    # x += L1
+    l = sqrt(x*x + z*z)
+    s = sqrt(-x*x + L2*L2)
+    q2 = arcsin(s/L2)
+    q3 = pi - arccos((-l*l + 2*L2*L2)/(2*L2))
     
-    while i < Nmax:
-        error = np.linalg.norm(Xd - Analogical_MGD(qtemp))**2
-        if error <= erreur_ok:
-            break
-        qtemp = qtemp + pas() * direction(Xd, qtemp)
-        list_q.append(qtemp)
-        i += 1
+    q1 = arctan2(y, -z)
     
-    return list_q[-1]
+    return np.array([q1, q2, q3])

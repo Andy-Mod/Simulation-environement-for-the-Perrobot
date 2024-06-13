@@ -6,3 +6,4 @@ import rospy
 
 if __name__ == '__main__':
     Moves_12dof.test()
+    
