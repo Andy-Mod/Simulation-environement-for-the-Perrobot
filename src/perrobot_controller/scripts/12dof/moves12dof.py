@@ -1,6 +1,6 @@
 import numpy as np
 from numpy import pi, arccos, arcsin
-from mgi_legs import Numerical_MGD, mgi
+from mgi_legs import Analogical_MGD, mgi
 from matosc import *
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
@@ -16,17 +16,17 @@ class Moves_12dof:
     @staticmethod
     def move_foot(qinit, freq=0.1, amplitude=0.005, num_points=10, phase_shift=0, on_x=True):
         
-        Xinit = Numerical_MGD(qinit)
+        Xinit = Analogical_MGD(qinit)
         traj = generate_parabolic_trajectory(Xinit, freq, amplitude, num_points, on_x)
         
         qtraj = [qinit]
         qtemp = qinit
         for point in traj:
-            print(qtemp, point, Numerical_MGD(qtemp))
-            qtemp = mgi(point, qtemp)
+            print(qtemp, point, Analogical_MGD(qtemp))
+            qtemp = mgi(point)
             qtraj.append(qtemp)
 
-        return np.array(qtraj[1:])  # Remove the initial qinit to keep the trajectory smooth
+        return np.array(qtraj)  
     
     @staticmethod
     def generate_sequences(a1, a2, n):
@@ -112,6 +112,13 @@ class Moves_12dof:
             - num_points: Number of points in the trajectory
         """
         foot_trajectories = Moves_12dof.robot_gait(gait_name, qinits, amplitude, freq, num_points)
+        colors = ['r', 'g', 'b', 'orange']
+        
+        for i, qtraj in enumerate(foot_trajectories):
+            Xs = []
+            for q in qtraj:
+                Xs.append(Analogical_MGD(q))
+            plot_3d_points(Xs, colors[i]) 
 
 
     @staticmethod

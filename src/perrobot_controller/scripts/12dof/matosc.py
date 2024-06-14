@@ -116,8 +116,8 @@ def generate_parabolic_trajectory(start, freq=0.1, amplitude=0.05, num_points=10
     xf, yf, zf = start
     xout, yout, zout = 0.0, 0.0, 0.0
     
-    # _, s = sinusoide_ich(freq, amplitude, num_points)
-    _, s = transform_and_shift_parabola(width=0.3, amplitude=0.001, t_span=1, num_points=num_points+1)
+    _, s = sinusoide_ich(freq, amplitude, num_points)
+    # _, s = transform_and_shift_parabola(width=0.3, amplitude=0.001, t_span=1, num_points=num_points+1)
     
     if on_x:
         xf += freq 

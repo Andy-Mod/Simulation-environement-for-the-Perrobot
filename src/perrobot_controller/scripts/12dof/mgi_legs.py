@@ -1,6 +1,7 @@
 import numpy as np
 import sympy as sp
-from numpy import arcsin, arctan2, cos, pi, sin, arccos, sqrt
+import math
+from numpy import arcsin, arctan, arctan2, cos, pi, sin, arccos, sqrt
 
 # Robot configurations
 L1 = 19.5 * 0.001 
@@ -77,15 +78,128 @@ jacobian_func = precompute_jacobian()
 def jacobian(q):
     return np.array(jacobian_func(*q), dtype=float)
 
-def mgi(Xbut, qinit):
-    x, y, z = Xbut
-    
-    # x += L1
-    l = sqrt(x*x + z*z)
-    s = sqrt(-x*x + L2*L2)
-    q2 = arcsin(s/L2)
-    q3 = pi - arccos((-l*l + 2*L2*L2)/(2*L2))
-    
-    q1 = arctan2(y, -z)
-    
-    return np.array([q1, q2, q3])
+def calcul_A(y, z, q1):
+    return -y * sin(q1) + z * cos(q1)
+
+
+
+def calcul_q3(X, Y, Z1, Z2):
+    try:
+        c3 = (Z1**2 + Z2**2 - X**2 - Y**2) / (2 * X * Y)
+        sqrt_term = math.sqrt(1 - c3**2)
+        return math.atan2(-sqrt_term, c3), math.atan2(sqrt_term, c3)
+    except ValueError as e:
+        print(f"Error in calcul_q3: {e}")
+        return None, None
+
+def calcul_q2(X, Y, Z1, Z2, q3):
+    try:
+        b1 = X + Y * math.cos(q3)
+        b2 = Y * math.sin(q3)
+        s2 = (b1 * Z2 - b2 * Z1) / (b1**2 + b2**2)
+        c2 = (b1 * Z1 + b2 * Z2) / (b1**2 + b2**2)
+        return math.atan2(s2, c2)
+    except ZeroDivisionError as e:
+        print(f"Error in calcul_q2: {e}")
+        return None
+
+def mgi(Xbut):
+    try:
+        x, y, z = Xbut
+        sol = []
+
+        X, Y, Z = y, z, 0
+        X1, Y1, Z1, Z2 = L2, L3, 0.0, -(x + L1)
+
+        if X == 0 and Y != 0:
+            s1 = Z / Y
+            try:
+                q1_1 = math.atan2(s1, -math.sqrt(1 - s1**2))
+                q1_2 = math.atan2(s1, math.sqrt(1 - s1**2))
+            except ValueError as e:
+                print(f"Error in atan2 or sqrt: {e}")
+                return []
+
+            Z1_1 = -calcul_A(y, z, q1_1)
+            Z1_2 = -calcul_A(y, z, q1_2)
+
+            q3_1_1, q3_1_2 = calcul_q3(X1, Y1, Z1_1, Z2)
+            q3_2_1, q3_2_2 = calcul_q3(X1, Y1, Z1_2, Z2)
+
+            q2_1_1 = calcul_q2(X1, Y1, Z1_1, Z2, q3_1_1)
+            q2_1_2 = calcul_q2(X1, Y1, Z1_1, Z2, q3_1_2)
+            q2_2_1 = calcul_q2(X1, Y1, Z1_2, Z2, q3_2_1)
+            q2_2_2 = calcul_q2(X1, Y1, Z1_2, Z2, q3_2_2)
+
+            sol.extend([
+                [q1_1, q2_1_1, q3_1_1], 
+                [q1_1, q2_1_2, q3_1_2],
+                [q1_2, q2_2_1, q3_2_1],
+                [q1_2, q2_2_2, q3_2_2]
+            ])
+
+        elif X != 0 and Y == 0:
+            c1 = Z / X
+            try:
+                q1_1 = math.atan2(c1, -math.sqrt(1 - c1**2))
+                q1_2 = math.atan2(c1, math.sqrt(1 - c1**2))
+            except ValueError as e:
+                print(f"Error in atan2 or sqrt: {e}")
+                return []
+
+            Z1_1 = -calcul_A(y, z, q1_1)
+            Z1_2 = -calcul_A(y, z, q1_2)
+
+            q3_1_1, q3_1_2 = calcul_q3(X1, Y1, Z1_1, Z2)
+            q3_2_1, q3_2_2 = calcul_q3(X1, Y1, Z1_2, Z2)
+
+            q2_1_1 = calcul_q2(X1, Y1, Z1_1, Z2, q3_1_1)
+            q2_1_2 = calcul_q2(X1, Y1, Z1_1, Z2, q3_1_2)
+            q2_2_1 = calcul_q2(X1, Y1, Z1_2, Z2, q3_2_1)
+            q2_2_2 = calcul_q2(X1, Y1, Z1_2, Z2, q3_2_2)
+
+            sol.extend([
+                [q1_1, q2_1_1, q3_1_1], 
+                [q1_1, q2_1_2, q3_1_2],
+                [q1_2, q2_2_1, q3_2_1],
+                [q1_2, q2_2_2, q3_2_2]
+            ])
+
+        elif X != 0 and Y != 0 and Z == 0:
+            q1_1 = math.atan2(-X, Y)
+            q1_2 = q1_1 + math.pi
+
+            Z1_1 = -calcul_A(y, z, q1_1)
+            Z1_2 = -calcul_A(y, z, q1_2)
+
+            q3_1_1, q3_1_2 = calcul_q3(X1, Y1, Z1_1, Z2)
+            q3_2_1, q3_2_2 = calcul_q3(X1, Y1, Z1_2, Z2)
+
+            q2_1_1 = calcul_q2(X1, Y1, Z1_1, Z2, q3_1_1)
+            q2_1_2 = calcul_q2(X1, Y1, Z1_1, Z2, q3_1_2)
+            q2_2_1 = calcul_q2(X1, Y1, Z1_2, Z2, q3_2_1)
+            q2_2_2 = calcul_q2(X1, Y1, Z1_2, Z2, q3_2_2)
+
+            sol.extend([
+                [q1_1, q2_1_1, q3_1_1], 
+                [q1_1, q2_1_2, q3_1_2],
+                [q1_2, q2_2_1, q3_2_1],
+                [q1_2, q2_2_2, q3_2_2]
+            ])
+
+        for s in sol:
+            s[s == -0.0] = 0.0
+
+        return np.array(sol)[2]
+    except Exception as e:
+        print(f"An error occurred in mgi: {e}")
+        return []
+
+
+q2, q3 = calcul_angles(TARGET_HEIGHT, HALF_LEG_LENGTH)
+
+q = np.array([0.0, q2, q3])
+Xbut = Analogical_MGD(q)
+q_s = mgi(Xbut)
+
+print(q, q_s)
