@@ -156,8 +156,8 @@
             <surface>
                 <friction>
                     <ode>
-                        <mu>1.0</mu> 
-                        <mu2>1.0</mu2> 
+                        <mu>3.0</mu> 
+                        <mu2>3.0</mu2> 
                     </ode>
                 </friction>
                 <bounce>
@@ -182,8 +182,8 @@
             <surface>
                 <friction>
                     <ode>
-                        <mu>1.0</mu> 
-                        <mu2>1.0</mu2> 
+                        <mu>3.0</mu> 
+                        <mu2>3.0</mu2> 
                     </ode>
                 </friction>
                 <bounce>
@@ -207,8 +207,8 @@
             <surface>
                 <friction>
                     <ode>
-                        <mu>1.0</mu> 
-                        <mu2>1.0</mu2> 
+                        <mu>3.0</mu> 
+                        <mu2>3.0</mu2> 
                     </ode>
                 </friction>
                 <bounce>
@@ -232,8 +232,8 @@
             <surface>
                 <friction>
                     <ode>
-                        <mu>1.0</mu> 
-                        <mu2>1.0</mu2> 
+                        <mu>3.0</mu> 
+                        <mu2>3.0</mu2> 
                     </ode>
                 </friction>
                 <bounce>
@@ -257,8 +257,8 @@
             <surface>
                 <friction>
                     <ode>
-                        <mu>1.0</mu> 
-                        <mu2>1.0</mu2> 
+                        <mu>3.0</mu> 
+                        <mu2>3.0</mu2> 
                     </ode>
                 </friction>
                 <bounce>
@@ -282,8 +282,8 @@
             <surface>
                 <friction>
                     <ode>
-                        <mu>1.0</mu> 
-                        <mu2>1.0</mu2> 
+                        <mu>3.0</mu> 
+                        <mu2>3.0</mu2> 
                     </ode>
                 </friction>
                 <bounce>
@@ -307,8 +307,8 @@
             <surface>
                 <friction>
                     <ode>
-                        <mu>1.0</mu> 
-                        <mu2>1.0</mu2> 
+                        <mu>3.0</mu> 
+                        <mu2>3.0</mu2> 
                     </ode>
                 </friction>
                 <bounce>
@@ -332,8 +332,8 @@
             <surface>
                 <friction>
                     <ode>
-                        <mu>1.0</mu> 
-                        <mu2>1.0</mu2> 
+                        <mu>3.0</mu> 
+                        <mu2>3.0</mu2> 
                     </ode>
                 </friction>
                 <bounce>
@@ -357,8 +357,8 @@
             <surface>
                 <friction>
                     <ode>
-                        <mu>1.0</mu> 
-                        <mu2>1.0</mu2> 
+                        <mu>3.0</mu> 
+                        <mu2>3.0</mu2> 
                     </ode>
                 </friction>
                 <bounce>
@@ -382,8 +382,8 @@
             <surface>
                 <friction>
                     <ode>
-                        <mu>1.0</mu> 
-                        <mu2>1.0</mu2> 
+                        <mu>3.0</mu> 
+                        <mu2>3.0</mu2> 
                     </ode>
                 </friction>
                 <bounce>
@@ -407,8 +407,8 @@
             <surface>
                 <friction>
                     <ode>
-                        <mu>1.0</mu> 
-                        <mu2>1.0</mu2> 
+                        <mu>3.0</mu> 
+                        <mu2>3.0</mu2> 
                     </ode>
                 </friction>
                 <bounce>
@@ -432,8 +432,8 @@
             <surface>
                 <friction>
                     <ode>
-                        <mu>1.0</mu> 
-                        <mu2>1.0</mu2> 
+                        <mu>3.0</mu> 
+                        <mu2>3.0</mu2> 
                     </ode>
                 </friction>
                 <bounce>
@@ -457,8 +457,8 @@
             <surface>
                 <friction>
                     <ode>
-                        <mu>1.0</mu> 
-                        <mu2>1.0</mu2> 
+                        <mu>3.0</mu> 
+                        <mu2>3.0</mu2> 
                     </ode>
                 </friction>
                 <bounce>

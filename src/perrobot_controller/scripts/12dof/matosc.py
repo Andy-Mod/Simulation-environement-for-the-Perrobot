@@ -97,6 +97,41 @@ def sinusoide_ich(t_span, amplitude=1, num_points=500):
     
     return t, x
 
+def generate_trajectory_from_shape(start, end, shape, numberofpoints=10):
+    x, y, z = start
+    xf, yf, zf = end
+    xout, yout, zout = 0.0, 0.0, 0.0
+    
+    xout, yout, zout = np.linspace(x, xf, numberofpoints+1), np.linspace(y, yf, numberofpoints+1), np.linspace(z, zf, numberofpoints+1)
+    out = np.column_stack((xout, yout, zout+shape))
+    
+    return out 
+
+def generate_qtraj(q0, qf, tf, numberofpoints=10):
+    t = np.linspace(0, tf, numberofpoints)
+    
+    a3 = 2 * (qf - q0) / tf**3
+    a2 = -3 * (qf - q0) / tf**2
+    
+    q_t = q0[:, None] + a2[:, None] * t**2 + a3[:, None] * t**3
+    q_dot_t = 2 * a2[:, None] * t + 3 * a3[:, None] * t**2
+    q_ddot_t = 2 * a2[:, None] + 6 * a3[:, None] * t
+    
+    q_t = np.transpose(q_t)
+    
+    # plt.figure(figsize=(10, 6))
+    # plt.plot(t, q_t[:, 0], label='q1(t)')
+    # plt.plot(t, q_t[:, 1], label="q2(t)", linestyle='--')
+    # plt.plot(t, q_t[:, 2], label="q3(t)", linestyle=':')
+    # plt.title(f'Trajectory: Position, Velocity, and Acceleration for joint q')
+    # plt.xlabel('Time (t)')
+    # plt.ylabel('Value')
+    # plt.legend()
+    # plt.grid(True)
+    # plt.show()
+    
+    return q_t
+
 def generate_parabolic_trajectory(start, freq=0.1, amplitude=0.05, num_points=100, on_x=True):
     """
     Generates a parabolic trajectory from start to end with a sinusoidal height variation.

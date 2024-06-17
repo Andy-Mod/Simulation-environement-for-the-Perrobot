@@ -14,19 +14,50 @@ class Moves_12dof:
     topic = '/perrobot_12dof_controller/joint_states'
     
     @staticmethod
-    def move_foot(qinit, freq=0.1, amplitude=0.005, num_points=10, phase_shift=0, on_x=True):
+    def move_foot(qinit, freq=0.1, amplitude=0.005, num_points=10, phase_shift=0, on_x=True, dt=0.001):
         
+        out = []
         Xinit = Analogical_MGD(qinit)
-        traj = generate_parabolic_trajectory(Xinit, freq, amplitude, num_points, on_x)
+        Xbut = Xinit.copy()
+        if on_x:
+            Xbut[0] = Xbut[0] + freq 
+        else:
+            Xbut[1] = Xbut[1] + freq
         
-        qtraj = [qinit]
-        qtemp = qinit
-        for point in traj:
-            print(qtemp, point, Analogical_MGD(qtemp))
-            qtemp = mgi(point)
-            qtraj.append(qtemp)
-
-        return np.array(qtraj)  
+        
+        _, shape = sinusoide_ich(freq, amplitude, num_points)
+        _, back = sinusoide_ich(0.08, -0.01, 4)
+        
+        trajectory = generate_trajectory_from_shape(Xinit, Xbut, shape, num_points)
+        back = generate_trajectory_from_shape(Xbut, Xinit, back, 4)
+        
+        plot_3d_points(trajectory, 'r')
+        plot_3d_points(back, 'g')
+        
+        qtraj = [mgi(i) for i in trajectory]
+        # for point in back:
+        #     qtraj.append(mgi(point))
+            
+        qtemp = qtraj[0]
+        for pose in qtraj[1:]:
+            q = generate_qtraj(qtemp, pose, dt, numberofpoints=3)
+            out.extend(q)
+        
+        out = np.array(out)
+        t = np.linspace(0, len(out) * dt, len(out))
+    
+        plt.figure(figsize=(10, 6))
+        plt.plot(t, out[:, 0], label='q1(t)')
+        plt.plot(t, out[:, 1], label="q2(t)", linestyle='--')
+        plt.plot(t, out[:, 2], label="q3(t)", linestyle=':')
+        plt.title(f'Trajectory: Position, Velocity, and Acceleration for joint q')
+        plt.xlabel('Time (t)')
+        plt.ylabel('Value')
+        plt.legend()
+        plt.grid(True)
+        plt.show()
+        
+        return np.array(out)  
     
     @staticmethod
     def generate_sequences(a1, a2, n):

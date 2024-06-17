@@ -7,7 +7,7 @@
     </include>
 
     <!-- RViz -->
-    <!-- <arg name="rviz_config_file" default="$(find perrobot_description)/config/robot.rviz"/>
+    <!-- <arg name="rviz_config_file" default="$(find perrobot_description)/config/robot_12dof.rviz"/>
     <node pkg="rviz" type="rviz" name="rviz" args="-d $(arg rviz_config_file)"/> -->
 
     <!-- Robot -->

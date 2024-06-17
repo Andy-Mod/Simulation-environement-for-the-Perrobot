@@ -196,10 +196,10 @@ def mgi(Xbut):
         return []
 
 
-q2, q3 = calcul_angles(TARGET_HEIGHT, HALF_LEG_LENGTH)
+# q2, q3 = calcul_angles(TARGET_HEIGHT, HALF_LEG_LENGTH)
 
-q = np.array([0.0, q2, q3])
-Xbut = Analogical_MGD(q)
-q_s = mgi(Xbut)
+# q = np.array([0.0, q2, q3])
+# Xbut = Analogical_MGD(q)
+# q_s = mgi(Xbut)
 
-print(q, q_s)
+# print(q, q_s)
