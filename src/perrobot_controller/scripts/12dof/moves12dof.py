@@ -13,7 +13,8 @@ class Moves_12dof:
     topic = '/perrobot_12dof_controller/joint_states'
     
     @staticmethod
-    def move_foot(qinit, freq=0.1, amplitude=0.005, num_points=10, phase_shift=0, on_x=True, dt=1, sub=100):
+    def move_foot_first(qinit, freq=0.1, amplitude=0.005, phase_shift=0, on_x=True, dt=1, sub=100):
+        num_points = 4
         Xinit = Analogical_MGD(qinit)
         Xbut = Xinit.copy()
         Xbut[0 if on_x else 1] += freq

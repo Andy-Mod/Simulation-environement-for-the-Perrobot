@@ -8,15 +8,7 @@ x_limit = 0.1
 z_limit = 0.27
 
 def get_gait_phase_shifts(gait_name):
-    """
-    Returns the phase shifts for a given gait.
-
-    Parameters:
-        - gait_name: Name of the gait ('walk', 'trot', 'pace', 'gallop')
-
-    Returns:
-        - phase_shifts: Dictionary with foot names as keys and phase shifts in radians as values
-    """
+    
     # Phase shifts for common gaits
     # gaitname : [FL, FR, HL, HR]
     gaits = {
@@ -58,12 +50,7 @@ def get_gait_phase_shifts(gait_name):
     return gaits[gait_name]
 
 def plot_3d_points(points, colors):
-    """
-    Plots a set of 3D points.
     
-    Parameters:
-    points (list of tuple): List of (x, y, z) coordinates of points.
-    """
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
 
@@ -149,20 +136,7 @@ def generate_qtraj(qtraj, tf, numberofpoints=100):
     return q_t
 
 def generate_parabolic_trajectory(start, freq=0.1, amplitude=0.05, num_points=100, on_x=True):
-    """
-    Generates a parabolic trajectory from start to end with a sinusoidal height variation.
     
-    Parameters:
-        - start: Starting point (x0, y0, z0)
-        - end: Ending point (x1, y1, z1)
-        - amplitude: Amplitude of the sinusoidal height variation
-        - frequency: Frequency of the sinusoidal height variation
-        - num_points: Number of points in the trajectory (default is 100)
-        - phase_shift: Phase shift for the height variation (default is 0)
-        
-    Returns:
-        - trajectory: Array of points (x, y, z) in the trajectory
-    """
     x, y, z = start
     xf, yf, zf = start
     xout, yout, zout = 0.0, 0.0, 0.0
@@ -182,20 +156,7 @@ def generate_parabolic_trajectory(start, freq=0.1, amplitude=0.05, num_points=10
     return out 
 
 def concatenate_trajectories(points, amplitude, frequency, num_points=30):
-    """
-    Concatenates multiple parabolic trajectories defined by a list of points.
     
-    Parameters:
-        - points: List of points defining the trajectory
-        - amplitude: Amplitude of the sinusoidal height variation
-        - frequency: Frequency of the sinusoidal height variation
-        - num_points: Number of points in each segment of the trajectory (default is 30)
-        
-    Returns:
-        - full_x: x-coordinates of the full trajectory
-        - full_y: y-coordinates of the full trajectory
-        - full_z: z-coordinates of the full trajectory
-    """
     trajectories = [generate_parabolic_trajectory(points[i], points[i + 1], amplitude, frequency, num_points) 
                     for i in range(len(points) - 1)]
     

@@ -15,7 +15,7 @@ if __name__ == '__main__':
     
     rate = 10
     controller = RobotPublisher(rate)
-    values = Moves_12dof.move_foot(qinit, 0.16, 0.05, 4, on_x=True, dt=0.1, sub=10)
+    values = Moves_12dof.move_foot_first(qinit, 0.16, 0.05, on_x=True, dt=0.1, sub=10)
         
     controller.publishing_init_joint_poses(values, leg='FR')
     
