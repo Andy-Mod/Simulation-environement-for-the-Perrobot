@@ -1,5 +1,5 @@
 import numpy as np
-from numpy import pi, arccos, arcsin
+from numpy import pi, arccos, arcsin, shape
 from mgi_legs import Analogical_MGD, mgi
 from matosc import *
 import matplotlib.pyplot as plt
@@ -14,7 +14,7 @@ class Moves_12dof:
     topic = '/perrobot_12dof_controller/joint_states'
     
     @staticmethod
-    def move_foot(qinit, freq=0.1, amplitude=0.005, num_points=10, phase_shift=0, on_x=True, dt=0.001):
+    def move_foot(qinit, freq=0.1, amplitude=0.005, num_points=10, phase_shift=0, on_x=True, dt=1, sub=100):
         
         out = []
         Xinit = Analogical_MGD(qinit)
@@ -29,35 +29,23 @@ class Moves_12dof:
         _, back = sinusoide_ich(0.08, -0.01, 4)
         
         trajectory = generate_trajectory_from_shape(Xinit, Xbut, shape, num_points)
-        back = generate_trajectory_from_shape(Xbut, Xinit, back, 4)
+        qtraj = np.array([mgi(xbut) for xbut in trajectory])
+        traj = [Analogical_MGD(q) for q in qtraj]
         
-        plot_3d_points(trajectory, 'r')
-        plot_3d_points(back, 'g')
+        plot_3d_points(trajectory, 'g')
+        plot_3d_points(traj, 'r')
         
-        qtraj = [mgi(i) for i in trajectory]
-        # for point in back:
-        #     qtraj.append(mgi(point))
-            
-        qtemp = qtraj[0]
-        for pose in qtraj[1:]:
-            q = generate_qtraj(qtemp, pose, dt, numberofpoints=3)
-            out.extend(q)
         
-        out = np.array(out)
-        t = np.linspace(0, len(out) * dt, len(out))
-    
-        plt.figure(figsize=(10, 6))
-        plt.plot(t, out[:, 0], label='q1(t)')
-        plt.plot(t, out[:, 1], label="q2(t)", linestyle='--')
-        plt.plot(t, out[:, 2], label="q3(t)", linestyle=':')
-        plt.title(f'Trajectory: Position, Velocity, and Acceleration for joint q')
-        plt.xlabel('Time (t)')
-        plt.ylabel('Value')
-        plt.legend()
-        plt.grid(True)
-        plt.show()
+        out = generate_qtraj(qtraj, dt, numberofpoints=sub)
+        x = [Analogical_MGD(q) for q in out]
         
-        return np.array(out)  
+        plot_3d_points(x, 'b')
+        
+        print(out)
+        print(qtraj)
+        print(trajectory)
+        
+        return out 
     
     @staticmethod
     def generate_sequences(a1, a2, n):

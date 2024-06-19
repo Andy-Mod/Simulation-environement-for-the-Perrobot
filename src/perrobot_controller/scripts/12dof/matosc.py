@@ -107,28 +107,45 @@ def generate_trajectory_from_shape(start, end, shape, numberofpoints=10):
     
     return out 
 
-def generate_qtraj(q0, qf, tf, numberofpoints=10):
+def generate_qtraj(qtraj, tf, numberofpoints=100):
+    q0, q1, q2, q3, qf = qtraj[0], qtraj[1], qtraj[2], qtraj[3], qtraj[4]
+    tau = tf / 5
+    t1, t2, t3 = 2* tau, 3 * tau, 4 * tau
     t = np.linspace(0, tf, numberofpoints)
     
-    a3 = 2 * (qf - q0) / tf**3
-    a2 = -3 * (qf - q0) / tf**2
+    A = np.array([
+        [t1**3, t1**4, t1**5, t1**6],
+        [t2**3, t2**4, t2**5, t2**6],
+        [t3**3, t3**4, t3**5, t3**6],
+        [tf**3, tf**4, tf**5, tf**6]
+    ])
+    B = np.array([
+        q1 - q0,
+        q2 - q0,
+        q3 - q0,
+        qf - q0
+    ])
     
-    q_t = q0[:, None] + a2[:, None] * t**2 + a3[:, None] * t**3
-    q_dot_t = 2 * a2[:, None] * t + 3 * a3[:, None] * t**2
-    q_ddot_t = 2 * a2[:, None] + 6 * a3[:, None] * t
+    x, residuals, rank, s = np.linalg.lstsq(A, B, rcond=None)
+    a3, a4, a5, a6 = x
     
-    q_t = np.transpose(q_t)
+    # Calculating the trajectory q_t
+    q_t = q0 + a3 * (t**3)[:, np.newaxis] + a4 * (t**4)[:, np.newaxis] + a5 * (t**5)[:, np.newaxis] + a6 * (t**6)[:, np.newaxis]
+    key_times = [0, t1, t2, t3, tf]
+    key_points = qtraj
     
-    # plt.figure(figsize=(10, 6))
-    # plt.plot(t, q_t[:, 0], label='q1(t)')
-    # plt.plot(t, q_t[:, 1], label="q2(t)", linestyle='--')
-    # plt.plot(t, q_t[:, 2], label="q3(t)", linestyle=':')
-    # plt.title(f'Trajectory: Position, Velocity, and Acceleration for joint q')
-    # plt.xlabel('Time (t)')
-    # plt.ylabel('Value')
-    # plt.legend()
-    # plt.grid(True)
-    # plt.show()
+    plt.figure(figsize=(10, 6))
+    for i in range(q_t.shape[1]):
+        plt.plot(t, q_t[:, i], label=f'q_{i}')
+    
+    for i in range(key_points.shape[1]):
+        plt.scatter(key_times, key_points[:, i], label=f'q_{i} key points', marker='o', s=100, zorder=5)
+    plt.xlabel('Time')
+    plt.ylabel('Position')
+    plt.title('Trajectory over time')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
     
     return q_t
 
