@@ -9,7 +9,7 @@ import rospy
 if __name__ == '__main__':
     rospy.init_node('stand_x', anonymous=True)
     values = Moves_12dof.angles_for_height(Moves_12dof.TARGET_HEIGHT, Moves_12dof.HALF_LEG_LENGTH, cut=20, Rpose='stand_x')
-    rate = 8
+    rate = 10
     controller = RobotPublisher(rate)
     
     

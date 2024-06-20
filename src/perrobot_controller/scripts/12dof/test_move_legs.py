@@ -15,15 +15,12 @@ if __name__ == '__main__':
     
     rate = 10
     controller = RobotPublisher(rate)
-    values = Moves_12dof.move_foot(qinit, 0.075, 0.075, on_x=True, dt=0.01, sub=5) # safe sub=15
-    value = Moves_12dof.move_foot(qinit, 0.075, 0.075, on_x=True, dt=0.01, sub=5, front=False)
+    values = Moves_12dof.move_foot(qinit, 0.075, 0.065, on_x=True, dt=0.01, sub=6) # safe sub=15
+    value = Moves_12dof.move_foot(qinit, 0.075, 0.055, on_x=True, dt=0.01, sub=6, front=False)
     while 1 :
         controller.publishing_init_joint_poses(values, leg='FR')
-        # rospy.sleep(0.1)
         controller.publishing_init_joint_poses(value, leg='HL')
-        # rospy.sleep(0.1)
         controller.publishing_init_joint_poses(values, leg='FL')
-        # rospy.sleep(0.1)
         controller.publishing_init_joint_poses(value, leg='HR')
     
     rospy.signal_shutdown("Done publishing")
