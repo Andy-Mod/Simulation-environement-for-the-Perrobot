@@ -9,27 +9,41 @@ class Moves_12dof:
     # Robot configurations 
     HAA_2_UPPER_LEG = 19.5 * 0.001 
     HALF_LEG_LENGTH = 160 * 0.001  
-    TARGET_HEIGHT = 270 * 0.001
+    TARGET_HEIGHT = 250 * 0.001
     topic = '/perrobot_12dof_controller/joint_states'
     
     @staticmethod
-    def move_foot_first(qinit, freq=0.1, amplitude=0.005, phase_shift=0, on_x=True, dt=1, sub=100):
+    def move_foot(qinit, freq=0.1, amplitude=0.005, on_x=True, dt=1, sub=10, front=True):
         num_points = 4
         Xinit = Analogical_MGD(qinit)
         Xbut = Xinit.copy()
         Xbut[0 if on_x else 1] += freq
+        s = 2 if front else 3
 
-        _, shape = sinusoide_ich(freq, amplitude, num_points)
-        trajectory = generate_trajectory_from_shape(Xinit, Xbut, shape, num_points)
-        qtraj = np.array([mgi(xbut) for xbut in trajectory])
-
-        plot_3d_points(trajectory, 'g')
-        plot_3d_points(np.array([Analogical_MGD(q) for q in qtraj]), 'r')
-
+        _, swingshape = sinusoide_ich(freq, amplitude, num_points)
+        _, stanceshape = sinusoide_ich(freq/2, 0.03, num_points)
+        
+        swingtrajectory = generate_trajectory_from_shape(Xinit, Xbut, swingshape, num_points)
+        qtraj = np.array([mgi(xbut)[s] for xbut in swingtrajectory])
         out = generate_qtraj(qtraj, dt, numberofpoints=sub)
-        plot_3d_points(np.array([Analogical_MGD(q) for q in out]), 'b')
+        
+        Xinit = Xbut
+        Xbut = swingtrajectory[0]
+        
+        stancetrajectory = generate_trajectory_from_shape(Xinit, Xbut, -stanceshape, num_points)
+        qtraj = np.array([mgi(xbut)[s] for xbut in stancetrajectory])
+        out2 = generate_qtraj(qtraj, dt, numberofpoints=sub)
+        
+        # plot_3d_points(np.array([Analogical_MGD(q) for q in out]), 'r')
+        # plot_3d_points(np.array([Analogical_MGD(q) for q in out2]), 'g')
+        
+        out = np.concatenate((out, out2))
+        
+        # plot_3d_points(np.array([Analogical_MGD(q) for q in out]), 'b')
 
-        return out 
+        # plt.show()
+        return out
+
     
     @staticmethod
     def generate_sequences(a1, a2, n):
@@ -37,13 +51,12 @@ class Moves_12dof:
         return [(1 - t) * a1 + t * a2 for t in np.linspace(0, 1, n + 1)]
     
     @staticmethod
-    def hight_to_angles(h=None, L=None):
-        h = h if h is not None else Moves_12dof.TARGET_HEIGHT
-        L = L if L is not None else Moves_12dof.HALF_LEG_LENGTH
+    def hight_to_angles(h=TARGET_HEIGHT, L=HALF_LEG_LENGTH):
         arg = 0.5 * (h / L)
         q2 = arccos(arg)
         gamma = arcsin(arg)
         q3 = gamma - q2 - pi/2
+        
         return q2, q3
 
     @staticmethod

@@ -190,7 +190,7 @@ def mgi(Xbut):
         for s in sol:
             s[s == -0.0] = 0.0
 
-        return np.array(sol)[2]
+        return np.array(sol)
     except Exception as e:
         print(f"An error occurred in mgi: {e}")
         return []

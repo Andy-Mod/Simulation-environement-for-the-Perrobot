@@ -49,6 +49,9 @@ def get_gait_phase_shifts(gait_name):
 
     return gaits[gait_name]
 
+def generate_gait(period, phases_shift=[0, 1, 1, 0], amplitude=1, num_points_by_cycle=500):
+    pass
+
 def plot_3d_points(points, colors):
     
     fig = plt.figure()
@@ -67,7 +70,16 @@ def plot_3d_points(points, colors):
     ax.set_ylabel('Y Label')
     ax.set_zlabel('Z Label')
 
-    plt.show()
+    # plt.show()
+    
+
+def square(width, amplitude, nb=5):
+    x = np.linspace(0, width, nb)  # Adjust the number of points as needed
+    half_width = width / 2.0
+    y = np.zeros_like(x)
+    y[(x >= half_width - width / (2 * nb)) & (x <= half_width + width / (2 * nb))] = amplitude
+    return x, y
+    
 
 def transform_and_shift_parabola(width=0.3, amplitude=0.001, t_span=1, num_points=200):
     t = np.linspace(-t_span, t_span, num_points)
@@ -79,9 +91,37 @@ def sinusoide_ich(t_span, amplitude=1, num_points=500):
     t = np.linspace(-t_span, t_span, num_points+1)
     f =  (t**2)
     x = (-f + np.max(f))
-    x = (amplitude/x[t==0]) * x 
-    
+    x = (amplitude/np.max(x)) * x 
+
     return t, x
+
+def f(t_span, shifts, amplitude=0.01):
+    t = np.linspace(-t_span, t_span, num_points+1) 
+    f =  (t**2)
+    x = (-f + np.max(f))
+    x = (amplitude/np.max(x)) * x 
+    
+    t_combined = t
+    x_combined = x
+    for shift in shifts:
+        
+    
+        # Combine t and x values
+        t_combined = np.concatenate((t_combined, t - shift))
+        x_combined = np.concatenate((x_combined, x))
+
+        # Sort combined data by t values (optional)
+        sorted_indices = np.argsort(t_combined)
+        t_combined = t_combined[sorted_indices]
+        x_combined = x_combined[sorted_indices]
+
+    # Plot combined data
+    plt.plot(t_combined, x_combined, label='test : combination')
+    plt.legend()
+    plt.show()
+    
+    return x
+
 
 def generate_trajectory_from_shape(start, end, shape, numberofpoints=10):
     x, y, z = start
@@ -105,6 +145,7 @@ def generate_qtraj(qtraj, tf, numberofpoints=100):
         [t3**3, t3**4, t3**5, t3**6],
         [tf**3, tf**4, tf**5, tf**6]
     ])
+    
     B = np.array([
         q1 - q0,
         q2 - q0,
@@ -125,7 +166,7 @@ def generate_qtraj(qtraj, tf, numberofpoints=100):
         plt.plot(t, q_t[:, i], label=f'q_{i}')
     
     for i in range(key_points.shape[1]):
-        plt.scatter(key_times, key_points[:, i], label=f'q_{i} key points', marker='o', s=100, zorder=5)
+        plt.scatter(key_times, key_points[:, i], label=f'q_{i} key points', marker='o', s=100, zorder=10)
     plt.xlabel('Time')
     plt.ylabel('Position')
     plt.title('Trajectory over time')
@@ -163,3 +204,30 @@ def concatenate_trajectories(points, amplitude, frequency, num_points=30):
     full_trajectory = np.vstack(trajectories)
     return full_trajectory.T
 
+
+def cpgs(period, amplitude, phase_shifts, numberofpoints=10):
+    t = np.linspace(0, period, numberofpoints)
+    omega = 2 * pi / period
+    xs = []
+    
+    for shift in phase_shifts:
+        x = amplitude * np.abs(np.sin(omega * (t - shift)))
+        xs.append(x)
+    
+    for i, shift in enumerate(shifts):
+        plt.plot(t, xs[i], label=f'{shift}')
+    
+    plt.xlabel('Time')
+    plt.ylabel('Position')
+    plt.title('Trajectory over time')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
+amplitude, freq, num_points = 0.01, 0.16, 10 
+shifts = [
+             0,
+             np.pi / 2,
+             np.pi,
+             3 * np.pi / 2
+        ]
