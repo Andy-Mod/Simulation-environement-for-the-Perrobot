@@ -176,6 +176,48 @@ def generate_qtraj(qtraj, tf, numberofpoints=100):
     
     return q_t
 
+def interpolation(qs, tf, numberofpoints):
+    num = len(qs)
+    t = np.linspace(0, tf, numberofpoints)
+    tau = tf / num
+    key_points = np.array(qs)
+    ts = [i * tau for i in range(2, num)]
+    ts.append(tf)
+    
+    q0 = qs[0]
+    B = [q - q0 for q in qs[1:]]
+    
+    A = []
+    
+    for t_i in ts:
+        A.append([t_i**i for i in range(3, num + 2)])
+        
+    A, B = np.array(A), np.array(B)
+    
+    x, residuals, rank, s = np.linalg.lstsq(A, B, rcond=None)
+    
+    q_t = np.tile(q0, (numberofpoints, 1))
+    
+    for i, a in enumerate(x):
+        j = i + 3
+        q_t += a * (t**j)[:, np.newaxis]
+    
+    plt.figure(figsize=(10, 6))
+    for i in range(q_t.shape[1]):
+        plt.plot(t, q_t[:, i], label=f'q_{i}')
+    
+    for i in range(key_points.shape[1]):
+        plt.scatter(ts, key_points[1:, i], label=f'q_{i} key points', marker='o', s=100, zorder=10)
+    plt.xlabel('Time')
+    plt.ylabel('Position')
+    plt.title('Trajectory over time')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+    
+    return q_t
+    
+
 def generate_parabolic_trajectory(start, freq=0.1, amplitude=0.05, num_points=100, on_x=True):
     
     x, y, z = start

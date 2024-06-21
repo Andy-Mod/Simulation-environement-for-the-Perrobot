@@ -50,7 +50,7 @@ class RobotPublisher:
         
         self.topics = []
         
-    def publishing_init_joint_poses(self, values, leg=''):
+    def publishing_init_joint_poses(self, values, leg='', set=None):
         
         if leg == 'FR':
             self.topics = self.FR

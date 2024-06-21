@@ -10,38 +10,45 @@ class Moves_12dof:
     HAA_2_UPPER_LEG = 19.5 * 0.001 
     HALF_LEG_LENGTH = 160 * 0.001  
     TARGET_HEIGHT = 250 * 0.001
+    sets = [
+        [0, 1, 11], # FL
+        [2, 3, 9], # FR
+        [6, 7, 10], # HL
+        [4, 5, 8] # HR
+    ]
+    
     topic = '/perrobot_12dof_controller/joint_states'
     
     @staticmethod
     def move_foot(qinit, freq=0.1, amplitude=0.005, on_x=True, dt=1, sub=10, front=True):
-        num_points = 4
+        num_points = 10
         Xinit = Analogical_MGD(qinit)
         Xbut = Xinit.copy()
         Xbut[0 if on_x else 1] += freq
         s = 2 if front else 3
 
-        _, swingshape = sinusoide_ich(freq, amplitude, num_points)
-        _, stanceshape = sinusoide_ich(freq/2, 0.03, num_points)
+        _, swingshape = transform_and_shift_parabola(width=0.3, amplitude=0.01, t_span=1, num_points=num_points+1) # sinusoide_ich(freq, amplitude, num_points)
+        _, stanceshape = transform_and_shift_parabola(width=0.3, amplitude=-0.001, t_span=1, num_points=num_points+1) # sinusoide_ich(freq/2, -0.03, num_points)
         
         swingtrajectory = generate_trajectory_from_shape(Xinit, Xbut, swingshape, num_points)
         qtraj = np.array([mgi(xbut)[s] for xbut in swingtrajectory])
-        out = generate_qtraj(qtraj, dt, numberofpoints=sub)
+        out = interpolation(qtraj, dt, numberofpoints=sub)
         
         Xinit = Xbut
         Xbut = swingtrajectory[0]
         
-        stancetrajectory = generate_trajectory_from_shape(Xinit, Xbut, -stanceshape, num_points)
+        stancetrajectory = generate_trajectory_from_shape(Xinit, Xbut, stanceshape, num_points)
         qtraj = np.array([mgi(xbut)[s] for xbut in stancetrajectory])
-        out2 = generate_qtraj(qtraj, dt, numberofpoints=sub)
+        out2 = interpolation(qtraj, dt, numberofpoints=sub)
         
-        # plot_3d_points(np.array([Analogical_MGD(q) for q in out]), 'r')
-        # plot_3d_points(np.array([Analogical_MGD(q) for q in out2]), 'g')
+        plot_3d_points(np.array([Analogical_MGD(q) for q in out]), 'r')
+        plot_3d_points(np.array([Analogical_MGD(q) for q in out2]), 'g')
         
         out = np.concatenate((out, out2))
         
-        # plot_3d_points(np.array([Analogical_MGD(q) for q in out]), 'b')
+        plot_3d_points(np.array([Analogical_MGD(q) for q in out]), 'b')
 
-        # plt.show()
+        plt.show()
         return out
 
     
@@ -59,6 +66,18 @@ class Moves_12dof:
         
         return q2, q3
 
+    @staticmethod
+    def trot(init_pose, FR, FL, HR, HL, h=TARGET_HEIGHT, L=HALF_LEG_LENGTH):
+        q2, q3 = Moves_12dof.hight_to_angles(h, L)
+        init_pose = Moves_12dof.pose(q2, q3, init_pose)
+        
+        out = []
+        
+        for i, q in enumerate(FR):
+            pass
+        
+    
+    
     @staticmethod
     def pose(q2, q3, Rpose='stand_x'):
         poses = {
