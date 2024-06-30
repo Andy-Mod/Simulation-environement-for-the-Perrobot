@@ -20,26 +20,37 @@ class Moves_12dof:
     topic = '/perrobot_12dof_controller/joint_states'
     
     @staticmethod
-    def move_foot(qinit, freq=0.1, amplitude=0.005, on_x=True, dt=1, sub=10, front=True):
-        num_points = 10
+    def move_foot(qinit, freq=0.1, amplitude=0.005, on_x=True, num_points=10, sub=10, front=True):
+         
         Xinit = Analogical_MGD(qinit)
         Xbut = Xinit.copy()
-        Xbut[0 if on_x else 1] += freq
-        s = 2 if front else 3
-
-        _, swingshape = transform_and_shift_parabola(width=0.3, amplitude=0.01, t_span=1, num_points=num_points+1) # sinusoide_ich(freq, amplitude, num_points)
-        _, stanceshape = transform_and_shift_parabola(width=0.3, amplitude=-0.001, t_span=1, num_points=num_points+1) # sinusoide_ich(freq/2, -0.03, num_points)
         
-        swingtrajectory = generate_trajectory_from_shape(Xinit, Xbut, swingshape, num_points)
+        first, second = [], []
+        dt = 0.1
+        
+        _, swingshape = sinusoide_ich(freq, amplitude, num_points) # transform_and_shift_parabola(width=0.3, amplitude=0.01, t_span=1, num_points=num_points+1)  transform_and_shift_parabola(width=0.3, amplitude=-0.001, t_span=1, num_points=num_points+1)
+        _, stanceshape = sinusoide_ich(freq/2, -0.03, num_points)
+        lineshape = np.zeros(num_points+1)
+        
+        if on_x:
+            Xbut[0] += freq
+            first, second = swingshape, stanceshape
+        else:
+            Xbut[1] += freq
+            first, second = lineshape, lineshape
+            
+        s = 2 if front else 3
+        
+        swingtrajectory = generate_trajectory_from_shape(Xinit, Xbut, first, num_points)
         qtraj = np.array([mgi(xbut)[s] for xbut in swingtrajectory])
-        out = interpolation(qtraj, dt, numberofpoints=sub)
+        out = interpolation_qtraj(qtraj, dt, numberofpoints=sub)
         
         Xinit = Xbut
         Xbut = swingtrajectory[0]
         
-        stancetrajectory = generate_trajectory_from_shape(Xinit, Xbut, stanceshape, num_points)
+        stancetrajectory = generate_trajectory_from_shape(Xinit, Xbut, second, num_points)
         qtraj = np.array([mgi(xbut)[s] for xbut in stancetrajectory])
-        out2 = interpolation(qtraj, dt, numberofpoints=sub)
+        out2 = interpolation_qtraj(qtraj, dt, numberofpoints=sub)
         
         plot_3d_points(np.array([Analogical_MGD(q) for q in out]), 'r')
         plot_3d_points(np.array([Analogical_MGD(q) for q in out2]), 'g')

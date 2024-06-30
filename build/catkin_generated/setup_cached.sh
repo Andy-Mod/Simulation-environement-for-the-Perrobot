@@ -8,7 +8,8 @@
 
 # modified environment variables
 export CMAKE_PREFIX_PATH="/home/perrobot/perrobot/devel:$CMAKE_PREFIX_PATH"
+export LD_LIBRARY_PATH="/home/perrobot/perrobot/devel/lib:$LD_LIBRARY_PATH"
+export PKG_CONFIG_PATH="/home/perrobot/perrobot/devel/lib/pkgconfig:$PKG_CONFIG_PATH"
 export PWD='/home/perrobot/perrobot/build'
-export PYTHONPATH='/opt/ros/noetic/lib/python3/dist-packages:/usr/bin/python3/dist-packages:/usr/bin/python3/dist-packages'
-export ROSLISP_PACKAGE_DIRECTORIES='/home/perrobot/perrobot/devel/share/common-lisp'
+export ROSLISP_PACKAGE_DIRECTORIES="/home/perrobot/perrobot/devel/share/common-lisp:$ROSLISP_PACKAGE_DIRECTORIES"
 export ROS_PACKAGE_PATH="/home/perrobot/perrobot/src:$ROS_PACKAGE_PATH"

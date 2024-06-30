@@ -131,6 +131,10 @@ def generate_trajectory_from_shape(start, end, shape, numberofpoints=10):
     xout, yout, zout = np.linspace(x, xf, numberofpoints+1), np.linspace(y, yf, numberofpoints+1), np.linspace(z, zf, numberofpoints+1)
     out = np.column_stack((xout, yout, zout+shape))
     
+    # plt.plot(out[:, 1], out[:, 2], label='test : combination')
+    # plt.legend()
+    # plt.show()
+    
     return out 
 
 def generate_qtraj(qtraj, tf, numberofpoints=100):
@@ -176,7 +180,18 @@ def generate_qtraj(qtraj, tf, numberofpoints=100):
     
     return q_t
 
-def interpolation(qs, tf, numberofpoints):
+def interpolation_qtraj(qs, tf, numberofpoints):
+    """
+        Systeme d'équation :
+        q0, qf
+        q_point0 = q_pointf = q_point_point0 = 0
+        ti, qi pour i = [|1, n|] n fixed points on the foot trajectory
+        
+        q(t) = sum_k = 0 ^ n + 4 a_k * t^k
+        a_0 = q0, a_1 = a_2 = 0
+        q(ti) = qi
+        
+    """
     num = len(qs)
     t = np.linspace(0, tf, numberofpoints)
     tau = tf / num
@@ -190,7 +205,7 @@ def interpolation(qs, tf, numberofpoints):
     A = []
     
     for t_i in ts:
-        A.append([t_i**i for i in range(3, num + 2)])
+        A.append([t_i**i for i in range(3, num + 3)])
         
     A, B = np.array(A), np.array(B)
     
@@ -202,18 +217,18 @@ def interpolation(qs, tf, numberofpoints):
         j = i + 3
         q_t += a * (t**j)[:, np.newaxis]
     
-    plt.figure(figsize=(10, 6))
-    for i in range(q_t.shape[1]):
-        plt.plot(t, q_t[:, i], label=f'q_{i}')
+    # plt.figure(figsize=(10, 6))
+    # for i in range(q_t.shape[1]):
+    #     plt.plot(t, q_t[:, i], label=f'q_{i}')
     
-    for i in range(key_points.shape[1]):
-        plt.scatter(ts, key_points[1:, i], label=f'q_{i} key points', marker='o', s=100, zorder=10)
-    plt.xlabel('Time')
-    plt.ylabel('Position')
-    plt.title('Trajectory over time')
-    plt.legend()
-    plt.grid(True)
-    plt.show()
+    # for i in range(key_points.shape[1]):
+    #     plt.scatter(ts, key_points[1:, i], label=f'q_{i} key points', marker='o', s=100, zorder=10)
+    # plt.xlabel('Time')
+    # plt.ylabel('Position')
+    # plt.title('Trajectory over time')
+    # plt.legend()
+    # plt.grid(True)
+    # plt.show()
     
     return q_t
     
