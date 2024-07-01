@@ -10,17 +10,24 @@ import rospy
 if __name__ == '__main__':
     rospy.init_node('move_FR', anonymous=True)
     
-    q2, q3 = Moves_12dof.hight_to_angles(h=Moves_12dof.TARGET_HEIGHT, L=Moves_12dof.HALF_LEG_LENGTH)
-    qinit = [0.0, q2, q3]
+    sets = [
+        {
+        'FR':True,
+        'HL':False
+        },
+        {
+        'FL':True,
+        'HR':False
+        } 
+    ]
+    
+    set1, values = Moves_12dof.move_set_of_legs(sets[0], 0.075, 0.025, on_x=True, sub=8)
+    set2, value = Moves_12dof.move_set_of_legs(sets[1], 0.075, 0.025, on_x=True, sub=8)
     
     rate = 10
     controller = RobotPublisher(rate)
-    values = Moves_12dof.move_foot(qinit, 0.075, 0.065, on_x=True, sub=6) # safe sub=6
-    value = Moves_12dof.move_foot(qinit, 0.075, 0.055, on_x=True, sub=6, front=False)
-    while 1 :
-        controller.publishing_init_joint_poses(values, leg='FR')
-        controller.publishing_init_joint_poses(value, leg='HL')
-        controller.publishing_init_joint_poses(values, leg='FL')
-        controller.publishing_init_joint_poses(value, leg='HR')
+    
+    controller.publish_on_leg_set(values, set1)
+    controller.publish_on_leg_set(value, set2)
     
     rospy.signal_shutdown("Done publishing")

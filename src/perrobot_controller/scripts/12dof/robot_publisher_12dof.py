@@ -49,8 +49,8 @@ class RobotPublisher:
         
         
         self.topics = []
-        
-    def publishing_init_joint_poses(self, values, leg='', set=None):
+    
+    def publisher_one_leg(self, values, leg):
         
         if leg == 'FR':
             self.topics = self.FR
@@ -60,8 +60,56 @@ class RobotPublisher:
             self.topics = self.HL
         elif leg == 'HR':
             self.topics = self.HR
-        else :
-            self.topics = self.all
+        else:
+            raise ValueError("leg values not right")
+        print(self.topics)
+        
+        publishers = [rospy.Publisher(topic, Float64, queue_size=10) for topic in self.topics]
+
+        rate = rospy.Rate(self.RATE)
+        for values in values:
+            for i in range(len(self.topics)):
+                message = Float64()
+                message.data = values[i]
+                publishers[i].publish(message)
+                print(f"Publishing on {self.topics[i]}: {values[i]}")
+                
+            rate.sleep()
+        self.topics = []
+            
+    def publish_on_leg_set(self, values, set):
+        for leg in set:
+            if leg == 'FR':
+                self.topics += self.FR
+            elif leg == 'FL':
+                self.topics += self.FL
+            elif leg == 'HL':
+                self.topics += self.HL
+            elif leg == 'HR':
+                self.topics += self.HR
+            else:
+                raise ValueError("leg values not right")
+        
+        print(self.topics)
+        
+        publishers = [rospy.Publisher(topic, Float64, queue_size=10) for topic in self.topics]
+
+        rate = rospy.Rate(self.RATE)
+        for values in values:
+            for i in range(len(self.topics)):
+                message = Float64()
+                message.data = values[i]
+                publishers[i].publish(message)
+                print(f"Publishing on {self.topics[i]}: {values[i]}")
+                
+            rate.sleep()
+        self.topics = []
+        
+        
+    def publishing_init_joint_poses(self, values):
+        
+        self.topics = self.all
+        print(self.topics)
             
         publishers = [rospy.Publisher(topic, Float64, queue_size=10) for topic in self.topics]
 
@@ -74,3 +122,4 @@ class RobotPublisher:
                 print(f"Publishing on {self.topics[i]}: {values[i]}")
                 
             rate.sleep()
+        self.topics = []

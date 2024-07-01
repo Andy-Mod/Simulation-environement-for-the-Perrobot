@@ -52,16 +52,71 @@ class Moves_12dof:
         qtraj = np.array([mgi(xbut)[s] for xbut in stancetrajectory])
         out2 = interpolation_qtraj(qtraj, dt, numberofpoints=sub)
         
-        plot_3d_points(np.array([Analogical_MGD(q) for q in out]), 'r')
-        plot_3d_points(np.array([Analogical_MGD(q) for q in out2]), 'g')
+        # plot_3d_points(np.array([Analogical_MGD(q) for q in out]), 'r')
+        # plot_3d_points(np.array([Analogical_MGD(q) for q in out2]), 'g')
         
         out = np.concatenate((out, out2))
         
-        plot_3d_points(np.array([Analogical_MGD(q) for q in out]), 'b')
+        # plot_3d_points(np.array([Analogical_MGD(q) for q in out]), 'b')
 
         plt.show()
         return out
+    
+    @staticmethod
+    def move_foot_linear_stance(qinit, freq=0.1, amplitude=0.005, on_x=True, num_points=10, sub=10, front=True):
+        Xinit = Analogical_MGD(qinit)
+        Xbut = Xinit.copy()
+        
+        first, second = [], []
+        dt = 0.1
+        
+        _, swingshape = sinusoide_ich(freq, amplitude, num_points) # transform_and_shift_parabola(width=0.3, amplitude=0.01, t_span=1, num_points=num_points+1)  transform_and_shift_parabola(width=0.3, amplitude=-0.001, t_span=1, num_points=num_points+1)
+       
+        lineshape = np.zeros(num_points+1)
+        
+        if on_x:
+            Xbut[0] += freq
+            first, second = swingshape, lineshape
+        else:
+            Xbut[1] += freq
+            first, second = lineshape, lineshape
+            
+        s = 2 if front else 3
+        
+        swingtrajectory = generate_trajectory_from_shape(Xinit, Xbut, first, num_points)
+        qtraj = np.array([mgi(xbut)[s] for xbut in swingtrajectory])
+        out = interpolation_qtraj(qtraj, dt, numberofpoints=sub)
+        
+        Xinit = Xbut
+        Xbut = swingtrajectory[0]
+        
+        stancetrajectory = generate_trajectory_from_shape(Xinit, Xbut, second, num_points)
+        qtraj = np.array([mgi(xbut)[s] for xbut in stancetrajectory])
+        out2 = interpolation_qtraj(qtraj, dt, numberofpoints=sub)
+        
+        out = np.concatenate((out, out2))
+        
+        return out
 
+    @staticmethod
+    def move_set_of_legs(leg_positions: dict, freq=0.1, amplitude=0.005, on_x=True, num_points=10, sub=10):
+        q2, q3 = Moves_12dof.hight_to_angles(h=Moves_12dof.TARGET_HEIGHT, L=Moves_12dof.HALF_LEG_LENGTH)
+        
+        movements = []
+        leg_names = leg_positions.keys()
+        positions = [leg_positions[k] for k in leg_names]
+        
+        for i, leg_name in enumerate(leg_names):  
+            qinit = [0.0, q2, q3] if positions[i] else [0.0, -q2, -q3]
+            movements.append(Moves_12dof.move_foot_linear_stance(qinit, freq, amplitude, on_x, num_points, sub, positions[i]))
+        
+        output_array = np.array(movements[0])
+        
+        for i in range(1, len(leg_names)):
+            output_array = np.column_stack((output_array, movements[i]))
+        
+        
+        return leg_names, output_array
     
     @staticmethod
     def generate_sequences(a1, a2, n):
@@ -76,19 +131,7 @@ class Moves_12dof:
         q3 = gamma - q2 - pi/2
         
         return q2, q3
-
-    @staticmethod
-    def trot(init_pose, FR, FL, HR, HL, h=TARGET_HEIGHT, L=HALF_LEG_LENGTH):
-        q2, q3 = Moves_12dof.hight_to_angles(h, L)
-        init_pose = Moves_12dof.pose(q2, q3, init_pose)
-        
-        out = []
-        
-        for i, q in enumerate(FR):
-            pass
-        
-    
-    
+   
     @staticmethod
     def pose(q2, q3, Rpose='stand_x'):
         poses = {
