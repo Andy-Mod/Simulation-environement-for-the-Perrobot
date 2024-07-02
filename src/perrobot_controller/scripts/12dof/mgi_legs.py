@@ -187,21 +187,14 @@ def mgi(Xbut):
                 [q1_2, q2_2_2, q3_2_2]
             ])
 
-        for s in sol:
-            s[s == -0.0] = 0.0
-
         return np.array(sol)
     except Exception as e:
         print(f"An error occurred in mgi: {e}")
         return []
 
+# tests 
 
-# q2, q3 = calcul_angles(TARGET_HEIGHT, HALF_LEG_LENGTH)
-
-# q = np.array([pi/4, q2, q3])
-# test = [-0.0195, 0.12, -0.25]
-
-# Xbut = Analogical_MGD(q)
-# q_s = mgi(Xbut)
-
-# print(Xbut)
+q2, q3 = calcul_angles(TARGET_HEIGHT, HALF_LEG_LENGTH)
+q = np.array([pi/15, q2, q3])
+Xbut = Analogical_MGD(q)
+print(q, Xbut, mgi(Xbut))

@@ -13,11 +13,11 @@ if __name__ == '__main__':
     sets = [
         {
         'FR':True,
-        'HL':False
+        'HL':True
         },
         {
         'FL':True,
-        'HR':False
+        'HR':True
         } 
     ]
     
@@ -27,7 +27,8 @@ if __name__ == '__main__':
     rate = 10
     controller = RobotPublisher(rate)
     
-    controller.publish_on_leg_set(values, set1)
-    controller.publish_on_leg_set(value, set2)
+    while True:
+        controller.publish_on_leg_set(values, set1)
+        controller.publish_on_leg_set(value, set2)
     
     rospy.signal_shutdown("Done publishing")

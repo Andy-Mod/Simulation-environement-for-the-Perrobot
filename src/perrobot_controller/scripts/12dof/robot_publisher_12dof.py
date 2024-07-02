@@ -62,7 +62,6 @@ class RobotPublisher:
             self.topics = self.HR
         else:
             raise ValueError("leg values not right")
-        print(self.topics)
         
         publishers = [rospy.Publisher(topic, Float64, queue_size=10) for topic in self.topics]
 
@@ -90,7 +89,6 @@ class RobotPublisher:
             else:
                 raise ValueError("leg values not right")
         
-        print(self.topics)
         
         publishers = [rospy.Publisher(topic, Float64, queue_size=10) for topic in self.topics]
 
@@ -109,7 +107,6 @@ class RobotPublisher:
     def publishing_init_joint_poses(self, values):
         
         self.topics = self.all
-        print(self.topics)
             
         publishers = [rospy.Publisher(topic, Float64, queue_size=10) for topic in self.topics]
 

@@ -52,12 +52,12 @@ class Moves_12dof:
         qtraj = np.array([mgi(xbut)[s] for xbut in stancetrajectory])
         out2 = interpolation_qtraj(qtraj, dt, numberofpoints=sub)
         
-        # plot_3d_points(np.array([Analogical_MGD(q) for q in out]), 'r')
-        # plot_3d_points(np.array([Analogical_MGD(q) for q in out2]), 'g')
+        plot_3d_points(np.array([Analogical_MGD(q) for q in out]), 'r')
+        plot_3d_points(np.array([Analogical_MGD(q) for q in out2]), 'g')
         
         out = np.concatenate((out, out2))
         
-        # plot_3d_points(np.array([Analogical_MGD(q) for q in out]), 'b')
+        plot_3d_points(np.array([Analogical_MGD(q) for q in out]), 'b')
 
         plt.show()
         return out
@@ -90,12 +90,19 @@ class Moves_12dof:
         Xinit = Xbut
         Xbut = swingtrajectory[0]
         
+        
         stancetrajectory = generate_trajectory_from_shape(Xinit, Xbut, second, num_points)
         qtraj = np.array([mgi(xbut)[s] for xbut in stancetrajectory])
         out2 = interpolation_qtraj(qtraj, dt, numberofpoints=sub)
         
+        plot_3d_points(np.array([Analogical_MGD(q) for q in out]), 'r')
+        plot_3d_points(np.array([Analogical_MGD(q) for q in out2]), 'g')
+        
         out = np.concatenate((out, out2))
         
+        plot_3d_points(np.array([Analogical_MGD(q) for q in out]), 'b')
+        
+        plt.show()
         return out
 
     @staticmethod
