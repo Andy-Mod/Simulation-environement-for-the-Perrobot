@@ -10,12 +10,6 @@ class Moves_12dof:
     HAA_2_UPPER_LEG = 19.5 * 0.001 
     HALF_LEG_LENGTH = 160 * 0.001  
     TARGET_HEIGHT = 250 * 0.001
-    sets = [
-        [0, 1, 11], # FL
-        [2, 3, 9], # FR
-        [6, 7, 10], # HL
-        [4, 5, 8] # HR
-    ]
     
     topic = '/perrobot_12dof_controller/joint_states'
     
@@ -126,6 +120,33 @@ class Moves_12dof:
         return leg_names, output_array
     
     @staticmethod
+    def gait(gait_name, amp, length, stance_coef, num_point, sub=10):
+        legs = ['FL', 'FR', 'HL', 'HR']
+        dt = 0.01
+        
+        q2, q3 = Moves_12dof.hight_to_angles(h=Moves_12dof.TARGET_HEIGHT, L=Moves_12dof.HALF_LEG_LENGTH)
+        qinit = np.array([0.0, q2, q3])
+        Xinit = Analogical_MGD(qinit)
+        trajectory = generate_gait_shape(gait_name, Xinit, amp, length, stance_coef, num_point)
+
+        qs = []
+        
+        for i, foot in enumerate(trajectory):
+            s = 2 if 'F' in legs[i] else 2
+            qtraj = np.array([mgi(xbut)[s] for xbut in foot])
+            q_interpolation = interpolation_qtraj(qtraj, dt, numberofpoints=sub)
+            
+            plot_3d_points(np.array([Analogical_MGD(q) for q in q_interpolation]), 'r')
+            qs.append(q_interpolation)
+            
+        out = qs[0]
+        
+        for q in range(1, len(legs)):
+            out = np.column_stack((out, qs[q]))
+        
+        return legs, out
+    
+    @staticmethod
     def generate_sequences(a1, a2, n):
         a1, a2 = np.array(a1), np.array(a2)
         return [(1 - t) * a1 + t * a2 for t in np.linspace(0, 1, n + 1)]
@@ -188,3 +209,5 @@ class Moves_12dof:
         qinits = [qinit, qinit, -qinit, -qinit] 
         gait_name = 's'
         Moves_12dof.visualize_gait_trajectories(gait_name, qinits, amplitude=0.05, freq=0.1, num_points=50)
+
+

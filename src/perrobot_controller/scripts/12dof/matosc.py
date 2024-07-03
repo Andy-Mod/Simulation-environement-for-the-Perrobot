@@ -49,38 +49,22 @@ def get_gait_phase_shifts(gait_name):
 
     return gaits[gait_name]
 
-def generate_gait(period, phases_shift=[0, 1, 1, 0], amplitude=1, num_points_by_cycle=500):
-    pass
-
-def plot_3d_points(points, colors):
+def sinusoide_shape(x, amp, length, phase_shift, stance_coef=1/2):
     
-    fig = plt.figure()
-    ax = fig.add_subplot(111, projection='3d')
-
-    # Unpack the points
-    x_vals = [point[0] for point in points]
-    y_vals = [point[1] for point in points]
-    z_vals = [point[2] for point in points]
-
-    # Scatter plot
-    ax.scatter(x_vals, y_vals, z_vals, c=colors, marker='o',)
-
-    # Set labels
-    ax.set_xlabel('X Label')
-    ax.set_ylabel('Y Label')
-    ax.set_zlabel('Z Label')
-
-    # plt.show()
+    omega = 2 * pi / length
+    y = amp * np.sin(omega * (x - phase_shift))
+    y[y < 0] *= stance_coef
     
-
+    return y 
+    
 def square(width, amplitude, nb=5):
     x = np.linspace(0, width, nb)  # Adjust the number of points as needed
     half_width = width / 2.0
     y = np.zeros_like(x)
     y[(x >= half_width - width / (2 * nb)) & (x <= half_width + width / (2 * nb))] = amplitude
+    
     return x, y
     
-
 def transform_and_shift_parabola(width=0.3, amplitude=0.001, t_span=1, num_points=200):
     t = np.linspace(-t_span, t_span, num_points)
     x = (t)**2
@@ -95,33 +79,21 @@ def sinusoide_ich(t_span, amplitude=1, num_points=500):
 
     return t, x
 
-def f(t_span, shifts, amplitude=0.01):
-    t = np.linspace(-t_span, t_span, num_points+1) 
-    f =  (t**2)
-    x = (-f + np.max(f))
-    x = (amplitude/np.max(x)) * x 
+def plot_3d_points(points, colors):
     
-    t_combined = t
-    x_combined = x
-    for shift in shifts:
-        
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+
+    x_vals = [point[0] for point in points]
+    y_vals = [point[1] for point in points]
+    z_vals = [point[2] for point in points]
     
-        # Combine t and x values
-        t_combined = np.concatenate((t_combined, t - shift))
-        x_combined = np.concatenate((x_combined, x))
+    ax.scatter(x_vals, y_vals, z_vals, c=colors, marker='o',)
+    ax.set_xlabel('X Label')
+    ax.set_ylabel('Y Label')
+    ax.set_zlabel('Z Label')
 
-        # Sort combined data by t values (optional)
-        sorted_indices = np.argsort(t_combined)
-        t_combined = t_combined[sorted_indices]
-        x_combined = x_combined[sorted_indices]
-
-    # Plot combined data
-    plt.plot(t_combined, x_combined, label='test : combination')
-    plt.legend()
     plt.show()
-    
-    return x
-
 
 def generate_trajectory_from_shape(start, end, shape, numberofpoints=10):
     x, y, z = start
@@ -131,11 +103,36 @@ def generate_trajectory_from_shape(start, end, shape, numberofpoints=10):
     xout, yout, zout = np.linspace(x, xf, numberofpoints+1), np.linspace(y, yf, numberofpoints+1), np.linspace(z, zf, numberofpoints+1)
     out = np.column_stack((xout, yout, zout+shape))
     
-    # plt.plot(out[:, 1], out[:, 2], label='test : combination')
-    # plt.legend()
-    # plt.show()
-    
     return out 
+
+def generate_gait_shape(gait_name, start, amp, length, stance_coef, num_point, it=2):
+    phase_shifts = get_gait_phase_shifts(gait_name)
+    
+    x_values = np.linspace(0, length, num_point) 
+    
+    x, y, z = start
+    out = []
+
+    shapes = [sinusoide_shape(x_values, amp, length, phase_shift, stance_coef) for phase_shift in phase_shifts]
+
+    for i, zout in enumerate(shapes):
+        
+        x_stance = x_values[zout < 0] 
+        x_swing = np.linspace(0, length/2, num_point - len(x_stance))
+
+        xout = np.concatenate((x_swing, x_stance)) if x < 0 else np.concatenate((x_swing[::-1], x_stance[::-1]))
+        xout = xout + x
+        
+        yout = np.zeros(len(xout))
+
+        points = np.column_stack((xout, yout, z + zout[:len(xout)]))
+        out.append(points)
+        
+        plot_3d_points(points, 'g')
+    
+    plt.show()
+    
+    return out
 
 def generate_qtraj(qtraj, tf, numberofpoints=100):
     q0, q1, q2, q3, qf = qtraj[0], qtraj[1], qtraj[2], qtraj[3], qtraj[4]
@@ -231,60 +228,12 @@ def interpolation_qtraj(qs, tf, numberofpoints):
     # plt.show()
     
     return q_t
-    
 
-def generate_parabolic_trajectory(start, freq=0.1, amplitude=0.05, num_points=100, on_x=True):
-    
-    x, y, z = start
-    xf, yf, zf = start
-    xout, yout, zout = 0.0, 0.0, 0.0
-    
-    _, s = sinusoide_ich(freq, amplitude, num_points)
-    # _, s = transform_and_shift_parabola(width=0.3, amplitude=0.001, t_span=1, num_points=num_points+1)
-    
-    if on_x:
-        xf += freq 
-    else:
-        yf += freq
-         
-    xout, yout, zout = np.linspace(x, xf, num_points+1), np.linspace(y, yf, num_points+1), np.linspace(z, zf, num_points+1)
-    out = np.column_stack((xout, yout, zout+s))
-    # plot_3d_points(out, 'g')
-    
-    return out 
+# amp = 0.01  
+# length = 0.075
+# stance_coef = 1
+# start = [-0.0195, 0., -0.25]
+# gait_name = 'walk'
+# num_point = 20
 
-def concatenate_trajectories(points, amplitude, frequency, num_points=30):
-    
-    trajectories = [generate_parabolic_trajectory(points[i], points[i + 1], amplitude, frequency, num_points) 
-                    for i in range(len(points) - 1)]
-    
-    full_trajectory = np.vstack(trajectories)
-    return full_trajectory.T
-
-
-def cpgs(period, amplitude, phase_shifts, numberofpoints=10):
-    t = np.linspace(0, period, numberofpoints)
-    omega = 2 * pi / period
-    xs = []
-    
-    for shift in phase_shifts:
-        x = amplitude * np.abs(np.sin(omega * (t - shift)))
-        xs.append(x)
-    
-    for i, shift in enumerate(shifts):
-        plt.plot(t, xs[i], label=f'{shift}')
-    
-    plt.xlabel('Time')
-    plt.ylabel('Position')
-    plt.title('Trajectory over time')
-    plt.legend()
-    plt.grid(True)
-    plt.show()
-
-amplitude, freq, num_points = 0.01, 0.16, 10 
-shifts = [
-             0,
-             np.pi / 2,
-             np.pi,
-             3 * np.pi / 2
-        ]
+# generate_gait_shape(gait_name, start, amp, length, stance_coef, num_point)
