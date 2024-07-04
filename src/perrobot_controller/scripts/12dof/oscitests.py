@@ -1,38 +1,53 @@
 import numpy as np
-from numpy import pi, sin
 import matplotlib.pyplot as plt
 
-def custom_sine_function(x, amp, length, phase_shift, stance_coef=1/2):
-    omega = 2 * pi / length
+class AdaptiveOscillator:
+    def __init__(self, natural_frequency, coupling_strength):
+        self.natural_frequency = natural_frequency
+        self.coupling_strength = coupling_strength
+        self.phase = 0.0
     
-    y = amp * np.sin(omega * x - phase_shift)
+    def update(self, external_phase, dt):
+        d_phase = self.natural_frequency + self.coupling_strength * np.sin(external_phase - self.phase)
+        self.phase += d_phase * dt
     
-    y[y < 0 ] *= stance_coef
+    def get_phase(self):
+        return self.phase
+
+def create_and_couple_oscillators(natural_frequencies, coupling_strengths, phase_shifts, dt, T):
+    num_oscillators = len(natural_frequencies)
+    oscillators = [AdaptiveOscillator(natural_frequencies[i], coupling_strengths[i]) for i in range(num_oscillators)]
     
-    return y 
+    time = np.arange(0, T, dt)
+    phases = np.zeros((num_oscillators, len(time)))
+    
+    for i, t in enumerate(time):
+        for j in range(num_oscillators):
+            if j == 0:
+                external_phase = oscillators[-1].get_phase() + phase_shifts[-1]
+            else:
+                external_phase = oscillators[j-1].get_phase() + phase_shifts[j-1]
+            oscillators[j].update(external_phase, dt)
+            phases[j, i] = oscillators[j].get_phase()
+    
+    return time, phases
 
-# Example usage
+# Parameters
+natural_frequencies = [1.0, 1.0, 1.0, 1.0]  # Natural frequencies of the oscillators
+coupling_strengths = [1, 1, 1, 1]  # Coupling strengths
+phase_shifts = [0, np.pi/2, np.pi, 3*np.pi/2]  # Phase shifts between oscillators
+dt = 0.01  # Time step
+T = 20  # Total time
 
-amp = 0.01  
-length = 0.075
-phase_shift = 0
-stance_coef = 1/2
-x_values = np.linspace(0, length, 100) 
+# Create and couple oscillators
+time, phases = create_and_couple_oscillators(natural_frequencies, coupling_strengths, phase_shifts, dt, T)
 
-y_values = custom_sine_function(x_values, amp, length, phase_shift, stance_coef)
-z_values = custom_sine_function(x_values, amp, length, pi/2, stance_coef)
-k_values = custom_sine_function(x_values, amp, length, pi, stance_coef)
-u_values = custom_sine_function(x_values, amp, length, 3 * pi/2, stance_coef)
-
-y = np.concatenate((y_values, y_values))
-k = np.concatenate((k_values, k_values))
-u = np.concatenate((u_values, u_values))
-# Plotting the function
-plt.plot(np.linspace(0, 1, len(y)), y)
-plt.plot(np.linspace(0, 1, len(k)), k)
-plt.plot(np.linspace(0, 1, len(u)), u)
-
-plt.xlabel('x')
+# Plotting the results
+plt.figure(figsize=(10, 5))
+for i in range(len(natural_frequencies)):
+    plt.plot(time, np.sin(phases[i]), label=f'Oscillator {i+1}')
+plt.xlabel('Time')
+plt.ylabel('Phase')
 plt.legend()
-plt.grid(True)
+plt.title('Coupled Adaptive Oscillators')
 plt.show()

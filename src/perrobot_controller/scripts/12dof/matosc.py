@@ -52,7 +52,7 @@ def get_gait_phase_shifts(gait_name):
 def sinusoide_shape(x, amp, length, phase_shift, stance_coef=1/2):
     
     omega = 2 * pi / length
-    y = amp * np.sin(omega * (x - phase_shift))
+    y = amp * np.sin(omega * x - phase_shift)
     y[y < 0] *= stance_coef
     
     return y 
@@ -118,22 +118,21 @@ def generate_gait_shape(gait_name, start, amp, length, stance_coef, num_point, i
     for i, zout in enumerate(shapes):
         
         z_swing = zout[zout >= 0]
-        z_stance = zout[zout >= 0]
+        z_stance = zout[zout < 0]
         
         x_stance = np.linspace(length, 0, len(z_stance))
         x_swing = np.linspace(0, length, len(z_swing))
 
-        print(x_stance, x_swing)
-        xout = np.concatenate((x_swing, x_stance)) if length < 0 else np.concatenate((x_swing[::-1], x_stance[::-1]))
-        zout = np.concatenate((z_swing, z_stance)) if length < 0 else np.concatenate((z_swing[::-1], z_stance[::-1]))
-        xout = xout + x
+        # print(x_stance, x_swing)
+        
+        xout = x + x_swing
         
         yout = np.zeros(len(xout))
 
-        points = np.column_stack((xout, yout, z + zout[:len(xout)]))
+        points = np.column_stack((xout, yout, z + z_swing))
         out.append(points)
         
-        plot_3d_points(points, 'g')
+        # plot_3d_points(points, 'g')
     
     plt.show()
     

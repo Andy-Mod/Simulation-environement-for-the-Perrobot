@@ -23,10 +23,10 @@ if __name__ == '__main__':
     q2, q3 = Moves_12dof.hight_to_angles(h=Moves_12dof.TARGET_HEIGHT, L=Moves_12dof.HALF_LEG_LENGTH)
     qinit = np.array([0.0, q2, q3])
     
-    FL = Moves_12dof.move_foot(qinit, freq=-0.075, amplitude=0.02, on_x=True, num_points=10, sub=6, front=True)
-    FR = Moves_12dof.move_foot(qinit, freq=-0.075, amplitude=0.02, on_x=True, num_points=10, sub=6, front=True)
-    HL = Moves_12dof.move_foot(-qinit, freq=-0.075, amplitude=0.02, on_x=True, num_points=10, sub=6, front=False)
-    HR = Moves_12dof.move_foot(-qinit, freq=-0.075, amplitude=0.02, on_x=True, num_points=10, sub=6, front=False)
+    FL = Moves_12dof.move_foot(qinit, period=0.035, amplitude=0.02, on_x=True, num_points=10, sub=3, front=True)
+    FR = Moves_12dof.move_foot(qinit, period=0.035, amplitude=0.02, on_x=True, num_points=10, sub=3, front=True)
+    HL = Moves_12dof.move_foot(-qinit, period=0.099, amplitude=0.02, on_x=True, num_points=10, sub=3, front=True)
+    HR = Moves_12dof.move_foot(-qinit, period=0.099, amplitude=0.02, on_x=True, num_points=10, sub=3, front=True)
     
     values = np.column_stack((FR, HL))
     values2 = np.column_stack((FL, HR))

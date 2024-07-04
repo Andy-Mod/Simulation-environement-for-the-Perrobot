@@ -9,12 +9,12 @@ class Moves_12dof:
     # Robot configurations 
     HAA_2_UPPER_LEG = 19.5 * 0.001 
     HALF_LEG_LENGTH = 160 * 0.001  
-    TARGET_HEIGHT = 260 * 0.001
+    TARGET_HEIGHT = 240 * 0.001
     
     topic = '/perrobot_12dof_controller/joint_states'
     
     @staticmethod
-    def move_foot(qinit, freq=0.1, amplitude=0.005, on_x=True, num_points=10, sub=10, front=True):
+    def move_foot(qinit, period=0.1, amplitude=0.005, on_x=True, num_points=10, sub=10, front=True):
          
         Xinit = Analogical_MGD(qinit)
         Xbut = Xinit.copy()
@@ -22,15 +22,15 @@ class Moves_12dof:
         first, second = [], []
         dt = 0.1
         
-        _, swingshape = sinusoide_ich(freq, amplitude, num_points) # transform_and_shift_parabola(width=0.3, amplitude=0.01, t_span=1, num_points=num_points+1)  transform_and_shift_parabola(width=0.3, amplitude=-0.001, t_span=1, num_points=num_points+1)
-        _, stanceshape = sinusoide_ich(freq/2, -0.03, num_points)
+        _, swingshape = sinusoide_ich(period, amplitude, num_points) # transform_and_shift_parabola(width=0.3, amplitude=0.01, t_span=1, num_points=num_points+1)  transform_and_shift_parabola(width=0.3, amplitude=-0.001, t_span=1, num_points=num_points+1)
+        _, stanceshape = sinusoide_ich(period/2, -0.03, num_points)
         lineshape = np.zeros(num_points+1)
         
         if on_x:
-            Xbut[0] += freq
+            Xbut[0] -= period
             first, second = swingshape, stanceshape
         else:
-            Xbut[1] += freq
+            Xbut[1] -= period
             first, second = lineshape, lineshape
             
         s = 2 if front else 3
@@ -119,9 +119,13 @@ class Moves_12dof:
         return leg_names, output_array
     
     @staticmethod
+    def MGD(q):
+        return Analogical_MGD(q)
+    
+    @staticmethod
     def gait(gait_name, amp, length, stance_coef, num_point, sub=10):
         legs = ['FL', 'FR', 'HL', 'HR']
-        dt = 0.01
+        dt = 0.1
         
         q2, q3 = Moves_12dof.hight_to_angles(h=Moves_12dof.TARGET_HEIGHT, L=Moves_12dof.HALF_LEG_LENGTH)
         qinit = np.array([0.0, q2, q3])
@@ -131,11 +135,12 @@ class Moves_12dof:
         qs = []
         
         for i, foot in enumerate(trajectory):
-            s = 2 if 'F' in legs[i] else 2
+            s = 2 if 'F' in legs[i] else 3
+            
             qtraj = np.array([mgi(xbut)[s] for xbut in foot])
             q_interpolation = interpolation_qtraj(qtraj, dt, numberofpoints=sub)
             
-            plot_3d_points(np.array([Analogical_MGD(q) for q in q_interpolation]), 'r')
+            # plot_3d_points(np.array([Analogical_MGD(q) for q in q_interpolation]), 'r')
             qs.append(q_interpolation)
             
         out = qs[0]
