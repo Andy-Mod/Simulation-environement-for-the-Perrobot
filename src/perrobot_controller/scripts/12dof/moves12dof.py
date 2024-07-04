@@ -9,7 +9,7 @@ class Moves_12dof:
     # Robot configurations 
     HAA_2_UPPER_LEG = 19.5 * 0.001 
     HALF_LEG_LENGTH = 160 * 0.001  
-    TARGET_HEIGHT = 250 * 0.001
+    TARGET_HEIGHT = 260 * 0.001
     
     topic = '/perrobot_12dof_controller/joint_states'
     
@@ -46,14 +46,13 @@ class Moves_12dof:
         qtraj = np.array([mgi(xbut)[s] for xbut in stancetrajectory])
         out2 = interpolation_qtraj(qtraj, dt, numberofpoints=sub)
         
-        plot_3d_points(np.array([Analogical_MGD(q) for q in out]), 'r')
-        plot_3d_points(np.array([Analogical_MGD(q) for q in out2]), 'g')
+        # plot_3d_points(np.array([Analogical_MGD(q) for q in out]), 'r')
+        # plot_3d_points(np.array([Analogical_MGD(q) for q in out2]), 'g')
         
-        out = np.concatenate((out, out2))
+        # out = np.concatenate((out, out2))
         
-        plot_3d_points(np.array([Analogical_MGD(q) for q in out]), 'b')
+        # plot_3d_points(np.array([Analogical_MGD(q) for q in out]), 'b')
 
-        plt.show()
         return out
     
     @staticmethod
@@ -92,7 +91,7 @@ class Moves_12dof:
         plot_3d_points(np.array([Analogical_MGD(q) for q in out]), 'r')
         plot_3d_points(np.array([Analogical_MGD(q) for q in out2]), 'g')
         
-        out = np.concatenate((out, out2))
+        # out = np.concatenate((out, out2))
         
         plot_3d_points(np.array([Analogical_MGD(q) for q in out]), 'b')
         

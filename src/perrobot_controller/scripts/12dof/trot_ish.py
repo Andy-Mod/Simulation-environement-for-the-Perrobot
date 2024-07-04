@@ -13,22 +13,32 @@ if __name__ == '__main__':
     sets = [
         {
         'FR':True,
-        'HL':True
+        'HL':False
         },
         {
         'FL':True,
-        'HR':True
+        'HR':False
         } 
     ]
+    q2, q3 = Moves_12dof.hight_to_angles(h=Moves_12dof.TARGET_HEIGHT, L=Moves_12dof.HALF_LEG_LENGTH)
+    qinit = np.array([0.0, q2, q3])
     
-    set1, values = Moves_12dof.move_set_of_legs(sets[0], 0.075, 0.025, on_x=True, sub=8)
-    set2, value = Moves_12dof.move_set_of_legs(sets[1], 0.075, 0.025, on_x=True, sub=8)
+    FL = Moves_12dof.move_foot(qinit, freq=-0.075, amplitude=0.02, on_x=True, num_points=10, sub=6, front=True)
+    FR = Moves_12dof.move_foot(qinit, freq=-0.075, amplitude=0.02, on_x=True, num_points=10, sub=6, front=True)
+    HL = Moves_12dof.move_foot(-qinit, freq=-0.075, amplitude=0.02, on_x=True, num_points=10, sub=6, front=False)
+    HR = Moves_12dof.move_foot(-qinit, freq=-0.075, amplitude=0.02, on_x=True, num_points=10, sub=6, front=False)
     
+    values = np.column_stack((FR, HL))
+    values2 = np.column_stack((FL, HR))
+    
+    sets = ['FR', 'HL']
+    sets2 = ['FL', 'HR']
     rate = 10
     controller = RobotPublisher(rate)
     
     while True:
-        controller.publish_on_leg_set(values, set1)
-        controller.publish_on_leg_set(value, set2)
-    
+        controller.publish_on_leg_set(values, sets)
+        rospy.sleep(0.01)
+        controller.publish_on_leg_set(values2, sets2)
+        
     rospy.signal_shutdown("Done publishing")

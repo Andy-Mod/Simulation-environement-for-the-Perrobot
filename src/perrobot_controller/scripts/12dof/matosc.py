@@ -108,19 +108,24 @@ def generate_trajectory_from_shape(start, end, shape, numberofpoints=10):
 def generate_gait_shape(gait_name, start, amp, length, stance_coef, num_point, it=2):
     phase_shifts = get_gait_phase_shifts(gait_name)
     
-    x_values = np.linspace(0, length, num_point) 
+    x_values = np.linspace(0, 2*length, num_point) 
     
     x, y, z = start
     out = []
 
-    shapes = [sinusoide_shape(x_values, amp, length, phase_shift, stance_coef) for phase_shift in phase_shifts]
+    shapes = [sinusoide_shape(x_values, amp, 2*length, phase_shift, stance_coef) for phase_shift in phase_shifts]
 
     for i, zout in enumerate(shapes):
         
-        x_stance = x_values[zout < 0] 
-        x_swing = np.linspace(0, length/2, num_point - len(x_stance))
+        z_swing = zout[zout >= 0]
+        z_stance = zout[zout >= 0]
+        
+        x_stance = np.linspace(length, 0, len(z_stance))
+        x_swing = np.linspace(0, length, len(z_swing))
 
-        xout = np.concatenate((x_swing, x_stance)) if x < 0 else np.concatenate((x_swing[::-1], x_stance[::-1]))
+        print(x_stance, x_swing)
+        xout = np.concatenate((x_swing, x_stance)) if length < 0 else np.concatenate((x_swing[::-1], x_stance[::-1]))
+        zout = np.concatenate((z_swing, z_stance)) if length < 0 else np.concatenate((z_swing[::-1], z_stance[::-1]))
         xout = xout + x
         
         yout = np.zeros(len(xout))
