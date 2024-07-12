@@ -2,6 +2,7 @@ import numpy as np
 from numpy import pi
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
+from oscitests import *
 
 # Limits
 x_limit = 0.1
@@ -52,7 +53,7 @@ def get_gait_phase_shifts(gait_name):
 def sinusoide_shape(x, amp, length, phase_shift, stance_coef=1/2):
     
     omega = 2 * pi / length
-    y = amp * np.sin(omega * x - phase_shift)
+    y = amp * np.sin(omega * x - length * phase_shift)
     y[y < 0] *= stance_coef
     
     return y 
@@ -107,32 +108,25 @@ def generate_trajectory_from_shape(start, end, shape, numberofpoints=10):
 
 def generate_gait_shape(gait_name, start, amp, length, stance_coef, num_point, it=2):
     phase_shifts = get_gait_phase_shifts(gait_name)
-    
-    x_values = np.linspace(0, 2*length, num_point) 
-    
     x, y, z = start
     out = []
-
+    x_values = np.linspace(0, 2*length, num_point)
     shapes = [sinusoide_shape(x_values, amp, 2*length, phase_shift, stance_coef) for phase_shift in phase_shifts]
-
+    
     for i, zout in enumerate(shapes):
         
-        z_swing = zout[zout >= 0]
-        z_stance = zout[zout < 0]
+        z_swing = zout[zout > 0]
+        z_stance = zout[zout <= 0]
         
-        x_stance = np.linspace(length, 0, len(z_stance))
         x_swing = np.linspace(0, length, len(z_swing))
-
-        # print(x_stance, x_swing)
+        x_stance = np.linspace(length, 0, len(z_stance))
         
-        xout = x + x_swing
-        
+        xout = np.concatenate((x_swing, x_stance)) + x if length < 0 else np.concatenate((x_stance, x_swing)) + x
         yout = np.zeros(len(xout))
-
-        points = np.column_stack((xout, yout, z + z_swing))
+        points = np.column_stack((xout, yout, z + zout))
         out.append(points)
         
-        # plot_3d_points(points, 'g')
+        #plot_3d_points(points, 'g')
     
     plt.show()
     

@@ -1,53 +1,76 @@
 import numpy as np
+from scipy.integrate import solve_ivp
 import matplotlib.pyplot as plt
 
-class AdaptiveOscillator:
-    def __init__(self, natural_frequency, coupling_strength):
-        self.natural_frequency = natural_frequency
-        self.coupling_strength = coupling_strength
-        self.phase = 0.0
-    
-    def update(self, external_phase, dt):
-        d_phase = self.natural_frequency + self.coupling_strength * np.sin(external_phase - self.phase)
-        self.phase += d_phase * dt
-    
-    def get_phase(self):
-        return self.phase
 
-def create_and_couple_oscillators(natural_frequencies, coupling_strengths, phase_shifts, dt, T):
-    num_oscillators = len(natural_frequencies)
-    oscillators = [AdaptiveOscillator(natural_frequencies[i], coupling_strengths[i]) for i in range(num_oscillators)]
-    
-    time = np.arange(0, T, dt)
-    phases = np.zeros((num_oscillators, len(time)))
-    
-    for i, t in enumerate(time):
-        for j in range(num_oscillators):
-            if j == 0:
-                external_phase = oscillators[-1].get_phase() + phase_shifts[-1]
-            else:
-                external_phase = oscillators[j-1].get_phase() + phase_shifts[j-1]
-            oscillators[j].update(external_phase, dt)
-            phases[j, i] = oscillators[j].get_phase()
-    
-    return time, phases
+def R_matrix(theta):
+    return np.array([[np.cos(theta), -np.sin(theta)],
+                     [np.sin(theta),  np.cos(theta)]])
 
-# Parameters
-natural_frequencies = [1.0, 1.0, 1.0, 1.0]  # Natural frequencies of the oscillators
-coupling_strengths = [1, 1, 1, 1]  # Coupling strengths
-phase_shifts = [0, np.pi/2, np.pi, 3*np.pi/2]  # Phase shifts between oscillators
-dt = 0.01  # Time step
-T = 20  # Total time
 
-# Create and couple oscillators
-time, phases = create_and_couple_oscillators(natural_frequencies, coupling_strengths, phase_shifts, dt, T)
+def omega(T, beta, b, y):
+    return (np.pi / (beta * T * (np.exp(-b* y) + 1))) + (np.pi / ((1 - beta) * T * (np.exp(b * y) + 1)))
 
-# Plotting the results
-plt.figure(figsize=(10, 5))
-for i in range(len(natural_frequencies)):
-    plt.plot(time, np.sin(phases[i]), label=f'Oscillator {i+1}')
-plt.xlabel('Time')
-plt.ylabel('Phase')
-plt.legend()
-plt.title('Coupled Adaptive Oscillators')
-plt.show()
+def r_i(x, y):
+    return np.sqrt(x**2 + y**2)
+
+
+def system(t, variables, alpha, gamma, mu, beta, b, T, delta, thetas):
+    N = len(variables) // 2
+    x = variables[:N]
+    y = variables[N:]
+    dxdt = np.zeros(N)
+    dydt = np.zeros(N)
+
+    for i in range(N):
+        r = r_i(x[i], y[i])
+        w = omega(T, beta, b, y[i])
+        interaction_sum = np.zeros(2)
+        
+        for j in range(4):
+            R_theta = R_matrix(thetas[j])
+            interaction_sum += R_theta @ np.array([x[i], y[i]])
+        
+        dxdt[i] = alpha * (mu - r**2) * x[i] - w * y[i] + delta * interaction_sum[0]
+        dydt[i] = gamma * (mu - r**2) * y[i] + w * x[i] + delta * interaction_sum[1]
+
+    return np.concatenate((dxdt, dydt))
+
+def compute_xy(alpha, gamma, mu, beta, b, T, delta, thetas, initial_conditions, t_span, t_eval):
+    sol = solve_ivp(system, t_span, initial_conditions, args=(alpha, gamma, mu, beta, b, T, delta, thetas), t_eval=t_eval)
+    return sol.t, sol.y
+
+def shapes(alpha = 50, gamma = 50 , amplitude = 1, beta = 0.75, speed_conversion = 50, length = 1, delta = 1, thetas = [0, np.pi, np.pi/2, 3*np.pi/2],N = 4):
+    
+    # alpha = 50  # convergence speed control x : + faster convergence 
+    # gamma = 50 # convergence speed control y : + faster convergence 
+    # amplitude = 1
+    # beta = 0.75
+    # speed_conversion = 50
+    # length = 1 
+    # delta = 1  
+    # thetas = [0, np.pi, np.pi/2, 3*np.pi/2]  
+    
+    initial_conditions = np.random.rand(2 * N)
+    # [0.99916672 0.560667   0.17523497 0.66727297 0.279664   0.72604911 0.97347175 0.62076692]
+    print(initial_conditions)
+
+    t_span = (0, length)  
+    t_eval = np.linspace(t_span[0], t_span[1], 500)
+
+    t, sol = compute_xy(alpha, gamma, amplitude**2, beta, speed_conversion, length, delta, thetas, initial_conditions, t_span, t_eval)
+
+
+    plt.figure(figsize=(10, 5))
+    for i in range(N):
+        plt.plot(t, sol[i], label=f'x{i+1}(t)')
+        # plt.plot(t, sol[N + i], label=f'y{i+1}(t)')
+    plt.xlabel('Time')
+    plt.ylabel('Values')
+    plt.legend()
+    plt.title('Solution of the System of Differential Equations')
+    plt.show()
+    
+    return sol[0:N]
+
+# shapes(length=0.075)

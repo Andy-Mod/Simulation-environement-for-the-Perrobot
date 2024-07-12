@@ -1,25 +1,1430 @@
-<?xml version="1.0" ?>
-<sdf version="1.5">
-    <physics type="ode">
-      <ode>
-        <solver>
-          <type>world</type>
-        </solver>
-        <constraints>
-          <contact_max_correcting_vel>0.1</contact_max_correcting_vel>
-          <contact_surface_layer>0.0001</contact_surface_layer>
-        </constraints>
-      </ode>
-      <max_step_size>0.002</max_step_size>
+<sdf version='1.7'>
+  <world name='default'>
+    <model name='ground_plane'>
+      <static>1</static>
+      <link name='link'>
+        <collision name='collision'>
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>100 100</size>
+            </plane>
+          </geometry>
+          <surface>
+            <contact>
+              <collide_bitmask>65535</collide_bitmask>
+              <ode/>
+            </contact>
+            <friction>
+              <ode>
+                <mu>100</mu>
+                <mu2>50</mu2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='visual'>
+          <cast_shadows>0</cast_shadows>
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>100 100</size>
+            </plane>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/Grey</name>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+    </model>
+    <light name='sun' type='directional'>
+      <cast_shadows>1</cast_shadows>
+      <pose>0 0 10 0 -0 0</pose>
+      <diffuse>0.8 0.8 0.8 1</diffuse>
+      <specular>0.2 0.2 0.2 1</specular>
+      <attenuation>
+        <range>1000</range>
+        <constant>0.9</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <direction>-0.5 0.1 -0.9</direction>
+      <spot>
+        <inner_angle>0</inner_angle>
+        <outer_angle>0</outer_angle>
+        <falloff>0</falloff>
+      </spot>
+    </light>
+    <gravity>0 0 -9.8</gravity>
+    <magnetic_field>6e-06 2.3e-05 -4.2e-05</magnetic_field>
+    <atmosphere type='adiabatic'/>
+    <physics type='ode'>
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1</real_time_factor>
+      <real_time_update_rate>1000</real_time_update_rate>
     </physics>
-
-  <world name="default">
-    <include>
-      <uri>model://ground_plane</uri>
-    </include>
-    <include>
-      <uri>model://sun</uri>
-    </include>
-  
+    <scene>
+      <ambient>0.4 0.4 0.4 1</ambient>
+      <background>0.7 0.7 0.7 1</background>
+      <shadows>1</shadows>
+    </scene>
+    <wind/>
+    <spherical_coordinates>
+      <surface_model>EARTH_WGS84</surface_model>
+      <latitude_deg>0</latitude_deg>
+      <longitude_deg>0</longitude_deg>
+      <elevation>0</elevation>
+      <heading_deg>0</heading_deg>
+    </spherical_coordinates>
+    <model name='perrobot_12dof'>
+      <link name='base_link'>
+        <inertial>
+          <pose>-0.00083 1e-06 -0.000602 0 -0 0</pose>
+          <mass>1.25124</mass>
+          <inertia>
+            <ixx>0.0026622</ixx>
+            <ixy>-3.684e-05</ixy>
+            <ixz>-1.716e-05</ixz>
+            <iyy>0.0138851</iyy>
+            <iyz>-9e-08</iyz>
+            <izz>0.0160537</izz>
+          </inertia>
+        </inertial>
+        <collision name='base_link_collision'>
+          <pose>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/perrobot/perrobot/src/perrobot_description/meshes/solo12/solo_12_base.stl</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>10</mu>
+                <mu2>10</mu2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce>
+              <restitution_coefficient>0</restitution_coefficient>
+              <threshold>0.01</threshold>
+            </bounce>
+            <contact>
+              <ode>
+                <kp>100000</kp>
+                <max_vel>0.1</max_vel>
+                <min_depth>0.002</min_depth>
+              </ode>
+            </contact>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='base_link_visual'>
+          <pose>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/perrobot/perrobot/src/perrobot_description/meshes/solo12/solo_12_base.stl</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <gravity>1</gravity>
+        <sensor name='imu_sensor' type='imu'>
+          <always_on>1</always_on>
+          <update_rate>100</update_rate>
+          <visualize>1</visualize>
+          <topic>__default_topic__</topic>
+          <plugin name='imu_plugin' filename='libgazebo_ros_imu_sensor.so'>
+            <topicName>perrobot_12dof/base_link_orientation</topicName>
+            <bodyName>imu_link</bodyName>
+            <updateRateHZ>15.0</updateRateHZ>
+            <gaussianNoise>0.0</gaussianNoise>
+            <xyzOffset>0 0 0</xyzOffset>
+            <rpyOffset>0 0 0</rpyOffset>
+            <frameName>base_link</frameName>
+            <initialOrientationAsReference>0</initialOrientationAsReference>
+            <robotNamespace>/</robotNamespace>
+          </plugin>
+          <pose>0 0 0 0 -0 0</pose>
+          <imu/>
+        </sensor>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='FL_HAA' type='revolute'>
+        <pose relative_to='base_link'>0.2141 0.0875 0 0 -0 0</pose>
+        <parent>base_link</parent>
+        <child>FL_SHOULDER</child>
+        <axis>
+          <xyz>1 0 0</xyz>
+          <limit>
+            <lower>-0.785398</lower>
+            <upper>0.785398</upper>
+            <effort>1.8</effort>
+            <velocity>1000</velocity>
+          </limit>
+          <dynamics>
+            <damping>0</damping>
+            <friction>0</friction>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+      </joint>
+      <link name='FL_SHOULDER'>
+        <pose relative_to='FL_HAA'>0 0 0 0 -0 0</pose>
+        <inertial>
+          <pose>-0.094073 -0.004389 1.4e-05 0 -0 0</pose>
+          <mass>0.14196</mass>
+          <inertia>
+            <ixx>2.802e-05</ixx>
+            <ixy>3.687e-05</ixy>
+            <ixz>-9e-08</ixz>
+            <iyy>0.00038264</iyy>
+            <iyz>0</iyz>
+            <izz>0.0003805</izz>
+          </inertia>
+        </inertial>
+        <collision name='FL_SHOULDER_collision'>
+          <pose>0.0195 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/perrobot/perrobot/src/perrobot_description/meshes/solo12/solo12_hip_fe_fl.stl</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>10</mu>
+                <mu2>10</mu2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce>
+              <restitution_coefficient>0</restitution_coefficient>
+              <threshold>0.01</threshold>
+            </bounce>
+            <contact>
+              <ode>
+                <kp>100000</kp>
+                <max_vel>0.1</max_vel>
+                <min_depth>0.002</min_depth>
+              </ode>
+            </contact>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='FL_SHOULDER_visual'>
+          <pose>0.0195 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/perrobot/perrobot/src/perrobot_description/meshes/solo12/solo12_hip_fe_fl.stl</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='FL_HFE' type='revolute'>
+        <pose relative_to='FL_SHOULDER'>-0.0195 0.014 0 0 -0 0</pose>
+        <parent>FL_SHOULDER</parent>
+        <child>FL_UPPER_LEG</child>
+        <axis>
+          <xyz>0 1 0</xyz>
+          <limit>
+            <lower>-10</lower>
+            <upper>10</upper>
+            <effort>1.8</effort>
+            <velocity>1000</velocity>
+          </limit>
+          <dynamics>
+            <damping>0</damping>
+            <friction>0</friction>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+      </joint>
+      <link name='FL_UPPER_LEG'>
+        <pose relative_to='FL_HFE'>0 0 0 0 -0 0</pose>
+        <inertial>
+          <pose>1.5e-05 0.017676 -0.078382 0 -0 0</pose>
+          <mass>0.147373</mass>
+          <inertia>
+            <ixx>0.0004154</ixx>
+            <ixy>0</ixy>
+            <ixz>1e-07</ixz>
+            <iyy>0.00041637</iyy>
+            <iyz>-4.589e-05</iyz>
+            <izz>2.982e-05</izz>
+          </inertia>
+        </inertial>
+        <collision name='FL_UPPER_LEG_collision'>
+          <pose>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/perrobot/perrobot/src/perrobot_description/meshes/without_foot/solo_upper_leg_left_side.stl</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>10</mu>
+                <mu2>10</mu2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce>
+              <restitution_coefficient>0</restitution_coefficient>
+              <threshold>0.01</threshold>
+            </bounce>
+            <contact>
+              <ode>
+                <kp>100000</kp>
+                <max_vel>0.1</max_vel>
+                <min_depth>0.002</min_depth>
+              </ode>
+            </contact>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='FL_UPPER_LEG_visual'>
+          <pose>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/perrobot/perrobot/src/perrobot_description/meshes/without_foot/solo_upper_leg_left_side.stl</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='FL_KFE' type='revolute'>
+        <pose relative_to='FL_UPPER_LEG'>0 0.03745 -0.16 0 -0 0</pose>
+        <parent>FL_UPPER_LEG</parent>
+        <child>FL_LOWER_LEG</child>
+        <axis>
+          <xyz>0 1 0</xyz>
+          <limit>
+            <lower>-10</lower>
+            <upper>10</upper>
+            <effort>1.8</effort>
+            <velocity>1000</velocity>
+          </limit>
+          <dynamics>
+            <damping>0</damping>
+            <friction>0</friction>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+      </joint>
+      <link name='FL_LOWER_LEG'>
+        <pose relative_to='FL_KFE'>0 0 0 0 -0 0</pose>
+        <inertial>
+          <pose>0 0.007767 -0.070039 0 -0 0</pose>
+          <mass>0.0231829</mass>
+          <inertia>
+            <ixx>8.508e-05</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>8.58e-05</iyy>
+            <iyz>-2e-06</iyz>
+            <izz>1.39e-06</izz>
+          </inertia>
+        </inertial>
+        <collision name='FL_LOWER_LEG_collision'>
+          <pose>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/perrobot/perrobot/src/perrobot_description/meshes/without_foot/solo_lower_leg_v2_left_side.stl</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>10</mu>
+                <mu2>10</mu2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce>
+              <restitution_coefficient>0</restitution_coefficient>
+              <threshold>0.01</threshold>
+            </bounce>
+            <contact>
+              <ode>
+                <kp>100000</kp>
+                <max_vel>0.1</max_vel>
+                <min_depth>0.002</min_depth>
+              </ode>
+            </contact>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='FL_LOWER_LEG_visual'>
+          <pose>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/perrobot/perrobot/src/perrobot_description/meshes/without_foot/solo_lower_leg_v2_left_side.stl</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='FR_HAA' type='revolute'>
+        <pose relative_to='base_link'>0.2141 -0.0875 0 0 -0 0</pose>
+        <parent>base_link</parent>
+        <child>FR_SHOULDER</child>
+        <axis>
+          <xyz>1 0 0</xyz>
+          <limit>
+            <lower>-0.785398</lower>
+            <upper>0.785398</upper>
+            <effort>1.8</effort>
+            <velocity>1000</velocity>
+          </limit>
+          <dynamics>
+            <damping>0</damping>
+            <friction>0</friction>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+      </joint>
+      <link name='FR_SHOULDER'>
+        <pose relative_to='FR_HAA'>0 0 0 0 -0 0</pose>
+        <inertial>
+          <pose>-0.094073 0.004389 -1.4e-05 0 -0 0</pose>
+          <mass>0.14196</mass>
+          <inertia>
+            <ixx>2.802e-05</ixx>
+            <ixy>-3.687e-05</ixy>
+            <ixz>9e-08</ixz>
+            <iyy>0.00038264</iyy>
+            <iyz>0</iyz>
+            <izz>0.0003805</izz>
+          </inertia>
+        </inertial>
+        <collision name='FR_SHOULDER_collision'>
+          <pose>0.0195 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/perrobot/perrobot/src/perrobot_description/meshes/solo12/solo12_hip_fe_fr.stl</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>10</mu>
+                <mu2>10</mu2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce>
+              <restitution_coefficient>0</restitution_coefficient>
+              <threshold>0.01</threshold>
+            </bounce>
+            <contact>
+              <ode>
+                <kp>100000</kp>
+                <max_vel>0.1</max_vel>
+                <min_depth>0.002</min_depth>
+              </ode>
+            </contact>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='FR_SHOULDER_visual'>
+          <pose>0.0195 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/perrobot/perrobot/src/perrobot_description/meshes/solo12/solo12_hip_fe_fr.stl</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='FR_HFE' type='revolute'>
+        <pose relative_to='FR_SHOULDER'>-0.0195 -0.014 0 0 -0 0</pose>
+        <parent>FR_SHOULDER</parent>
+        <child>FR_UPPER_LEG</child>
+        <axis>
+          <xyz>0 1 0</xyz>
+          <limit>
+            <lower>-10</lower>
+            <upper>10</upper>
+            <effort>1.8</effort>
+            <velocity>1000</velocity>
+          </limit>
+          <dynamics>
+            <damping>0</damping>
+            <friction>0</friction>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+      </joint>
+      <link name='FR_UPPER_LEG'>
+        <pose relative_to='FR_HFE'>0 0 0 0 -0 0</pose>
+        <inertial>
+          <pose>-1.5e-05 -0.017676 -0.078382 0 -0 0</pose>
+          <mass>0.147373</mass>
+          <inertia>
+            <ixx>0.0004154</ixx>
+            <ixy>0</ixy>
+            <ixz>-1e-07</ixz>
+            <iyy>0.00041637</iyy>
+            <iyz>4.589e-05</iyz>
+            <izz>2.982e-05</izz>
+          </inertia>
+        </inertial>
+        <collision name='FR_UPPER_LEG_collision'>
+          <pose>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/perrobot/perrobot/src/perrobot_description/meshes/without_foot/solo_upper_leg_right_side.stl</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>10</mu>
+                <mu2>10</mu2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce>
+              <restitution_coefficient>0</restitution_coefficient>
+              <threshold>0.01</threshold>
+            </bounce>
+            <contact>
+              <ode>
+                <kp>100000</kp>
+                <max_vel>0.1</max_vel>
+                <min_depth>0.002</min_depth>
+              </ode>
+            </contact>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='FR_UPPER_LEG_visual'>
+          <pose>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/perrobot/perrobot/src/perrobot_description/meshes/without_foot/solo_upper_leg_right_side.stl</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='FR_KFE' type='revolute'>
+        <pose relative_to='FR_UPPER_LEG'>0 -0.03745 -0.16 0 -0 0</pose>
+        <parent>FR_UPPER_LEG</parent>
+        <child>FR_LOWER_LEG</child>
+        <axis>
+          <xyz>0 1 0</xyz>
+          <limit>
+            <lower>-10</lower>
+            <upper>10</upper>
+            <effort>1.8</effort>
+            <velocity>1000</velocity>
+          </limit>
+          <dynamics>
+            <damping>0</damping>
+            <friction>0</friction>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+      </joint>
+      <link name='FR_LOWER_LEG'>
+        <pose relative_to='FR_KFE'>0 0 0 0 -0 0</pose>
+        <inertial>
+          <pose>0 -0.007767 -0.070039 0 -0 0</pose>
+          <mass>0.0231829</mass>
+          <inertia>
+            <ixx>8.508e-05</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>8.58e-05</iyy>
+            <iyz>2e-06</iyz>
+            <izz>1.39e-06</izz>
+          </inertia>
+        </inertial>
+        <collision name='FR_LOWER_LEG_collision'>
+          <pose>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/perrobot/perrobot/src/perrobot_description/meshes/without_foot/solo_lower_leg_v2_right_side.stl</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>10</mu>
+                <mu2>10</mu2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce>
+              <restitution_coefficient>0</restitution_coefficient>
+              <threshold>0.01</threshold>
+            </bounce>
+            <contact>
+              <ode>
+                <kp>100000</kp>
+                <max_vel>0.1</max_vel>
+                <min_depth>0.002</min_depth>
+              </ode>
+            </contact>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='FR_LOWER_LEG_visual'>
+          <pose>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/perrobot/perrobot/src/perrobot_description/meshes/without_foot/solo_lower_leg_v2_right_side.stl</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='HL_HAA' type='revolute'>
+        <pose relative_to='base_link'>-0.2141 0.0875 0 0 -0 0</pose>
+        <parent>base_link</parent>
+        <child>HL_SHOULDER</child>
+        <axis>
+          <xyz>1 0 0</xyz>
+          <limit>
+            <lower>-0.785398</lower>
+            <upper>0.785398</upper>
+            <effort>1.8</effort>
+            <velocity>1000</velocity>
+          </limit>
+          <dynamics>
+            <damping>0</damping>
+            <friction>0</friction>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+      </joint>
+      <link name='HL_SHOULDER'>
+        <pose relative_to='HL_HAA'>0 0 0 0 -0 0</pose>
+        <inertial>
+          <pose>0.094073 -0.004389 -1.4e-05 0 -0 0</pose>
+          <mass>0.14196</mass>
+          <inertia>
+            <ixx>2.802e-05</ixx>
+            <ixy>-3.687e-05</ixy>
+            <ixz>-9e-08</ixz>
+            <iyy>0.00038264</iyy>
+            <iyz>0</iyz>
+            <izz>0.0003805</izz>
+          </inertia>
+        </inertial>
+        <collision name='HL_SHOULDER_collision'>
+          <pose>-0.0195 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/perrobot/perrobot/src/perrobot_description/meshes/solo12/solo12_hip_fe_hl.stl</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>10</mu>
+                <mu2>10</mu2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce>
+              <restitution_coefficient>0</restitution_coefficient>
+              <threshold>0.01</threshold>
+            </bounce>
+            <contact>
+              <ode>
+                <kp>100000</kp>
+                <max_vel>0.1</max_vel>
+                <min_depth>0.002</min_depth>
+              </ode>
+            </contact>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='HL_SHOULDER_visual'>
+          <pose>-0.0195 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/perrobot/perrobot/src/perrobot_description/meshes/solo12/solo12_hip_fe_hl.stl</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='HL_HFE' type='revolute'>
+        <pose relative_to='HL_SHOULDER'>0.0195 0.014 0 0 -0 0</pose>
+        <parent>HL_SHOULDER</parent>
+        <child>HL_UPPER_LEG</child>
+        <axis>
+          <xyz>0 1 0</xyz>
+          <limit>
+            <lower>-10</lower>
+            <upper>10</upper>
+            <effort>1.8</effort>
+            <velocity>1000</velocity>
+          </limit>
+          <dynamics>
+            <damping>0</damping>
+            <friction>0</friction>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+      </joint>
+      <link name='HL_UPPER_LEG'>
+        <pose relative_to='HL_HFE'>0 0 0 0 -0 0</pose>
+        <inertial>
+          <pose>1.5e-05 0.017676 -0.078382 0 -0 0</pose>
+          <mass>0.147373</mass>
+          <inertia>
+            <ixx>0.0004154</ixx>
+            <ixy>0</ixy>
+            <ixz>1e-07</ixz>
+            <iyy>0.00041637</iyy>
+            <iyz>-4.589e-05</iyz>
+            <izz>2.982e-05</izz>
+          </inertia>
+        </inertial>
+        <collision name='HL_UPPER_LEG_collision'>
+          <pose>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/perrobot/perrobot/src/perrobot_description/meshes/without_foot/solo_upper_leg_left_side.stl</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>10</mu>
+                <mu2>10</mu2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce>
+              <restitution_coefficient>0</restitution_coefficient>
+              <threshold>0.01</threshold>
+            </bounce>
+            <contact>
+              <ode>
+                <kp>100000</kp>
+                <max_vel>0.1</max_vel>
+                <min_depth>0.002</min_depth>
+              </ode>
+            </contact>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='HL_UPPER_LEG_visual'>
+          <pose>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/perrobot/perrobot/src/perrobot_description/meshes/without_foot/solo_upper_leg_left_side.stl</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='HL_KFE' type='revolute'>
+        <pose relative_to='HL_UPPER_LEG'>0 0.03745 -0.16 0 -0 0</pose>
+        <parent>HL_UPPER_LEG</parent>
+        <child>HL_LOWER_LEG</child>
+        <axis>
+          <xyz>0 1 0</xyz>
+          <limit>
+            <lower>-10</lower>
+            <upper>10</upper>
+            <effort>1.8</effort>
+            <velocity>1000</velocity>
+          </limit>
+          <dynamics>
+            <damping>0</damping>
+            <friction>0</friction>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+      </joint>
+      <link name='HL_LOWER_LEG'>
+        <pose relative_to='HL_KFE'>0 0 0 0 -0 0</pose>
+        <inertial>
+          <pose>0 0.007767 -0.070039 0 -0 0</pose>
+          <mass>0.0231829</mass>
+          <inertia>
+            <ixx>8.508e-05</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>8.58e-05</iyy>
+            <iyz>-2e-06</iyz>
+            <izz>1.39e-06</izz>
+          </inertia>
+        </inertial>
+        <collision name='HL_LOWER_LEG_collision'>
+          <pose>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/perrobot/perrobot/src/perrobot_description/meshes/without_foot/solo_lower_leg_v2_left_side.stl</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>10</mu>
+                <mu2>10</mu2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce>
+              <restitution_coefficient>0</restitution_coefficient>
+              <threshold>0.01</threshold>
+            </bounce>
+            <contact>
+              <ode>
+                <kp>100000</kp>
+                <max_vel>0.1</max_vel>
+                <min_depth>0.002</min_depth>
+              </ode>
+            </contact>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='HL_LOWER_LEG_visual'>
+          <pose>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/perrobot/perrobot/src/perrobot_description/meshes/without_foot/solo_lower_leg_v2_left_side.stl</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='HR_HAA' type='revolute'>
+        <pose relative_to='base_link'>-0.2141 -0.0875 0 0 -0 0</pose>
+        <parent>base_link</parent>
+        <child>HR_SHOULDER</child>
+        <axis>
+          <xyz>1 0 0</xyz>
+          <limit>
+            <lower>-0.785398</lower>
+            <upper>0.785398</upper>
+            <effort>1.8</effort>
+            <velocity>1000</velocity>
+          </limit>
+          <dynamics>
+            <damping>0</damping>
+            <friction>0</friction>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+      </joint>
+      <link name='HR_SHOULDER'>
+        <pose relative_to='HR_HAA'>0 0 0 0 -0 0</pose>
+        <inertial>
+          <pose>0.094073 0.004389 1.4e-05 0 -0 0</pose>
+          <mass>0.14196</mass>
+          <inertia>
+            <ixx>2.802e-05</ixx>
+            <ixy>3.687e-05</ixy>
+            <ixz>9e-08</ixz>
+            <iyy>0.00038264</iyy>
+            <iyz>0</iyz>
+            <izz>0.0003805</izz>
+          </inertia>
+        </inertial>
+        <collision name='HR_SHOULDER_collision'>
+          <pose>-0.0195 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/perrobot/perrobot/src/perrobot_description/meshes/solo12/solo12_hip_fe_hr.stl</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>10</mu>
+                <mu2>10</mu2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce>
+              <restitution_coefficient>0</restitution_coefficient>
+              <threshold>0.01</threshold>
+            </bounce>
+            <contact>
+              <ode>
+                <kp>100000</kp>
+                <max_vel>0.1</max_vel>
+                <min_depth>0.002</min_depth>
+              </ode>
+            </contact>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='HR_SHOULDER_visual'>
+          <pose>-0.0195 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/perrobot/perrobot/src/perrobot_description/meshes/solo12/solo12_hip_fe_hr.stl</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='HR_HFE' type='revolute'>
+        <pose relative_to='HR_SHOULDER'>0.0195 -0.014 0 0 -0 0</pose>
+        <parent>HR_SHOULDER</parent>
+        <child>HR_UPPER_LEG</child>
+        <axis>
+          <xyz>0 1 0</xyz>
+          <limit>
+            <lower>-10</lower>
+            <upper>10</upper>
+            <effort>1.8</effort>
+            <velocity>1000</velocity>
+          </limit>
+          <dynamics>
+            <damping>0</damping>
+            <friction>0</friction>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+      </joint>
+      <link name='HR_UPPER_LEG'>
+        <pose relative_to='HR_HFE'>0 0 0 0 -0 0</pose>
+        <inertial>
+          <pose>-1.5e-05 -0.017676 -0.078382 0 -0 0</pose>
+          <mass>0.147373</mass>
+          <inertia>
+            <ixx>0.0004154</ixx>
+            <ixy>0</ixy>
+            <ixz>-1e-07</ixz>
+            <iyy>0.00041637</iyy>
+            <iyz>4.589e-05</iyz>
+            <izz>2.982e-05</izz>
+          </inertia>
+        </inertial>
+        <collision name='HR_UPPER_LEG_collision'>
+          <pose>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/perrobot/perrobot/src/perrobot_description/meshes/without_foot/solo_upper_leg_right_side.stl</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>10</mu>
+                <mu2>10</mu2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce>
+              <restitution_coefficient>0</restitution_coefficient>
+              <threshold>0.01</threshold>
+            </bounce>
+            <contact>
+              <ode>
+                <kp>100000</kp>
+                <max_vel>0.1</max_vel>
+                <min_depth>0.002</min_depth>
+              </ode>
+            </contact>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='HR_UPPER_LEG_visual'>
+          <pose>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/perrobot/perrobot/src/perrobot_description/meshes/without_foot/solo_upper_leg_right_side.stl</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='HR_KFE' type='revolute'>
+        <pose relative_to='HR_UPPER_LEG'>0 -0.03745 -0.16 0 -0 0</pose>
+        <parent>HR_UPPER_LEG</parent>
+        <child>HR_LOWER_LEG</child>
+        <axis>
+          <xyz>0 1 0</xyz>
+          <limit>
+            <lower>-10</lower>
+            <upper>10</upper>
+            <effort>1.8</effort>
+            <velocity>1000</velocity>
+          </limit>
+          <dynamics>
+            <damping>0</damping>
+            <friction>0</friction>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+      </joint>
+      <link name='HR_LOWER_LEG'>
+        <pose relative_to='HR_KFE'>0 0 0 0 -0 0</pose>
+        <inertial>
+          <pose>0 -0.007767 -0.070039 0 -0 0</pose>
+          <mass>0.0231829</mass>
+          <inertia>
+            <ixx>8.508e-05</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>8.58e-05</iyy>
+            <iyz>2e-06</iyz>
+            <izz>1.39e-06</izz>
+          </inertia>
+        </inertial>
+        <collision name='HR_LOWER_LEG_collision'>
+          <pose>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/perrobot/perrobot/src/perrobot_description/meshes/without_foot/solo_lower_leg_v2_right_side.stl</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>10</mu>
+                <mu2>10</mu2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce>
+              <restitution_coefficient>0</restitution_coefficient>
+              <threshold>0.01</threshold>
+            </bounce>
+            <contact>
+              <ode>
+                <kp>100000</kp>
+                <max_vel>0.1</max_vel>
+                <min_depth>0.002</min_depth>
+              </ode>
+            </contact>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='HR_LOWER_LEG_visual'>
+          <pose>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/perrobot/perrobot/src/perrobot_description/meshes/without_foot/solo_lower_leg_v2_right_side.stl</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <plugin name='gazebo_ros_control' filename='libgazebo_ros_control.so'>
+        <robotNamespace>perrobot_12dof_controller</robotNamespace>
+      </plugin>
+      <static>0</static>
+      <plugin name='joint_state_publisher' filename='libgazebo_ros_joint_state_publisher.so'>
+        <robotNamespace>perrobot_12dof_controller</robotNamespace>
+        <jointName>FL_HFE, FR_HFE, HL_HFE, HR_HFE, FL_KFE, FR_KFE, HL_KFE, HR_KFE, FL_HAA, FR_HAA, HL_HAA, HR_HAA</jointName>
+        <updateRate>100</updateRate>
+      </plugin>
+      <pose>0 0 0.5 0 -0 0</pose>
+    </model>
+    <state world_name='default'>
+      <sim_time>1313 876000000</sim_time>
+      <real_time>871 908670383</real_time>
+      <wall_time>1720774172 985694572</wall_time>
+      <iterations>846497</iterations>
+      <model name='fire_hydrant'>
+        <pose>4.62726 -0.77163 0 0 -0 0</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>4.62726 -0.77163 0 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='fire_hydrant_0'>
+        <pose>4.37285 5.79724 0 0 -0 0</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>4.37285 5.79724 0 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='fire_hydrant_1'>
+        <pose>-6.67305 -6.97959 0 0 -0 0</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>-6.67305 -6.97959 0 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='grey_wall'>
+        <pose>0.772168 -2.64797 0 0 -0 0</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>0.772168 -2.64797 1.4 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='ground_plane'>
+        <pose>0 0 0 0 -0 0</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>0 0 0 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='perrobot_12dof'>
+        <pose>0.239541 -0.538586 0.022975 -3.14149 9e-06 -0.061505</pose>
+        <scale>1 1 1</scale>
+        <link name='FL_LOWER_LEG'>
+          <pose>0.3175 -0.679819 0.142091 3.11211 0.652854 -0.079421</pose>
+          <velocity>0.004024 -0.001813 0.00252 -0.007202 -0.224537 0.003305</velocity>
+          <acceleration>-15.6841 -2.20008 22.8665 -1.72771 1.08984 -0.333191</acceleration>
+          <wrench>-0.363602 -0.051004 0.530111 0 -0 0</wrench>
+        </link>
+        <link name='FL_SHOULDER'>
+          <pose>0.447857 -0.639081 0.022965 3.11816 9e-06 -0.061506</pose>
+          <velocity>7.2e-05 -6.9e-05 -0.000596 0.006099 0.002399 0.000635</velocity>
+          <acceleration>0.344592 -0.149478 -1.8013 -2.68931 1.34075 0.690558</acceleration>
+          <wrench>0.048918 -0.02122 -0.255712 0 -0 0</wrench>
+        </link>
+        <link name='FL_UPPER_LEG'>
+          <pose>0.427534 -0.651852 0.023293 3.10983 -0.741619 -0.04005</pose>
+          <velocity>8.2e-05 -0.000103 -0.000726 0.014625 0.033448 3.1e-05</velocity>
+          <acceleration>4.65571 -1.76487 0.354495 -2.40828 1.10411 -1.20659</acceleration>
+          <wrench>0.686125 -0.260095 0.052243 0 -0 0</wrench>
+        </link>
+        <link name='FR_LOWER_LEG'>
+          <pose>0.335375 -0.408063 0.143133 -3.11223 0.655152 -0.043606</pose>
+          <velocity>0.005901 0.00197 0.003527 -0.027954 -0.309939 -0.003926</velocity>
+          <acceleration>-21.3731 5.70061 32.2823 0.327669 1.12942 0.974043</acceleration>
+          <wrench>-0.495491 0.132157 0.748398 0 -0 0</wrench>
+        </link>
+        <link name='FR_SHOULDER'>
+          <pose>0.458614 -0.464412 0.022982 -3.11831 9e-06 -0.061506</pose>
+          <velocity>6.7e-05 4e-05 -0.000696 -0.018838 0.004161 6.8e-05</velocity>
+          <acceleration>0.356297 0.118519 -2.34956 1.82154 -0.37634 1.67511</acceleration>
+          <wrench>0.05058 0.016825 -0.333543 0 -0 0</wrench>
+        </link>
+        <link name='FR_UPPER_LEG'>
+          <pose>0.440011 -0.449243 0.023308 -3.11029 -0.732031 -0.08243</pose>
+          <velocity>7.9e-05 6.8e-05 -0.0009 -0.015907 0.048983 -0.000309</velocity>
+          <acceleration>6.61961 1.73474 0.901501 -0.682402 -0.228536 -0.462911</acceleration>
+          <wrench>0.975551 0.255654 0.132857 0 -0 0</wrench>
+        </link>
+        <link name='HL_LOWER_LEG'>
+          <pose>0.145176 -0.668821 0.141967 3.1083 -0.639978 -0.04162</pose>
+          <velocity>0.004103 0.001154 -0.00254 -0.014641 -0.221319 0.00309</velocity>
+          <acceleration>-15.7099 3.2831 -22.7816 1.115 -0.613579 -1.05338</acceleration>
+          <wrench>-0.364202 0.076112 -0.528144 0 -0 0</wrench>
+        </link>
+        <link name='HL_SHOULDER'>
+          <pose>0.020467 -0.612761 0.022968 3.11487 6e-06 -0.061505</pose>
+          <velocity>6.4e-05 -6.5e-05 0.000398 -0.011672 0.002675 0.000225</velocity>
+          <acceleration>0.337213 0.081148 1.30431 1.05101 0.101772 -2.9899</acceleration>
+          <wrench>0.047871 0.01152 0.18516 0 -0 0</wrench>
+        </link>
+        <link name='HL_UPPER_LEG'>
+          <pose>0.03907 -0.627929 0.023343 3.10528 0.744192 -0.086106</pose>
+          <velocity>5.6e-05 -6e-05 0.000657 -0.009287 0.034202 0.001401</velocity>
+          <acceleration>4.69491 1.04745 -0.73223 -0.17523 0.452323 0.766625</acceleration>
+          <wrench>0.691902 0.154366 -0.107911 0 -0 0</wrench>
+        </link>
+        <link name='HR_LOWER_LEG'>
+          <pose>0.159889 -0.397832 0.14383 -3.10601 -0.668344 -0.083564</pose>
+          <velocity>0.002603 -0.001039 -0.001552 -0.009701 -0.145014 -0.002523</velocity>
+          <acceleration>-10.0172 -1.05143 -14.8881 -2.1479 -0.621982 -1.57567</acceleration>
+          <wrench>-0.232228 -0.024375 -0.345148 0 -0 0</wrench>
+        </link>
+        <link name='HR_SHOULDER'>
+          <pose>0.031224 -0.438091 0.022986 -3.11363 8e-06 -0.061506</pose>
+          <velocity>2.2e-05 -0.000144 0.000441 0.001017 0.002625 1e-06</velocity>
+          <acceleration>0.279839 -0.22377 0.806444 -0.86588 1.29832 -1.32244</acceleration>
+          <wrench>0.039726 -0.031766 0.114483 0 -0 0</wrench>
+        </link>
+        <link name='HR_UPPER_LEG'>
+          <pose>0.051547 -0.425321 0.023378 -3.10416 0.727542 -0.03661</pose>
+          <velocity>0.000114 -0.00014 0.00043 0.008026 0.02057 0.000557</velocity>
+          <acceleration>3.04499 -1.19182 -0.167336 1.58921 0.575239 -1.95613</acceleration>
+          <wrench>0.44875 -0.175642 -0.024661 0 -0 0</wrench>
+        </link>
+        <link name='base_link'>
+          <pose>0.239541 -0.538586 0.022975 -3.14149 9e-06 -0.061505</pose>
+          <velocity>6.8e-05 -0 -6e-05 4e-06 0.002731 0</velocity>
+          <acceleration>0.371784 0.057023 -0.465878 3.04189 0.777914 -3.13013</acceleration>
+          <wrench>0.465191 0.071349 -0.582926 0 -0 0</wrench>
+        </link>
+      </model>
+      <light name='sun'>
+        <pose>0 0 10 0 -0 0</pose>
+      </light>
+    </state>
+    <gui fullscreen='0'>
+      <camera name='user_camera'>
+        <pose>8.21333 13.4719 4.56649 0 0.283643 -1.975</pose>
+        <view_controller>orbit</view_controller>
+        <projection_type>perspective</projection_type>
+      </camera>
+    </gui>
+    <model name='fire_hydrant'>
+      <static>1</static>
+      <link name='link'>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>model://fire_hydrant/meshes/fire_hydrant.dae</uri>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>model://fire_hydrant/meshes/fire_hydrant.dae</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>4.62726 -0.77163 0 0 -0 0</pose>
+    </model>
+    <model name='fire_hydrant_0'>
+      <static>1</static>
+      <link name='link'>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>model://fire_hydrant/meshes/fire_hydrant.dae</uri>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>model://fire_hydrant/meshes/fire_hydrant.dae</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>4.37285 5.79724 0 0 -0 0</pose>
+    </model>
+    <model name='fire_hydrant_1'>
+      <static>1</static>
+      <link name='link'>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>model://fire_hydrant/meshes/fire_hydrant.dae</uri>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>model://fire_hydrant/meshes/fire_hydrant.dae</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>-6.67305 -6.97959 0 0 -0 0</pose>
+    </model>
+    <model name='grey_wall'>
+      <static>1</static>
+      <link name='link'>
+        <pose>0 0 1.4 0 -0 0</pose>
+        <collision name='collision'>
+          <geometry>
+            <box>
+              <size>7.5 0.2 2.8</size>
+            </box>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='visual'>
+          <cast_shadows>0</cast_shadows>
+          <geometry>
+            <box>
+              <size>7.5 0.2 2.8</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>model://grey_wall/materials/scripts</uri>
+              <uri>model://grey_wall/materials/textures</uri>
+              <name>vrc/grey_wall</name>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>0.772168 -2.64797 0 0 -0 0</pose>
+    </model>
   </world>
 </sdf>

@@ -140,7 +140,7 @@ class Moves_12dof:
             qtraj = np.array([mgi(xbut)[s] for xbut in foot])
             q_interpolation = interpolation_qtraj(qtraj, dt, numberofpoints=sub)
             
-            # plot_3d_points(np.array([Analogical_MGD(q) for q in q_interpolation]), 'r')
+            #plot_3d_points(np.array([Analogical_MGD(q) for q in q_interpolation]), 'r')
             qs.append(q_interpolation)
             
         out = qs[0]
