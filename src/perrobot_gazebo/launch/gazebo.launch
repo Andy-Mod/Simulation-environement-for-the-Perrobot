@@ -2,7 +2,7 @@
 
     <!-- Start Gazebo : empty world -->
     <include file="$(find gazebo_ros)/launch/empty_world.launch">
-      <arg name="world_name" value="$(find perrobot_gazebo)/launch/world/normal.world"/>
+      <arg name="world_name" value="$(find gazebo_ros)/launch/empty_world.launch"/>
       <arg name="use_sim_time" value="true"/>
     </include>
 
@@ -17,7 +17,7 @@
 
     <!-- Controllers -->
     <rosparam file="$(find perrobot_gazebo)/config/controllers.yaml" command="load"/>
-    <node name="controller_spawner" pkg="controller_manager" type="spawner" output="screen" ns="perrobot_controller"
+    <node name="controller_spawner" pkg="controller_manager" type="spawner" ns="perrobot_controller"
                 args="joint_states_controller FL_HFE_joint FR_HFE_joint 
                 HL_HFE_joint HR_HFE_joint 
                 FL_KFE_joint FR_KFE_joint 
@@ -28,7 +28,7 @@
     <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher"/>
 
     <!-- Robot State Publisher -->
-     <node pkg="robot_state_publisher" type="robot_state_publisher"  name="robot_state_publisher" respawn="false" output="screen">
+     <node pkg="robot_state_publisher" type="robot_state_publisher"  name="robot_state_publisher" respawn="false">
       <remap from="/joint_states" to="/perrobot_controller/joint_states" />
       <param name="publish_frequency" type="double" value="10" />
     </node>
@@ -36,6 +36,6 @@
     <!-- Init joint positions node starting with a 5.0s delay -->
     <arg name="node_start_delay" default="5.0" />  
     <node pkg="perrobot_controller" type="stand_x.py"
-        name="init_joint_command_publisher" output="screen" launch-prefix="bash -c 'sleep $(arg node_start_delay); $0 $@' " /> 
+        name="init_joint_command_publisher" launch-prefix="bash -c 'sleep $(arg node_start_delay); $0 $@' " /> 
 
 </launch>

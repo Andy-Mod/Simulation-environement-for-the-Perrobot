@@ -2,6 +2,6 @@
 
     <!-- Robot controller -->
     <node pkg="perrobot_controller" type="action.py"
-        name="T_key_listener" output="screen"/>
+        name="T_key_listener"/>
 
 </launch>

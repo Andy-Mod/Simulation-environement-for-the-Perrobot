@@ -1,7 +1,7 @@
 <launch>
-
     <!-- Teleopkey node -->
+    <arg name="node_start_delay" default="10.0" />  
     <node pkg="perrobot_joystick" type="keybord_reader.py"
-        name="T_key" output="screen"/>
+        name="T_key" launch-prefix="bash -c 'sleep $(arg node_start_delay); $0 $@' " output="screen" />
 
 </launch>
