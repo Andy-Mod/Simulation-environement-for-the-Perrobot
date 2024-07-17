@@ -110,8 +110,11 @@ def generate_gait_shape(gait_name, start, amp, length, stance_coef, num_point, i
     phase_shifts = get_gait_phase_shifts(gait_name)
     x, y, z = start
     out = []
-    x_values = np.linspace(0, 2*length, num_point)
+    x_values = np.linspace(0, 2*length, num_point+1)
     shapes = [sinusoide_shape(x_values, amp, 2*length, phase_shift, stance_coef) for phase_shift in phase_shifts]
+    
+    for i, shape in enumerate(shapes):
+        plt.plot(x_values, shape, label=f"{i+1}")
     
     for i, zout in enumerate(shapes):
         
@@ -127,10 +130,10 @@ def generate_gait_shape(gait_name, start, amp, length, stance_coef, num_point, i
         out.append(points)
         
         #plot_3d_points(points, 'g')
-    
+    out = np.array(out)
     plt.show()
     
-    return out[1:]
+    return out[:, 1:]
 
 def generate_qtraj(qtraj, tf, numberofpoints=100):
     q0, q1, q2, q3, qf = qtraj[0], qtraj[1], qtraj[2], qtraj[3], qtraj[4]

@@ -74,4 +74,4 @@ def shapes(alpha = 50, gamma = 50 , amplitude = 1, beta = 0.75, speed_conversion
     
     return sol[0:N]
 
-shapes(length=0.075, it=1)
+# shapes(length=0.075, it=1)

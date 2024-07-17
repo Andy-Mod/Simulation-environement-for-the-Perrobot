@@ -14,46 +14,31 @@ class Moves_12dof:
     topic = '/perrobot_12dof_controller/joint_states'
     
     @staticmethod
-    def move_foot(qinit, period=0.1, amplitude=0.005, on_x=True, num_points=10, sub=10, front=True):
+    def move_foot(qinit, period=0.1, amplitude=0.005, on_x=True, num_points=10, front=True):
          
         Xinit = Analogical_MGD(qinit)
         Xbut = Xinit.copy()
         
-        first, second = [], []
+        first = []
         dt = 0.1
         
         _, swingshape = sinusoide_ich(period, amplitude, num_points) # transform_and_shift_parabola(width=0.3, amplitude=0.01, t_span=1, num_points=num_points+1)  transform_and_shift_parabola(width=0.3, amplitude=-0.001, t_span=1, num_points=num_points+1)
-        _, stanceshape = sinusoide_ich(period/2, -0.03, num_points)
+
         lineshape = np.zeros(num_points+1)
         
         if on_x:
             Xbut[0] -= period
-            first, second = swingshape, stanceshape
+            first = swingshape
         else:
             Xbut[1] -= period
-            first, second = lineshape, lineshape
+            first = lineshape
             
         s = 2 if front else 3
         
         swingtrajectory = generate_trajectory_from_shape(Xinit, Xbut, first, num_points)
-        qtraj = np.array([mgi(xbut)[s] for xbut in swingtrajectory])
-        out = interpolation_qtraj(qtraj, dt, numberofpoints=sub)
-        
-        Xinit = Xbut
-        Xbut = swingtrajectory[0]
-        
-        stancetrajectory = generate_trajectory_from_shape(Xinit, Xbut, second, num_points)
-        qtraj = np.array([mgi(xbut)[s] for xbut in stancetrajectory])
-        out2 = interpolation_qtraj(qtraj, dt, numberofpoints=sub)
-        
-        # plot_3d_points(np.array([Analogical_MGD(q) for q in out]), 'r')
-        # plot_3d_points(np.array([Analogical_MGD(q) for q in out2]), 'g')
-        
-        # out = np.concatenate((out, out2))
-        
-        # plot_3d_points(np.array([Analogical_MGD(q) for q in out]), 'b')
+        out = np.array([mgi(xbut)[s] for xbut in swingtrajectory])
 
-        return out[1:]
+        return out
     
     @staticmethod
     def move_foot_linear_stance(qinit, freq=0.1, amplitude=0.005, on_x=True, num_points=10, sub=10, front=True):
@@ -136,13 +121,11 @@ class Moves_12dof:
         
         for i, foot in enumerate(trajectory):
             s = 2 if 'F' in legs[i] else 3
-            
-            qtraj = np.array([mgi(xbut)[s] for xbut in foot])
-            q_interpolation = interpolation_qtraj(qtraj, dt, numberofpoints=sub)
-            
-            #plot_3d_points(np.array([Analogical_MGD(q) for q in q_interpolation]), 'r')
-            qs.append(q_interpolation)
-            
+        
+            qs.append(np.array([mgi(xbut)[s] for xbut in foot]))
+            print(len(qs), i)
+        
+        
         out = qs[0]
         
         for q in range(1, len(legs)):

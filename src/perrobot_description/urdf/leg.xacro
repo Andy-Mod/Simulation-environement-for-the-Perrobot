@@ -19,6 +19,9 @@
   <xacro:property name="KFE_2_FOOT_y" value="${9.0 * 0.001}" />
   <xacro:property name="KFE_2_FOOT_z" value="${160.00 * 0.001}" />
   <xacro:property name="effort_limit" value="1.4" />
+  <xacro:property name="plus_2_pi" value="${2 * 22 / 7}" />
+  <xacro:property name="minus_2_pi" value="${-2 * 22 / 7}" />
+
   <xacro:property name="quater_pi" value="0.78539816339" />
 
   <!-- Macro defining solo leg. -->
@@ -160,7 +163,7 @@
       <joint name="${prefix}_HFE" type="revolute">
         <parent link="${prefix}_SHOULDER"/>
         <child link="${prefix}_UPPER_LEG"/>
-        <limit effort="${effort_limit}" lower="-10" upper="10" velocity="1000"/>
+        <limit effort="${effort_limit}" lower="${minus_2_pi}" upper="${plus_2_pi}" velocity="1000"/>
         <!-- joints rotates around the y-axis -->
         <axis xyz="0 1 0"/>
         <!-- placement of the joint -->
@@ -189,7 +192,7 @@
       <joint name="${prefix}_HFE" type="revolute">
         <parent link="base_link"/>
         <child link="${prefix}_UPPER_LEG"/>
-        <limit effort="${effort_limit}" lower="-10" upper="10" velocity="1000"/>
+        <limit effort="${effort_limit}" lower="${minus_2_pi}" upper="${plus_2_pi}" velocity="1000"/>
         <!-- joints rotates around the y-axis -->
         <axis xyz="0 1 0"/>
         <!-- placement of the joint -->
@@ -277,7 +280,7 @@
     <joint name="${prefix}_KFE" type="revolute">
       <parent link="${prefix}_UPPER_LEG"/>
       <child link="${prefix}_LOWER_LEG"/>
-      <limit effort="${effort_limit}" lower="-10" upper="10" velocity="1000"/>
+      <limit effort="${effort_limit}" lower="${minus_2_pi}" upper="${plus_2_pi}" velocity="1000"/>
       <!-- joints rotates around the y-axis -->
       <axis xyz="0 1 0"/>
       <!-- placement of the joint -->
@@ -374,7 +377,7 @@
         <origin xyz="0 ${-KFE_2_FOOT_y} ${-KFE_2_FOOT_z}" rpy="0 0 0" />
       </xacro:if>
       <!-- Limits -->
-      <limit effort="${effort_limit}" lower="-10" upper="10" velocity="1000"/>
+      <limit effort="${effort_limit}" lower="${minus_2_pi}" upper="${plus_2_pi}" velocity="1000"/>
       <!-- pybullet simulation parameters -->
       <dynamics damping="0.0" friction="0.0"/>
     </joint>
