@@ -7,9 +7,5 @@
 # new environment variables
 
 # modified environment variables
-export CMAKE_PREFIX_PATH="/home/perrobot/perrobot/devel:$CMAKE_PREFIX_PATH"
-export LD_LIBRARY_PATH="/home/perrobot/perrobot/devel/lib:$LD_LIBRARY_PATH"
-export PKG_CONFIG_PATH="/home/perrobot/perrobot/devel/lib/pkgconfig:$PKG_CONFIG_PATH"
-export PWD='/home/perrobot/perrobot/build'
-export ROSLISP_PACKAGE_DIRECTORIES="/home/perrobot/perrobot/devel/share/common-lisp:$ROSLISP_PACKAGE_DIRECTORIES"
-export ROS_PACKAGE_PATH="/home/perrobot/perrobot/src:$ROS_PACKAGE_PATH"
+export PWD='/home/perrobot/int/perrobot/build'
+export ROS_PACKAGE_PATH='/home/perrobot/perrobot/src:/home/perrobot/int/perrobot/src:/home/perrobot/catkin_ws/src:/opt/ros/noetic/share'

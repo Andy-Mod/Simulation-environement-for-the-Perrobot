@@ -8,6 +8,8 @@ import matplotlib.pyplot as plt
 from robot_publisher_12dof import RobotPublisher
 from moves12dof import Moves_12dof
 
+save_file = '/home/perrobot/perrobot/src/perrobot_controller/scripts/12dof/joint_positions.csv'
+
 # Dictionary to store joint names and their positions
 joint_positions_data = {}
 
@@ -31,7 +33,7 @@ def save_to_csv():
     """
     Save the collected joint positions data to a CSV file.
     """
-    with open('/home/perrobot/perrobot/src/perrobot_controller/scripts/12dof/joint_positions.csv', 'w', newline='') as csvfile:
+    with open(save_file, 'w', newline='') as csvfile:
         csv_writer = csv.writer(csvfile)
 
         # Write header (joint names)
@@ -62,9 +64,6 @@ def listener():
 if __name__ == '__main__':
     try:
         # Register the save_to_csv function to be called upon script exit
-        
-        
-        
         atexit.register(save_to_csv)
         listener()
     except rospy.ROSInterruptException:

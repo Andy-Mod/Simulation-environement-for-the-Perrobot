@@ -78,4 +78,6 @@ if __name__ == '__main__':
     joint_positions_data = {name: values[-1][i] for i, name in enumerate(joint_names)}
     print(joint_positions_data)
     
-    read_csv_and_plot('/home/perrobot/perrobot/src/perrobot_controller/scripts/12dof/joint_positions.csv', joint_positions_data)
+    save_file = '/home/perrobot/perrobot/src/perrobot_controller/scripts/12dof/joint_positions.csv'
+    
+    read_csv_and_plot(save_file, joint_positions_data)

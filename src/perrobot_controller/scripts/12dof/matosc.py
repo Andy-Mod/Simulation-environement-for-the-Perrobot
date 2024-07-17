@@ -130,7 +130,7 @@ def generate_gait_shape(gait_name, start, amp, length, stance_coef, num_point, i
     
     plt.show()
     
-    return out
+    return out[1:]
 
 def generate_qtraj(qtraj, tf, numberofpoints=100):
     q0, q1, q2, q3, qf = qtraj[0], qtraj[1], qtraj[2], qtraj[3], qtraj[4]

@@ -8,7 +8,7 @@
 
     <!-- Robot -->
     <param name="robot_description" command="$(find xacro)/xacro $(find perrobot_description)/urdf/solo12.urdf.xacro"/>
-    <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -x 0.0 -y 0.0 -z 0.5 -model perrobot_12dof"/>
+    <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf  -z 0.9 -model perrobot_12dof"/>
 
     <!-- Robot State Publisher -->
      <node pkg="robot_state_publisher" type="robot_state_publisher"  name="robot_state_publisher" respawn="false" output="screen">

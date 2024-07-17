@@ -3,11 +3,6 @@ from scipy.integrate import solve_ivp
 import matplotlib.pyplot as plt
 
 
-def R_matrix(theta):
-    return np.array([[np.cos(theta), -np.sin(theta)],
-                     [np.sin(theta),  np.cos(theta)]])
-
-
 def omega(T, beta, b, y):
     return (np.pi / (beta * T * (np.exp(-b* y) + 1))) + (np.pi / ((1 - beta) * T * (np.exp(b * y) + 1)))
 
@@ -15,7 +10,7 @@ def r_i(x, y):
     return np.sqrt(x**2 + y**2)
 
 
-def system(t, variables, alpha, gamma, mu, beta, b, T, delta, thetas):
+def system(t, variables, alpha, gamma, mu, beta, b, T, delta):
     N = len(variables) // 2
     x = variables[:N]
     y = variables[N:]
@@ -27,20 +22,24 @@ def system(t, variables, alpha, gamma, mu, beta, b, T, delta, thetas):
         w = omega(T, beta, b, y[i])
         interaction_sum = np.zeros(2)
         
-        for j in range(4):
-            R_theta = R_matrix(thetas[j])
-            interaction_sum += R_theta @ np.array([x[i], y[i]])
         
-        dxdt[i] = alpha * (mu - r**2) * x[i] - w * y[i] + delta * interaction_sum[0]
-        dydt[i] = gamma * (mu - r**2) * y[i] + w * x[i] + delta * interaction_sum[1]
+        dxdt[i] = alpha * (mu - r**2) * x[i] - w * y[i] 
+        dydt[i] = gamma * (mu - r**2) * y[i] + w * x[i] 
 
     return np.concatenate((dxdt, dydt))
 
-def compute_xy(alpha, gamma, mu, beta, b, T, delta, thetas, initial_conditions, t_span, t_eval):
-    sol = solve_ivp(system, t_span, initial_conditions, args=(alpha, gamma, mu, beta, b, T, delta, thetas), t_eval=t_eval)
+def sinusoide_shape(x, amp, length, phase_shift):
+    
+    omega = 2 * np.pi / length
+    y = amp * np.sin(omega * x - length * phase_shift)
+
+    return y 
+
+def compute_xy(alpha, gamma, mu, beta, b, T, delta, initial_conditions, t_span, t_eval):
+    sol = solve_ivp(system, t_span, initial_conditions, args=(alpha, gamma, mu, beta, b, T, delta), t_eval=t_eval)
     return sol.t, sol.y
 
-def shapes(alpha = 50, gamma = 50 , amplitude = 1, beta = 0.75, speed_conversion = 50, length = 1, delta = 1, thetas = [0, np.pi, np.pi, 0], N = 4, it=1):
+def shapes(alpha = 50, gamma = 50 , amplitude = 1, beta = 0.75, speed_conversion = 50, length = 1, delta = 1, thetas = [0, np.pi/2, np.pi, 3*np.pi/2], N = 4, it=1):
     
     # alpha = 50  # convergence speed control x : + faster convergence 
     # gamma = 50 # convergence speed control y : + faster convergence 
@@ -57,21 +56,24 @@ def shapes(alpha = 50, gamma = 50 , amplitude = 1, beta = 0.75, speed_conversion
     print(initial_conditions)
 
     t_span = (0, it*length)  
-    t_eval = np.linspace(t_span[0], t_span[1], 500)
-
-    t, sol = compute_xy(alpha, gamma, amplitude**2, beta, speed_conversion, length, delta, thetas, initial_conditions, t_span, t_eval)
-
-
+    t_eval = np.linspace(t_span[0], t_span[1], 1000)
+   
+    sub_shapes = [sinusoide_shape(t_eval, amplitude, length, theta) for theta in thetas]
+    
     plt.figure(figsize=(10, 5))
     for i in range(N):
-        plt.plot(t, sol[i], label=f'x{i+1}(t)')
-        plt.plot(t, sol[N + i], label=f'y{i+1}(t)')
+        x = sub_shapes[i]
+        x = x 
+        
+        # y = sol[N + i]+ sub_shapes[i]
+        plt.plot(t_eval, x, label=f'x{i+1}(t)')
+        # plt.plot(t, y/np.max(y), label=f'y{i+1}(t)')
     plt.xlabel('Time')
     plt.ylabel('Values')
     plt.legend()
     plt.title('Solution of the System of Differential Equations')
     plt.show()
     
-    return sol[0:N]
+    return sub_shapes
 
-shapes(length=0.075, it=1)
+# shapes(length=0.075, amplitude=0.025, it=1)

@@ -67,14 +67,14 @@ set(perrobot_controller_CONFIG_INCLUDED TRUE)
 
 # set variables for source/devel/install prefixes
 if("FALSE" STREQUAL "TRUE")
-  set(perrobot_controller_SOURCE_PREFIX /home/perrobot/perrobot/src/perrobot_controller)
-  set(perrobot_controller_DEVEL_PREFIX /home/perrobot/perrobot/devel)
+  set(perrobot_controller_SOURCE_PREFIX /home/perrobot/int/perrobot/src/perrobot_controller)
+  set(perrobot_controller_DEVEL_PREFIX /home/perrobot/int/perrobot/devel)
   set(perrobot_controller_INSTALL_PREFIX "")
   set(perrobot_controller_PREFIX ${perrobot_controller_DEVEL_PREFIX})
 else()
   set(perrobot_controller_SOURCE_PREFIX "")
   set(perrobot_controller_DEVEL_PREFIX "")
-  set(perrobot_controller_INSTALL_PREFIX /home/perrobot/perrobot/install)
+  set(perrobot_controller_INSTALL_PREFIX /home/perrobot/int/perrobot/install)
   set(perrobot_controller_PREFIX ${perrobot_controller_INSTALL_PREFIX})
 endif()
 
@@ -154,7 +154,7 @@ foreach(library ${libraries})
     set(lib_path "")
     set(lib "${library}-NOTFOUND")
     # since the path where the library is found is returned we have to iterate over the paths manually
-    foreach(path /home/perrobot/perrobot/install/lib;/home/perrobot/catkin_ws/devel/lib;/opt/ros/noetic/lib)
+    foreach(path /home/perrobot/int/perrobot/install/lib;/home/perrobot/int/perrobot/devel/lib;/home/perrobot/catkin_ws/devel/lib;/opt/ros/noetic/lib)
       find_library(lib ${library}
         PATHS ${path}
         NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)

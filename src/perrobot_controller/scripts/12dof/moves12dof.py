@@ -53,7 +53,7 @@ class Moves_12dof:
         
         # plot_3d_points(np.array([Analogical_MGD(q) for q in out]), 'b')
 
-        return out
+        return out[1:]
     
     @staticmethod
     def move_foot_linear_stance(qinit, freq=0.1, amplitude=0.005, on_x=True, num_points=10, sub=10, front=True):

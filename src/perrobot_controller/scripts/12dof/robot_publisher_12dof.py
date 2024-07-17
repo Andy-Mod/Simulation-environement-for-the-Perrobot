@@ -90,15 +90,16 @@ class RobotPublisher:
                 raise ValueError("leg values not right")
         
         
-        publishers = [rospy.Publisher(topic, Float64, queue_size=10) for topic in self.topics]
-
+        publishers = [rospy.Publisher(topic, Float64) for topic in self.topics]
+        
         rate = rospy.Rate(self.RATE)
-        for values in values:
+        for value in values:
             for i in range(len(self.topics)):
                 message = Float64()
-                message.data = values[i]
+                message.data = value[i]
                 publishers[i].publish(message)
-                print(f"Publishing on {self.topics[i]}: {values[i]}")
+                print(value, publishers[i].name)
+                print(f"Publishing on {self.topics[i]}: {value[i]}")
                 
             rate.sleep()
         self.topics = []

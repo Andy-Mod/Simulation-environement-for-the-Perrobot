@@ -5,7 +5,7 @@ import rospy
 
 
 if __name__ == '__main__':
-    rospy.init_node('move_FR', anonymous=True) 
+    # rospy.init_node('move_FR', anonymous=True) 
     
     amp = 0.05 
     length = -0.095
