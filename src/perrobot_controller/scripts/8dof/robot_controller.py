@@ -23,7 +23,7 @@ class RobotController:
         
     def publishing_init_joint_poses(self):
 
-        publishers = [rospy.Publisher(topic, Float64, queue_size=10) for topic in self.topics]
+        publishers = [rospy.Publisher(topic, Float64, queue_size=0) for topic in self.topics]
 
         rate = rospy.Rate(self.RATE)
         for values in self.values:

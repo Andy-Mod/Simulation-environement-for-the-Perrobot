@@ -1,4 +1,4 @@
-prefix=/home/perrobot/int/perrobot/devel
+prefix=/home/perrobot/perrobot/devel
 
 Name: perrobot
 Description: Description of perrobot

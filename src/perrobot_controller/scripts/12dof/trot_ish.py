@@ -32,7 +32,7 @@ if __name__ == '__main__':
     values = np.column_stack((FR, HL, FL, HR))
     values2 = np.column_stack((FL, HR))
     
-    sets = ['FR', 'HL', 'FL', 'HR']
+    sets = ['FR', 'HL']
     sets2 = ['FL', 'HR']
     rate = 10
     controller = RobotPublisher(rate)
@@ -41,7 +41,6 @@ if __name__ == '__main__':
     
     while True:
         controller.publish_on_leg_set(values, sets)
-        rospy.sleep(0.01)
-        # controller.publish_on_leg_set(values2, sets2)
+        controller.publish_on_leg_set(values2, sets2)
         
     rospy.signal_shutdown("Done publishing")

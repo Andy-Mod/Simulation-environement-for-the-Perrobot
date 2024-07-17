@@ -7,5 +7,4 @@
 # new environment variables
 
 # modified environment variables
-export PWD='/home/perrobot/int/perrobot/build'
-export ROS_PACKAGE_PATH='/home/perrobot/perrobot/src:/home/perrobot/int/perrobot/src:/home/perrobot/catkin_ws/src:/opt/ros/noetic/share'
+export PWD='/home/perrobot/perrobot/build'

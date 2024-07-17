@@ -4,5 +4,5 @@ PROJECT_PKG_CONFIG_INCLUDE_DIRS = "".split(';') if "" != "" else []
 PROJECT_CATKIN_DEPENDS = "".replace(';', ' ')
 PKG_CONFIG_LIBRARIES_WITH_PREFIX = "".split(';') if "" != "" else []
 PROJECT_NAME = "perrobot_controller"
-PROJECT_SPACE_DIR = "/home/perrobot/int/perrobot/install"
+PROJECT_SPACE_DIR = "/home/perrobot/perrobot/install"
 PROJECT_VERSION = "0.0.0"
