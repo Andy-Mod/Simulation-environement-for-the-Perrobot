@@ -22,8 +22,9 @@ class Moves_12dof:
         first = []
         dt = 0.1
         
-        _, swingshape = sinusoide_ich(period, amplitude, num_points) # transform_and_shift_parabola(width=0.3, amplitude=0.01, t_span=1, num_points=num_points+1)  transform_and_shift_parabola(width=0.3, amplitude=-0.001, t_span=1, num_points=num_points+1)
-
+        _, swingshape = sinusoide_ich(period, amplitude, num_points)
+        # plt.plot(swingshape)
+        # plt.show()
         lineshape = np.zeros(num_points+1)
         
         if on_x:
@@ -31,13 +32,16 @@ class Moves_12dof:
             first = swingshape
         else:
             Xbut[1] -= period
-            first = lineshape
+            first = swingshape
             
         s = 2 if front else 3
         
         swingtrajectory = generate_trajectory_from_shape(Xinit, Xbut, first, num_points)
         out = np.array([mgi(xbut)[s] for xbut in swingtrajectory])
+        
+        # out = interpolation_qtraj(out, dt, sub)
 
+        # plot_3d_points([Analogical_MGD(q) for q in out], 'r')
         return out
     
     @staticmethod
@@ -108,7 +112,7 @@ class Moves_12dof:
         return Analogical_MGD(q)
     
     @staticmethod
-    def gait(gait_name, amp, length, stance_coef, num_point, sub=10):
+    def gait(gait_name, amp, length, stance_coef, num_point):
         legs = ['FL', 'FR', 'HL', 'HR']
         dt = 0.1
         
@@ -123,15 +127,8 @@ class Moves_12dof:
             s = 2 if 'F' in legs[i] else 3
         
             qs.append(np.array([mgi(xbut)[s] for xbut in foot]))
-            print(len(qs), i)
         
-        
-        out = qs[0]
-        
-        for q in range(1, len(legs)):
-            out = np.column_stack((out, qs[q]))
-        
-        return legs, out
+        return legs, qs
     
     @staticmethod
     def generate_sequences(a1, a2, n):

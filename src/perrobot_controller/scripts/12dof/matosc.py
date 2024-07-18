@@ -65,11 +65,12 @@ def square(width, amplitude, nb=5):
     y[(x >= half_width - width / (2 * nb)) & (x <= half_width + width / (2 * nb))] = amplitude
     
     return x, y
-    
-def transform_and_shift_parabola(width=0.3, amplitude=0.001, t_span=1, num_points=200):
+
+def transform_and_shift_parabola(amplitude=0.001, num_points=200):
+    t_span = 1
     t = np.linspace(-t_span, t_span, num_points)
     x = (t)**2
-    z = amplitude*((width * (x-1))**2)  
+    z = amplitude*(((x-1))**2)  
     return t, z
 
 def sinusoide_ich(t_span, amplitude=1, num_points=500):
@@ -103,6 +104,7 @@ def generate_trajectory_from_shape(start, end, shape, numberofpoints=10):
     
     xout, yout, zout = np.linspace(x, xf, numberofpoints+1), np.linspace(y, yf, numberofpoints+1), np.linspace(z, zf, numberofpoints+1)
     out = np.column_stack((xout, yout, zout+shape))
+    print(out)
     
     return out 
 

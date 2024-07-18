@@ -90,7 +90,7 @@ class RobotPublisher:
                 raise ValueError("leg values not right")
         
         
-        publishers = [rospy.Publisher(topic, Float64) for topic in self.topics]
+        publishers = [rospy.Publisher(topic, Float64, queue_size=10) for topic in self.topics]
         
         rate = rospy.Rate(self.RATE)
         for value in values:

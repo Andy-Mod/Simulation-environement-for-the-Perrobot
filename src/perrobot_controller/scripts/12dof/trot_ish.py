@@ -13,12 +13,12 @@ if __name__ == '__main__':
     q2, q3 = Moves_12dof.hight_to_angles(h=Moves_12dof.TARGET_HEIGHT, L=Moves_12dof.HALF_LEG_LENGTH)
     qinit = np.array([0.0, q2, q3])
     
-    FL = Moves_12dof.move_foot(qinit, period=0.065, amplitude=0.025, on_x=True, num_points=6, front=True)
-    FR = Moves_12dof.move_foot(qinit, period=0.065, amplitude=0.025, on_x=True, num_points=6, front=True)
-    HL = Moves_12dof.move_foot(-qinit, period=0.065, amplitude=0.025, on_x=True, num_points=6, front=False)
-    HR = Moves_12dof.move_foot(-qinit, period=0.065, amplitude=0.025, on_x=True, num_points=6, front=False)
+    FL = Moves_12dof.move_foot(qinit, period=0.055, amplitude=0.025, on_x=True, num_points=6, front=True)
+    FR = Moves_12dof.move_foot(qinit, period=0.055, amplitude=0.025, on_x=True, num_points=6, front=True)
+    HL = Moves_12dof.move_foot(-qinit, period=0.055, amplitude=0.025, on_x=True, num_points=6, front=False)
+    HR = Moves_12dof.move_foot(-qinit, period=0.055, amplitude=0.025, on_x=True, num_points=6, front=False)
     
-    values = np.column_stack((FR, HL, FL, HR))
+    values = np.column_stack((FR, HL))
     values2 = np.column_stack((FL, HR))
     
     sets = ['FR', 'HL']
@@ -26,7 +26,7 @@ if __name__ == '__main__':
     rate = 10
     controller = RobotPublisher(rate)
     
-    print(values)
+    # print(values)
     
     while True:
         controller.publish_on_leg_set(values, sets)
