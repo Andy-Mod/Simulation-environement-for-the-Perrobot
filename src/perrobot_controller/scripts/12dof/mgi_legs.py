@@ -166,8 +166,8 @@ def mgi(Xbut):
             ])
 
         elif X != 0 and Y != 0 and Z == 0:
-            q1_1 = math.atan2(-X, Y)
-            q1_2 = q1_1 + math.pi
+            q1_1 = math.atan2(-X, Y) % (2*pi)
+            q1_2 = (q1_1 + math.pi) % (2*pi)
 
             Z1_1 = -calcul_A(y, z, q1_1)
             Z1_2 = -calcul_A(y, z, q1_2)
@@ -179,7 +179,7 @@ def mgi(Xbut):
             q2_1_2 = calcul_q2(X1, Y1, Z1_1, Z2, q3_1_2)
             q2_2_1 = calcul_q2(X1, Y1, Z1_2, Z2, q3_2_1)
             q2_2_2 = calcul_q2(X1, Y1, Z1_2, Z2, q3_2_2)
-
+            
             sol.extend([
                 [q1_1, q2_1_1, q3_1_1], 
                 [q1_1, q2_1_2, q3_1_2],
@@ -187,6 +187,7 @@ def mgi(Xbut):
                 [q1_2, q2_2_2, q3_2_2]
             ])
 
+        print(sol)
         return np.array(sol)
     except Exception as e:
         print(f"An error occurred in mgi: {e}")

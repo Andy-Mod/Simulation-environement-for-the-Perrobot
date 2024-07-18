@@ -45,6 +45,14 @@ class Moves_12dof:
         return out
     
     @staticmethod
+    def steer(qinit, period=0.009, amplitude=0.01, left=True, numpoint=10):
+         
+        Xinit = Analogical_MGD(qinit)
+        Xbut = Xinit.copy()
+        out = []
+        return out
+    
+    @staticmethod
     def move_foot_linear_stance(qinit, freq=0.1, amplitude=0.005, on_x=True, num_points=10, sub=10, front=True):
         Xinit = Analogical_MGD(qinit)
         Xbut = Xinit.copy()

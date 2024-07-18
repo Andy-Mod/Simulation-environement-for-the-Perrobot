@@ -13,15 +13,20 @@ if __name__ == '__main__':
     q2, q3 = Moves_12dof.hight_to_angles(h=Moves_12dof.TARGET_HEIGHT, L=Moves_12dof.HALF_LEG_LENGTH)
     qinit = np.array([0.0, q2, q3])
     
-    FL_steer = Moves_12dof.move_foot(qinit, period=0.009, amplitude=0.005, on_x=False, num_points=6, front=True)
-    # FL_back = Moves_12dof.move_foot(FL_steer[-1], period=-0.01, amplitude=0.025, on_x=False, num_points=6, front=True)
    
-    # values = np.concatenate((FL_steer, FL_back[1:]))
+    FR = Moves_12dof.move_foot(qinit, period=-0.09, amplitude=0.01, on_x=False, num_points=6, front=True)
+    FR_2 = Moves_12dof.move_foot(FR[-1], period=0.001, amplitude=0.00, on_x=False, num_points=6, front=True)
+    first = list(FR)
+    second = list(FR_2)
+    
+    
+    first.append(qinit)
+    print(first)
     rate = 10
     controller = RobotPublisher(rate)
     
-    # print(values)
-    
-    
-    controller.publisher_one_leg(FL_steer, 'FL')
+    controller.publisher_one_leg(FR, 'FR')
+    controller.publisher_one_leg(FR, 'FL')
+    controller.publish_on_leg_set(first, ['FR', 'FL'])
+
     
