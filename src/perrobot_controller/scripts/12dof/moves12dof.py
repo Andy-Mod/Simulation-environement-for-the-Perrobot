@@ -4,12 +4,13 @@ from mgi_legs import Analogical_MGD, mgi
 from matosc import *
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
+from robot_utils import RobotUtils
 
 class Moves_12dof:
     # Robot configurations 
     HAA_2_UPPER_LEG = 19.5 * 0.001 
     HALF_LEG_LENGTH = 160 * 0.001  
-    TARGET_HEIGHT = 240 * 0.001
+    TARGET_HEIGHT = 250 * 0.001
     
     topic = '/perrobot_12dof_controller/joint_states'
     
@@ -22,7 +23,7 @@ class Moves_12dof:
         first = []
         dt = 0.1
         
-        _, swingshape = sinusoide_ich(period, amplitude, num_points)
+        t, swingshape = sinusoide_ich(period, amplitude, num_points)
         # plt.plot(swingshape)
         # plt.show()
         lineshape = np.zeros(num_points+1)
@@ -39,9 +40,13 @@ class Moves_12dof:
         swingtrajectory = generate_trajectory_from_shape(Xinit, Xbut, first, num_points)
         out = np.array([mgi(xbut)[s] for xbut in swingtrajectory])
         
+        # plt.plot(t, first)
+        plot_3d_points([Analogical_MGD(q) for q in out], 'g')
+        
+        # plt.show()
+    
         # out = interpolation_qtraj(out, dt, sub)
-
-        # plot_3d_points([Analogical_MGD(q) for q in out], 'r')
+        
         return out
     
     @staticmethod
@@ -195,11 +200,26 @@ class Moves_12dof:
             plot_3d_points(Xs, colors[i]) 
 
     @staticmethod
-    def test():
-        q2, q3 = Moves_12dof.hight_to_angles(h=Moves_12dof.TARGET_HEIGHT, L=Moves_12dof.HALF_LEG_LENGTH)
-        qinit = np.array([0.0, q2, q3])
-        qinits = [qinit, qinit, -qinit, -qinit] 
-        gait_name = 's'
-        Moves_12dof.visualize_gait_trajectories(gait_name, qinits, amplitude=0.05, freq=0.1, num_points=50)
+    def basic_MLCU(number_of_steps=10):
+        current_pose = RobotUtils.hight_to_angles(RobotUtils.TARGET_HEIGHT, RobotUtils.HALF_LEG_LENGTH, Rpose='x')
+        final = RobotUtils.walk_from_x(current_pose, number_of_steps, fast=True)
+        
+        final = np.array(final)
+        
+        FL = final[:, 0:2]
+        FR = final[:, 2:4]
+        HR = final[:, 4:6]
+        HL = final[:, 6:]
+        
+        q1 = np.zeros((len(final), 4))
+        
+        FL = np.column_stack((np.zeros(len(FL)), FL))
+        FR = np.column_stack((np.zeros(len(FL)), FR))
+        HR = np.column_stack((np.zeros(len(FL)), HR))
+        HL = np.column_stack((np.zeros(len(FL)), HL))
+    
+        plot_3d_points([Moves_12dof.MGD(q) for q in FL], 'g')        
+      
+        return np.column_stack((final, q1))
 
 
