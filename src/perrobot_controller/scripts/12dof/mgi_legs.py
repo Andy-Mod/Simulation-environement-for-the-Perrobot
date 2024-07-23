@@ -1,6 +1,5 @@
 import numpy as np
 import sympy as sp
-import math
 from numpy import arcsin, arctan, arctan2, cos, pi, sin, arccos, sqrt
 
 # Robot configurations
@@ -86,19 +85,19 @@ def calcul_A(y, z, q1):
 def calcul_q3(X, Y, Z1, Z2):
     try:
         c3 = (Z1**2 + Z2**2 - X**2 - Y**2) / (2 * X * Y)
-        sqrt_term = math.sqrt(1 - c3**2)
-        return math.atan2(-sqrt_term, c3), math.atan2(sqrt_term, c3)
+        sqrt_term = np.sqrt(1 - c3**2)
+        return np.arctan2(-sqrt_term, c3), np.arctan2(sqrt_term, c3)
     except ValueError as e:
         print(f"Error in calcul_q3: {e}")
         return None, None
 
 def calcul_q2(X, Y, Z1, Z2, q3):
     try:
-        b1 = X + Y * math.cos(q3)
-        b2 = Y * math.sin(q3)
+        b1 = X + Y * np.cos(q3)
+        b2 = Y * np.sin(q3)
         s2 = (b1 * Z2 - b2 * Z1) / (b1**2 + b2**2)
         c2 = (b1 * Z1 + b2 * Z2) / (b1**2 + b2**2)
-        return math.atan2(s2, c2)
+        return np.arctan2(s2, c2)
     except ZeroDivisionError as e:
         print(f"Error in calcul_q2: {e}")
         return None
@@ -114,10 +113,10 @@ def mgi(Xbut):
         if X == 0 and Y != 0:
             s1 = Z / Y
             try:
-                q1_1 = math.atan2(s1, -math.sqrt(1 - s1**2))
-                q1_2 = math.atan2(s1, math.sqrt(1 - s1**2))
+                q1_1 = np.arctan2(s1, -np.sqrt(1 - s1**2)) 
+                q1_2 = np.arctan2(s1, np.sqrt(1 - s1**2))
             except ValueError as e:
-                print(f"Error in atan2 or sqrt: {e}")
+                print(f"Error in arctan2 or sqrt: {e}")
                 return []
 
             Z1_1 = -calcul_A(y, z, q1_1)
@@ -141,10 +140,10 @@ def mgi(Xbut):
         elif X != 0 and Y == 0:
             c1 = Z / X
             try:
-                q1_1 = math.atan2(c1, -math.sqrt(1 - c1**2))
-                q1_2 = math.atan2(c1, math.sqrt(1 - c1**2))
+                q1_1 = np.arctan2(c1, -np.sqrt(1 - c1**2)) 
+                q1_2 = np.arctan2(c1, np.sqrt(1 - c1**2)) 
             except ValueError as e:
-                print(f"Error in atan2 or sqrt: {e}")
+                print(f"Error in arctan2 or sqrt: {e}")
                 return []
 
             Z1_1 = -calcul_A(y, z, q1_1)
@@ -166,8 +165,8 @@ def mgi(Xbut):
             ])
 
         elif X != 0 and Y != 0 and Z == 0:
-            q1_1 = math.atan2(-X, Y) % (2*pi)
-            q1_2 = (q1_1 + math.pi) % (2*pi)
+            q1_1 = np.arctan2(-X, Y) 
+            q1_2 = (q1_1 + np.pi) % (2*pi)
 
             Z1_1 = -calcul_A(y, z, q1_1)
             Z1_2 = -calcul_A(y, z, q1_2)
@@ -187,7 +186,7 @@ def mgi(Xbut):
                 [q1_2, q2_2_2, q3_2_2]
             ])
 
-        print(sol)
+        # print(sol)
         return np.array(sol)
     except Exception as e:
         print(f"An error occurred in mgi: {e}")

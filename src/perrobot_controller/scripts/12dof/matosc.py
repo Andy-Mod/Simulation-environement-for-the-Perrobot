@@ -3,6 +3,10 @@ from numpy import pi
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from oscitests import *
+from mgi_legs import mgi
+from robot_publisher_12dof import RobotPublisher
+import rospy
+from std_msgs.msg import Float64
 
 # Limits
 x_limit = 0.1
@@ -28,14 +32,14 @@ def get_gait_phase_shifts(gait_name):
         'pace': [
              0,
              np.pi,
-             np.pi,
-             0
+             0,
+             np.pi
         ],
         'gallop': [
              0,
-             np.pi / 2,
+             0,
              np.pi,
-             3 * np.pi / 2
+             np.pi
         ], 
         's': [
             0,
@@ -50,16 +54,38 @@ def get_gait_phase_shifts(gait_name):
 
     return gaits[gait_name]
 
+def rotate_around_z(v, alpha):
+    R_z = np.array([
+        [np.cos(alpha), -np.sin(alpha), 0],
+        [np.sin(alpha), np.cos(alpha), 0],
+        [0, 0, 1]
+    ])
+    return np.dot(R_z, v)
+
+def generate_intermediate_points(v1, v2, amplitude=0.001, num_points=10):
+    t, s = transform_and_shift_parabola(amplitude=amplitude, num_points=num_points)
+    points = np.array([v1 + t * (v2 - v1) for t in np.linspace(0, 1, num_points)])
+    points[:, 2] += s
+    return points
+
+
 def sinusoide_shape(x, amp, length, phase_shift, stance_coef=1/2):
     
     omega = 2 * pi / length
     y = amp * np.sin(omega * x - length * phase_shift)
-    y[y < 0] *= stance_coef
+   
+    return y 
+
+def s_while(x, amp, length, phase_shift, stance_coef=1/2):
+    
+    omega = 2 * pi / length
+    y = amp * np.sin(omega * x - length * phase_shift)
+    y = y if y>=0 else -y
     
     return y 
-    
+
 def square(width, amplitude, nb=5):
-    x = np.linspace(0, width, nb)  # Adjust the number of points as needed
+    x = np.linspace(0, width, nb) 
     half_width = width / 2.0
     y = np.zeros_like(x)
     y[(x >= half_width - width / (2 * nb)) & (x <= half_width + width / (2 * nb))] = amplitude
@@ -110,8 +136,10 @@ def generate_trajectory_from_shape(start, end, shape, numberofpoints=10):
 
 def generate_gait_shape(gait_name, start, amp, length, stance_coef, num_point, it=2):
     phase_shifts = get_gait_phase_shifts(gait_name)
+    print('phase shift : ', phase_shifts)
     x, y, z = start
     out = []
+    
     x_values = np.linspace(0, 2*length, num_point+1)
     shapes = [sinusoide_shape(x_values, amp, 2*length, phase_shift, stance_coef) for phase_shift in phase_shifts]
     
@@ -120,22 +148,91 @@ def generate_gait_shape(gait_name, start, amp, length, stance_coef, num_point, i
     
     for i, zout in enumerate(shapes):
         
-        z_swing = zout[zout > 0]
-        z_stance = zout[zout <= 0]
+        z_swing = zout[zout >= 0]
+        z_stance = zout[zout < 0]
         
         x_swing = np.linspace(0, length, len(z_swing))
         x_stance = np.linspace(length, 0, len(z_stance))
         
-        xout = np.concatenate((x_swing, x_stance)) + x if length < 0 else np.concatenate((x_stance, x_swing)) + x
+        xout = x_swing + x if length < 0 else x_stance + x
         yout = np.zeros(len(xout))
-        points = np.column_stack((xout, yout, z + zout))
+        points = np.column_stack((xout, yout, z + z_swing))
+        
         out.append(points)
         
-        #plot_3d_points(points, 'g')
+        # plot_3d_points(points, 'g')
     out = np.array(out)
     plt.show()
     
     return out[:, 1:]
+
+def trajectory_build_and_publish_foward(gait_name, start, amp, length, stance_coef, rate):
+    phase_shifts = get_gait_phase_shifts(gait_name)
+    
+    x, y, z = start
+    out = []
+    
+    x_value = 0
+    xout = x 
+    dt = 0.01
+    print(dt)
+    
+    topics = [
+            "/perrobot_12dof_controller/FL_HAA_joint/command",
+            "/perrobot_12dof_controller/FL_HFE_joint/command",
+            "/perrobot_12dof_controller/FL_KFE_joint/command",
+            "/perrobot_12dof_controller/FR_HAA_joint/command",
+            "/perrobot_12dof_controller/FR_HFE_joint/command",
+            "/perrobot_12dof_controller/FR_KFE_joint/command",
+            "/perrobot_12dof_controller/HL_HAA_joint/command",
+            "/perrobot_12dof_controller/HL_HFE_joint/command",
+            "/perrobot_12dof_controller/HL_KFE_joint/command",
+            "/perrobot_12dof_controller/HR_HAA_joint/command",
+            "/perrobot_12dof_controller/HR_HFE_joint/command",
+            "/perrobot_12dof_controller/HR_KFE_joint/command",
+        ]
+    
+    while True:
+        
+        shapes = [s_while(x_value, amp, 2*length, phase_shift, stance_coef) for phase_shift in phase_shifts]
+       
+        for i, zout in enumerate(shapes):
+            
+            xout = (x + x_value) % (length)
+            yout = 0
+            zout = z + zout 
+            points = np.column_stack((xout, yout, zout))[0]
+            print(i, points)
+            
+            out.append(points)
+            
+        out = np.array(out)
+        s = 2
+        values = mgi(out[0, :])[s]
+        
+        
+        for i in range(1, len(out)):
+            if i > 1 :
+                s = 3
+            values = np.concatenate((values, mgi(out[i, :])[s]))
+        
+        # print(values)
+            
+        publishers = [rospy.Publisher(topic, Float64, queue_size=10) for topic in topics]
+
+        Rate = rospy.Rate(rate)
+        for value in values:
+            for i in range(len(topics)):
+                message = Float64()
+                message.data = values[i]
+                publishers[i].publish(message)
+                # print(f"Publishing on {topics[i]}: {values[i]}")
+                
+            Rate.sleep()
+        
+        x_value += dt
+        out = []
+        print('\n')
 
 def generate_qtraj(qtraj, tf, numberofpoints=100):
     q0, q1, q2, q3, qf = qtraj[0], qtraj[1], qtraj[2], qtraj[3], qtraj[4]

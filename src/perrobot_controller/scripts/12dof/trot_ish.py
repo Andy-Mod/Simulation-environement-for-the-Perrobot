@@ -12,6 +12,7 @@ if __name__ == '__main__':
     
     q2, q3 = Moves_12dof.hight_to_angles(h=Moves_12dof.TARGET_HEIGHT, L=Moves_12dof.HALF_LEG_LENGTH)
     qinit = np.array([0.0, q2, q3])
+    num = 10
     
     FL = Moves_12dof.move_foot(qinit, period=0.055, amplitude=0.015, on_x=True, num_points=6, front=True)
     FR = Moves_12dof.move_foot(qinit, period=0.055, amplitude=0.015, on_x=True, num_points=6, front=True)
@@ -23,7 +24,7 @@ if __name__ == '__main__':
     
     sets = ['FR', 'HL']
     sets2 = ['FL', 'HR']
-    rate = 10
+    rate = num
     controller = RobotPublisher(rate)
     
     # print(values)

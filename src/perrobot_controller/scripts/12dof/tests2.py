@@ -14,12 +14,9 @@ if __name__ == '__main__':
     qinit = np.array([0.0, q2, q3])
     start = Moves_12dof.MGD(qinit)
     gait_name = 'trot'
-    num_point = 50
+    num_point = 100
 
-    rate = 50
-    controller = RobotPublisher(rate)
-    legs, values = Moves_12dof.gait(gait_name, amp, length, stance_coef, num_point)
+    Moves_12dof.gait2(gait_name, amp, length, stance_coef, num_point)
 
-    while True :
-        controller.publish_on_leg_set(values, legs)
+   
     

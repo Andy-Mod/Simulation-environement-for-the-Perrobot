@@ -1,46 +1,50 @@
-from moves12dof import *
-from mgi_legs import *
+import numpy as np
+from matosc import plot_3d_points
+from mgi_legs import mgi
+from moves12dof import Moves_12dof
 
-
-def generate_trajectory_from_shape(start, end, shape, numberofpoints=10):
-    x, y, z = start
-    xf, yf, zf = end
-    xout, yout, zout = 0.0, 0.0, 0.0
+def rotate_around_z(v, alpha):
+    """
+    Rotates a 3D vector around the z-axis by an angle alpha.
     
-    xout, yout, zout = np.linspace(x, xf, numberofpoints+1), np.linspace(y, yf, numberofpoints+1), np.linspace(z, zf, numberofpoints+1)
-    out = np.column_stack((xout, yout, zout+shape))
+    :param v: The initial 3D vector.
+    :param alpha: The rotation angle in radians.
+    :return: The rotated vector.
+    """
+    R_z = np.array([
+        [np.cos(alpha), -np.sin(alpha), 0],
+        [np.sin(alpha), np.cos(alpha), 0],
+        [0, 0, 1]
+    ])
+    return np.dot(R_z, v)
+
+def generate_intermediate_points(v1, v2, num_points=10):
+    """
+    Generates a set of intermediate points between two vectors.
     
-    return out
-    
-def transform_and_shift_parabola(amplitude=0.001, num_points=200):
-    t_span = 1
-    t = np.linspace(-t_span, t_span, num_points)
-    x = (t)**2
-    z = amplitude*(((x-1))**2)  
-    return t, z
+    :param v1: The initial vector.
+    :param v2: The target vector after rotation.
+    :param num_points: The number of intermediate points to generate.
+    :return: A list of intermediate points.
+    """
+    points = [v1 + t * (v2 - v1) for t in np.linspace(0, 1, num_points)]
+    return points
 
-numpoint = 10
+# Example usage
+initial_vector = np.array([-0.0195, 0, -0.25])
+angle_in_radians = np.pi / 4  # 45 degrees
 
+# Rotate the initial vector around the z-axis
+rotated_vector = rotate_around_z(initial_vector, angle_in_radians)
 
-t, s = transform_and_shift_parabola(amplitude=0.01, num_points=numpoint+1)
+# Generate intermediate points
+intermediate_points = generate_intermediate_points(initial_vector, rotated_vector, num_points=10)
 
-q2, q3 = calcul_angles(TARGET_HEIGHT, HALF_LEG_LENGTH)
-q = np.array([0, q2, q3])
+print("Initial Vector:", initial_vector)
+print("Rotated Vector:", rotated_vector)
+print("Intermediate Points:")
 
-Xinit = Moves_12dof.MGD(q)
-X_arriv = Xinit.copy() + [-0.05, 0, 0]
+ik = [mgi(xyz)[2] for xyz in intermediate_points]
 
-trajectory = generate_trajectory_from_shape(Xinit, X_arriv, s, numpoint)
-mgi_ = [mgi(xyz)[2] for xyz in trajectory]
-retraj = [Moves_12dof.MGD(q) for q in mgi_]
-
-plot_3d_points(trajectory, 'g')
-
-plot_3d_points(retraj, 'r')
-
-
-err = [(np.linalg.norm(t) - np.linalg.norm(tr))**2 for t, tr in zip(trajectory, retraj)]
-
-plt.plot(np.linspace(0, 1, numpoint+1), err, label='Quadratic error')
-plt.legend()
-plt.show()
+plot_3d_points([Moves_12dof.MGD(q) for q in ik], 'b')
+plot_3d_points(intermediate_points, 'g')

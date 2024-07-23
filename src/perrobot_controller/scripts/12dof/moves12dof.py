@@ -50,14 +50,6 @@ class Moves_12dof:
         return out
     
     @staticmethod
-    def steer(qinit, period=0.009, amplitude=0.01, left=True, numpoint=10):
-         
-        Xinit = Analogical_MGD(qinit)
-        Xbut = Xinit.copy()
-        out = []
-        return out
-    
-    @staticmethod
     def move_foot_linear_stance(qinit, freq=0.1, amplitude=0.005, on_x=True, num_points=10, sub=10, front=True):
         Xinit = Analogical_MGD(qinit)
         Xbut = Xinit.copy()
@@ -125,6 +117,19 @@ class Moves_12dof:
         return Analogical_MGD(q)
     
     @staticmethod
+    def MGI(xyz):
+        return mgi(xyz)
+    
+    @staticmethod
+    def gait2(gait_name, amp, length, stance_coef, rate):
+        legs = ['FL', 'FR', 'HL', 'HR']
+        
+        q2, q3 = Moves_12dof.hight_to_angles(h=Moves_12dof.TARGET_HEIGHT, L=Moves_12dof.HALF_LEG_LENGTH)
+        qinit = np.array([0.0, q2, q3])
+        Xinit = Analogical_MGD(qinit)
+        trajectory_build_and_publish_foward(gait_name, Xinit, amp, length, stance_coef, rate)
+    
+    @staticmethod
     def gait(gait_name, amp, length, stance_coef, num_point):
         legs = ['FL', 'FR', 'HL', 'HR']
         dt = 0.1
@@ -141,7 +146,12 @@ class Moves_12dof:
         
             qs.append(np.array([mgi(xbut)[s] for xbut in foot]))
         
-        return legs, qs
+        out = qs[0]
+        
+        for i in range(1, len(qs)):
+            out = np.column_stack((out, qs[i]))
+        
+        return legs, out
     
     @staticmethod
     def generate_sequences(a1, a2, n):
@@ -221,5 +231,13 @@ class Moves_12dof:
         plot_3d_points([Moves_12dof.MGD(q) for q in FL], 'g')        
       
         return np.column_stack((final, q1))
+    
+    @staticmethod
+    def steer(xyz, angle):
+        rotated_vector = rotate_around_z(xyz, angle)
 
+        intermediate_points = generate_intermediate_points(xyz, rotated_vector, num_points=15)
+        ik = [mgi(xyz)[2] for xyz in intermediate_points]
 
+        plot_3d_points([Moves_12dof.MGD(q) for q in ik], 'g')
+        return ik

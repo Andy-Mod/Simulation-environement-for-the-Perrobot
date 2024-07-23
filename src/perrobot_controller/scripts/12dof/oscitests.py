@@ -51,7 +51,7 @@ def shapes(alpha = 50, gamma = 50 , amplitude = 1, beta = 0.75, speed_conversion
     # delta = 1  
     # thetas = [0, np.pi, np.pi/2, 3*np.pi/2]  
     
-    initial_conditions = np.array([1, 1, 1, 1, 0, 0, 0, 0])
+    initial_conditions = np.random.rand(2 * N)
     # [0.99916672 0.560667   0.17523497 0.66727297 0.279664   0.72604911 0.97347175 0.62076692]
     # [0.19712773 0.53773971 0.11126199 0.70672853 0.659042   0.79878372 0.98920646 0.60917878]
     print(initial_conditions)
