@@ -166,7 +166,7 @@ def generate_gait_shape(gait_name, start, amp, length, stance_coef, num_point, i
     
     return out[:, 1:]
 
-def trajectory_build_and_publish_foward(gait_name, start, amp, length, stance_coef, rate):
+def trajectory_build_and_publish_forward(gait_name, start, amp, length, stance_coef, rate):
     phase_shifts = get_gait_phase_shifts(gait_name)
     
     x, y, z = start
@@ -174,7 +174,7 @@ def trajectory_build_and_publish_foward(gait_name, start, amp, length, stance_co
     
     x_value = 0
     xout = x 
-    dt = 0.01
+    dt = length / 10
     print(dt)
     
     topics = [

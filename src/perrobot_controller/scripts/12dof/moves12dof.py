@@ -127,7 +127,7 @@ class Moves_12dof:
         q2, q3 = Moves_12dof.hight_to_angles(h=Moves_12dof.TARGET_HEIGHT, L=Moves_12dof.HALF_LEG_LENGTH)
         qinit = np.array([0.0, q2, q3])
         Xinit = Analogical_MGD(qinit)
-        trajectory_build_and_publish_foward(gait_name, Xinit, amp, length, stance_coef, rate)
+        trajectory_build_and_publish_forward(gait_name, Xinit, amp, length, stance_coef, rate)
     
     @staticmethod
     def gait(gait_name, amp, length, stance_coef, num_point):
