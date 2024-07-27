@@ -48,7 +48,6 @@ def action_sender(data):
     
 
 def listener():
-    
     rospy.init_node("teleop_key_listener")
     rospy.Subscriber("key_pressed", String, action_sender)
     rospy.spin()

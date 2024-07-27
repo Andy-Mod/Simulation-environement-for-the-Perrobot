@@ -13,40 +13,12 @@ x_limit = 0.1
 z_limit = 0.27
 
 def get_gait_phase_shifts(gait_name):
-    
-    # Phase shifts for common gaits
-    # gaitname : [FL, FR, HL, HR]
     gaits = {
-        'walk': [
-             0,
-             np.pi / 2,
-             np.pi,
-             3 * np.pi / 2
-        ],
-        'trot': [
-             0,
-             np.pi,
-             np.pi,
-             0
-        ],
-        'pace': [
-             0,
-             np.pi,
-             0,
-             np.pi
-        ],
-        'gallop': [
-             0,
-             0,
-             np.pi,
-             np.pi
-        ], 
-        's': [
-            0,
-            0,
-            0,
-            0
-        ]
+        'walk': [0, np.pi / 2, np.pi, 3 * np.pi / 2],
+        'trot': [0, np.pi, np.pi, 0],
+        'pace': [0, np.pi, 0, np.pi],
+        'gallop': [0, 0, np.pi, np.pi],
+        's': [0, 0, 0, 0]
     }
 
     if gait_name not in gaits:
@@ -60,6 +32,7 @@ def rotate_around_z(v, alpha):
         [np.sin(alpha), np.cos(alpha), 0],
         [0, 0, 1]
     ])
+    
     return np.dot(R_z, v)
 
 def generate_intermediate_points(v1, v2, amplitude=0.001, num_points=10):
@@ -68,43 +41,35 @@ def generate_intermediate_points(v1, v2, amplitude=0.001, num_points=10):
     points[:, 2] += s
     return points
 
-
 def sinusoide_shape(x, amp, length, phase_shift, stance_coef=1/2):
-    
     omega = 2 * pi / length
     y = amp * np.sin(omega * x - length * phase_shift)
-   
     return y 
 
 def s_while(x, amp, length, phase_shift, stance_coef=1/2):
-    
     omega = 2 * pi / length
     y = amp * np.sin(omega * x - length * phase_shift)
-    y = y if y>=0 else -y
-    
-    return y 
+    return y if y >= 0 else -y
 
 def square(width, amplitude, nb=5):
-    x = np.linspace(0, width, nb) 
+    x = np.linspace(0, width, nb)
     half_width = width / 2.0
     y = np.zeros_like(x)
     y[(x >= half_width - width / (2 * nb)) & (x <= half_width + width / (2 * nb))] = amplitude
-    
     return x, y
 
 def transform_and_shift_parabola(amplitude=0.001, num_points=200):
     t_span = 1
     t = np.linspace(-t_span, t_span, num_points)
     x = (t)**2
-    z = amplitude*(((x-1))**2)  
+    z = amplitude * (((x-1))**2)
     return t, z
 
 def sinusoide_ich(t_span, amplitude=1, num_points=500):
-    t = np.linspace(-t_span, t_span, num_points+1)
-    f =  (t**2)
+    t = np.linspace(-t_span, t_span, num_points + 1)
+    f = (t**2)
     x = (-f + np.max(f))
-    x = (amplitude/np.max(x)) * x 
-
+    x = (amplitude / np.max(x)) * x
     return t, x
 
 def plot_3d_points(points, colors):
@@ -160,7 +125,6 @@ def generate_gait_shape(gait_name, start, amp, length, stance_coef, num_point, i
         
         out.append(points)
         
-        # plot_3d_points(points, 'g')
     out = np.array(out)
     plt.show()
     
@@ -215,8 +179,6 @@ def trajectory_build_and_publish_forward(gait_name, start, amp, length, stance_c
             if i > 1 :
                 s = 3
             values = np.concatenate((values, mgi(out[i, :])[s]))
-        
-        # print(values)
             
         publishers = [rospy.Publisher(topic, Float64, queue_size=10) for topic in topics]
 
@@ -226,7 +188,6 @@ def trajectory_build_and_publish_forward(gait_name, start, amp, length, stance_c
                 message = Float64()
                 message.data = values[i]
                 publishers[i].publish(message)
-                # print(f"Publishing on {topics[i]}: {values[i]}")
                 
             Rate.sleep()
         
@@ -257,7 +218,6 @@ def generate_qtraj(qtraj, tf, numberofpoints=100):
     x, residuals, rank, s = np.linalg.lstsq(A, B, rcond=None)
     a3, a4, a5, a6 = x
     
-    # Calculating the trajectory q_t
     q_t = q0 + a3 * (t**3)[:, np.newaxis] + a4 * (t**4)[:, np.newaxis] + a5 * (t**5)[:, np.newaxis] + a6 * (t**6)[:, np.newaxis]
     key_times = [0, t1, t2, t3, tf]
     key_points = qtraj
@@ -314,26 +274,17 @@ def interpolation_qtraj(qs, tf, numberofpoints):
         j = i + 3
         q_t += a * (t**j)[:, np.newaxis]
     
-    # plt.figure(figsize=(10, 6))
-    # for i in range(q_t.shape[1]):
-    #     plt.plot(t, q_t[:, i], label=f'q_{i}')
+    plt.figure(figsize=(10, 6))
+    for i in range(q_t.shape[1]):
+        plt.plot(t, q_t[:, i], label=f'q_{i}')
     
-    # for i in range(key_points.shape[1]):
-    #     plt.scatter(ts, key_points[1:, i], label=f'q_{i} key points', marker='o', s=100, zorder=10)
-    # plt.xlabel('Time')
-    # plt.ylabel('Position')
-    # plt.title('Trajectory over time')
-    # plt.legend()
-    # plt.grid(True)
-    # plt.show()
+    for i in range(key_points.shape[1]):
+        plt.scatter(ts, key_points[1:, i], label=f'q_{i} key points', marker='o', s=100, zorder=10)
+    plt.xlabel('Time')
+    plt.ylabel('Position')
+    plt.title('Trajectory over time')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
     
     return q_t
-
-# amp = 0.01  
-# length = 0.075
-# stance_coef = 1
-# start = [-0.0195, 0., -0.25]
-# gait_name = 'walk'
-# num_point = 20
-
-# generate_gait_shape(gait_name, start, amp, length, stance_coef, num_point)

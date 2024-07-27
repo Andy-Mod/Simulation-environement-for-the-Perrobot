@@ -1,0 +1,7 @@
+<launch>
+
+    <!-- Robot controller -->
+    <node pkg="perrobot_controller" type="actions_12dof.py"
+        name="T_key_listener"/>
+
+</launch>

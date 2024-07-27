@@ -1,11 +1,11 @@
 <launch>
 
     <!-- Gazebo Simulation -->
-    <include file="$(find perrobot_gazebo)/launch/gazebo.launch" />
+    <include file="$(find perrobot_gazebo)/launch/gazebo_12dof.launch" />
 
     <!-- Robot Controller -->
     <include 
-        file="$(find perrobot_controller)/launch/robot_controller_gazebo.launch"/>
+        file="$(find perrobot_controller)/launch/robot_controller_gazebo_12dof.launch"/>
     
     <!-- Joystick -->
     <include file="$(find perrobot_joystick)/launch/teleopkey.launch" />

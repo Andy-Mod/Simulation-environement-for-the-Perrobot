@@ -4,120 +4,88 @@ import rospy
 from std_msgs.msg import Float64
 
 class RobotPublisher:
-    
-
     def __init__(self, rate):
         self.RATE = rate
-        self.all = [
-            "/perrobot_12dof_controller/FL_HFE_joint/command",
-            "/perrobot_12dof_controller/FL_KFE_joint/command",
-            "/perrobot_12dof_controller/FR_HFE_joint/command",
-            "/perrobot_12dof_controller/FR_KFE_joint/command",
-            "/perrobot_12dof_controller/HR_HFE_joint/command",
-            "/perrobot_12dof_controller/HR_KFE_joint/command",
-            "/perrobot_12dof_controller/HL_HFE_joint/command",
-            "/perrobot_12dof_controller/HL_KFE_joint/command",
-            "/perrobot_12dof_controller/HR_HAA_joint/command",
-            "/perrobot_12dof_controller/FR_HAA_joint/command",
-            "/perrobot_12dof_controller/HL_HAA_joint/command",
-            "/perrobot_12dof_controller/FL_HAA_joint/command"
-        ]
+        self.topics = {
+            "all": [
+                "/perrobot_12dof_controller/FL_HFE_joint/command",
+                "/perrobot_12dof_controller/FL_KFE_joint/command",
+                "/perrobot_12dof_controller/FR_HFE_joint/command",
+                "/perrobot_12dof_controller/FR_KFE_joint/command",
+                "/perrobot_12dof_controller/HR_HFE_joint/command",
+                "/perrobot_12dof_controller/HR_KFE_joint/command",
+                "/perrobot_12dof_controller/HL_HFE_joint/command",
+                "/perrobot_12dof_controller/HL_KFE_joint/command",
+                "/perrobot_12dof_controller/HR_HAA_joint/command",
+                "/perrobot_12dof_controller/FR_HAA_joint/command",
+                "/perrobot_12dof_controller/HL_HAA_joint/command",
+                "/perrobot_12dof_controller/FL_HAA_joint/command"
+            ],
+            "FR": [
+                "/perrobot_12dof_controller/FR_HAA_joint/command",
+                "/perrobot_12dof_controller/FR_HFE_joint/command",
+                "/perrobot_12dof_controller/FR_KFE_joint/command"
+            ],
+            "FL": [
+                "/perrobot_12dof_controller/FL_HAA_joint/command",
+                "/perrobot_12dof_controller/FL_HFE_joint/command",
+                "/perrobot_12dof_controller/FL_KFE_joint/command"
+            ],
+            "HR": [
+                "/perrobot_12dof_controller/HR_HAA_joint/command",
+                "/perrobot_12dof_controller/HR_HFE_joint/command",
+                "/perrobot_12dof_controller/HR_KFE_joint/command"
+            ],
+            "HL": [
+                "/perrobot_12dof_controller/HL_HAA_joint/command",
+                "/perrobot_12dof_controller/HL_HFE_joint/command",
+                "/perrobot_12dof_controller/HL_KFE_joint/command"
+            ]
+        }
         
-        self.FR = [
-            "/perrobot_12dof_controller/FR_HAA_joint/command",
-            "/perrobot_12dof_controller/FR_HFE_joint/command",
-            "/perrobot_12dof_controller/FR_KFE_joint/command"
-        ]
-        
-        self.FL = [
-            "/perrobot_12dof_controller/FL_HAA_joint/command",
-            "/perrobot_12dof_controller/FL_HFE_joint/command",
-            "/perrobot_12dof_controller/FL_KFE_joint/command"
-        ]
-        
-        self.HR = [
-            "/perrobot_12dof_controller/HR_HAA_joint/command",
-            "/perrobot_12dof_controller/HR_HFE_joint/command",
-            "/perrobot_12dof_controller/HR_KFE_joint/command"
-        ]
-        
-        self.HL = [
-            "/perrobot_12dof_controller/HL_HAA_joint/command",
-            "/perrobot_12dof_controller/HL_HFE_joint/command",
-            "/perrobot_12dof_controller/HL_KFE_joint/command"
-        ]
-        
-        
-        self.topics = []
-    
     def publisher_one_leg(self, values, leg):
-        
-        if leg == 'FR':
-            self.topics = self.FR
-        elif leg == 'FL':
-            self.topics = self.FL
-        elif leg == 'HL':
-            self.topics = self.HL
-        elif leg == 'HR':
-            self.topics = self.HR
-        else:
-            raise ValueError("leg values not right")
-        
-        publishers = [rospy.Publisher(topic, Float64, queue_size=10) for topic in self.topics]
+        if leg not in self.topics:
+            raise ValueError("Invalid leg identifier")
+
+        topics = self.topics[leg]
+        publishers = [rospy.Publisher(topic, Float64, queue_size=10) for topic in topics]
 
         rate = rospy.Rate(self.RATE)
-        for values in values:
-            for i in range(len(self.topics)):
+        for joint_values in values:
+            for i, pub in enumerate(publishers):
                 message = Float64()
-                message.data = values[i]
-                publishers[i].publish(message)
-                print(f"Publishing on {self.topics[i]}: {values[i]}")
-                
+                message.data = joint_values[i]
+                pub.publish(message)
+                print(f"Publishing on {topics[i]}: {joint_values[i]}")
             rate.sleep()
-        self.topics = []
-            
-    def publish_on_leg_set(self, values, set):
-        for leg in set:
-            if leg == 'FR':
-                self.topics += self.FR
-            elif leg == 'FL':
-                self.topics += self.FL
-            elif leg == 'HL':
-                self.topics += self.HL
-            elif leg == 'HR':
-                self.topics += self.HR
-            else:
-                raise ValueError("leg values not right")
-        
-        
-        publishers = [rospy.Publisher(topic, Float64, queue_size=10) for topic in self.topics]
-        
+    
+    def publish_on_leg_set(self, values, leg_set):
+        topics = []
+        for leg in leg_set:
+            if leg not in self.topics:
+                raise ValueError("Invalid leg identifier")
+            topics += self.topics[leg]
+
+        publishers = [rospy.Publisher(topic, Float64, queue_size=10) for topic in topics]
+
         rate = rospy.Rate(self.RATE)
-        for value in values:
-            for i in range(len(self.topics)):
+        for joint_values in values:
+            for i, pub in enumerate(publishers):
                 message = Float64()
-                message.data = value[i]
-                publishers[i].publish(message)
-                print(value, publishers[i].name)
-                print(f"Publishing on {self.topics[i]}: {value[i]}")
-                
+                message.data = joint_values[i]
+                pub.publish(message)
+                print(f"Publishing on {topics[i]}: {joint_values[i]}")
             rate.sleep()
-        self.topics = []
-        
-        
+    
     def publishing_init_joint_poses(self, values):
-        
-        self.topics = self.all
-            
-        publishers = [rospy.Publisher(topic, Float64, queue_size=10) for topic in self.topics]
+        topics = self.topics["all"]
+        publishers = [rospy.Publisher(topic, Float64, queue_size=10) for topic in topics]
 
         rate = rospy.Rate(self.RATE)
-        for values in values:
-            for i in range(len(self.topics)):
+        for joint_values in values:
+            for i, pub in enumerate(publishers):
                 message = Float64()
-                message.data = values[i]
-                publishers[i].publish(message)
-                print(f"Publishing on {self.topics[i]}: {values[i]}")
-                
+                message.data = joint_values[i]
+                pub.publish(message)
+                print(f"Publishing on {topics[i]}: {joint_values[i]}")
             rate.sleep()
-        self.topics = []

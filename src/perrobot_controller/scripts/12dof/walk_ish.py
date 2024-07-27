@@ -18,11 +18,6 @@ if __name__ == '__main__':
     HL = Moves_12dof.move_foot(qinit, period=0.065, amplitude=0.035, on_x=True, num_points=6, front=False)
     HR = Moves_12dof.move_foot(qinit, period=0.065, amplitude=0.035, on_x=True, num_points=6, front=False)
     
-    values = np.column_stack((FR, HL))
-    values2 = np.column_stack((FL, HR))
-    
-    sets = ['FR', 'HL']
-    sets2 = ['FL', 'HR']
     rate = 10
     controller = RobotPublisher(rate)
     
