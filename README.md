@@ -49,10 +49,20 @@ Two robot are simulated here :
 ### The Perrobot 8dof 
 
 ```sh
-cd ~/perrobot_test_ws/
-pip install -r requirements.txt
+roslaunch perrobot run_gazebo.launch
 
 ```
 
 ### The Perrobot 12dof 
+```sh
+
+roslaunch perrobot run_gazebo_12dof.launch 
+
+```
+
+## Interface 
+
+Upon running the simulation in both cases, here is the interface : 
+
+
 
