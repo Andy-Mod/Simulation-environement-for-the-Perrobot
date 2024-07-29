@@ -28,9 +28,9 @@ git clone https://github.com/Andy-Mod/perrobot.git
 
 ```sh
 
-cd src && catkin_init_workspace
+cd perrobot/src && catkin_init_workspace
 cd .. && catkin_make
-echo "source ~/perrobot_test_ws/devel/setup.bash" >> ~/.bashrc
+echo "source ~/perrobot_test_ws/perrobot/devel/setup.bash" >> ~/.bashrc
 source ~/.bashrc
 
 ```
@@ -38,7 +38,7 @@ source ~/.bashrc
 3. **Install Python dependencies **
 
 ```sh
-cd ~/perrobot_test_ws/
+cd ~/perrobot_test_ws/perrobot/
 pip install -r requirements.txt
 
 ```
